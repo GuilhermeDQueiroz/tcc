@@ -1,0 +1,27 @@
+{
+  "virtualPath": "",
+  "rdbms": {
+    "FIREBIRD": {
+      "databaseName": "${DB_FIREBIRD_DB}",
+      "pluginId": "FIREBIRD",
+      "accessType": 0,
+      "hostname": "${DB_FIREBIRD_HOST}",
+      "password": "${DB_FIREBIRD_PASSWORD}",
+      "pluginName": "Firebird SQL",
+      "port": "${DB_FIREBIRD_PORT}",
+      "attributes": {
+        "SUPPORTS_TIMESTAMP_DATA_TYPE": "Y",
+        "QUOTE_ALL_FIELDS": "N",
+        "SUPPORTS_BOOLEAN_DATA_TYPE": "Y",
+        "FORCE_IDENTIFIERS_TO_LOWERCASE": "N",
+        "PRESERVE_RESERVED_WORD_CASE": "Y",
+        "SQL_CONNECT": "",
+        "FORCE_IDENTIFIERS_TO_UPPERCASE": "N",
+        "PREFERRED_SCHEMA_NAME": ""
+      },
+      "manualUrl": "${DB_FIREBIRD_URL}",
+      "username": "${DB_FIREBIRD_USER}"
+    }
+  },
+  "name": "DADOS"
+}

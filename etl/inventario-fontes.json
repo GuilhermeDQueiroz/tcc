@@ -1,0 +1,403 @@
+[
+  {
+    "source": "CARGA",
+    "staging": "stg_carga",
+    "pipeline": "pipelines/extracao/fatos/ext_carga.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_CARGA",
+      "DESCRICAO_CARGA",
+      "TRANSPORTADOR_CARGA"
+    ]
+  },
+  {
+    "source": "CARGA_DOCUMENTOS",
+    "staging": "stg_carga_documentos",
+    "pipeline": "pipelines/extracao/fatos/ext_carga_documentos.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "AUTOINC_CARDOC",
+      "CARGA_CARDOC"
+    ]
+  },
+  {
+    "source": "CARGA_ITENS",
+    "staging": "stg_carga_itens",
+    "pipeline": "pipelines/extracao/fatos/ext_carga_itens.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "AUTOINCCARDOC_CARITE",
+      "AUTOINC_CARITE"
+    ]
+  },
+  {
+    "source": "CIDADE",
+    "staging": "stg_cidade",
+    "pipeline": "pipelines/extracao/dimensoes/ext_cidade.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_CIDADE",
+      "DESCRICAO_CIDADE",
+      "UF_CIDADE"
+    ]
+  },
+  {
+    "source": "CLASSIFICACAO",
+    "staging": "stg_classificacao",
+    "pipeline": "pipelines/extracao/dimensoes/ext_classificacao.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_CLASSIF",
+      "DESCRICAO_CLASSIF"
+    ]
+  },
+  {
+    "source": "COLECAO",
+    "staging": "stg_colecao",
+    "pipeline": "pipelines/extracao/dimensoes/ext_colecao.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_COLECAO",
+      "DESCRICAO_COLECAO"
+    ]
+  },
+  {
+    "source": "COR",
+    "staging": "stg_cor",
+    "pipeline": "pipelines/extracao/dimensoes/ext_cor.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_COR",
+      "DESCRICAO_COR"
+    ]
+  },
+  {
+    "source": "DOCUMENTO_COMISSAO",
+    "staging": "stg_documento_comissao",
+    "pipeline": "pipelines/extracao/fatos/ext_documento_comissao.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "DOCUMENTO_DOCCOM",
+      "PERC_VENDA_DOCCOM",
+      "PESSOA_DOCCOM",
+      "PRINCIPAL_DOCCOM",
+      "TIPOPESSOA_DOCCOM"
+    ]
+  },
+  {
+    "source": "DOCUMENTO_ENTREGA",
+    "staging": "stg_documento_entrega",
+    "pipeline": "pipelines/extracao/fatos/ext_documento_entrega.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "AUTOINCITEMDETDOC_DOCENT",
+      "AUTOINC_DOCENT",
+      "CARGAITENS_DOCENT",
+      "COMPOSICAOENTREGA_DOCENT",
+      "DOCUMENTO_DOCENT",
+      "FAMILIA_DOCENT",
+      "QTDECHAPAS_DOCENT",
+      "TIPO_DOCENT"
+    ]
+  },
+  {
+    "source": "DOCUMENTO_FATURA",
+    "staging": "stg_documento_fatura",
+    "pipeline": "pipelines/extracao/fatos/ext_documento_fatura.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CLASSIFICACAO_DOCFAT",
+      "CLIENTE_DOCFAT",
+      "CODIGO_DOCFAT",
+      "DTEMISSAO_DOCFAT",
+      "EMPRESA_DOCFAT",
+      "ENTREGARMERCADORIA_DOCFAT",
+      "ENTREGA_DOCFAT",
+      "LOCALENTREGA_DOCFAT",
+      "OPCAO_DOCFAT",
+      "ORGAO_DOCFAT",
+      "ORIGEM_DOCFAT",
+      "PRAZOMEDIO_DOCFAT",
+      "STATUS_DOCFAT",
+      "TIPO_DOCFAT",
+      "TRANSACAO_DOCFAT",
+      "VLRLIQUIDO_DOCFAT"
+    ]
+  },
+  {
+    "source": "DOCUMENTO_FISCAL",
+    "staging": "stg_documento_fiscal",
+    "pipeline": "pipelines/extracao/fatos/ext_documento_fiscal.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "DOCUMENTO_DOCFISCAL"
+    ]
+  },
+  {
+    "source": "DOCUMENTO_ITEM",
+    "staging": "stg_documento_item",
+    "pipeline": "pipelines/extracao/fatos/ext_documento_item.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "AUTOINC_DOCITEM",
+      "COMPOSICAOITEM_DOCITEM",
+      "DOCUMENTO_DOCITEM",
+      "ITEM_DOCITEM",
+      "TIPO_DOCITEM"
+    ]
+  },
+  {
+    "source": "DOCUMENTO_ITEM_DETALHE",
+    "staging": "stg_documento_item_detalhe",
+    "pipeline": "pipelines/extracao/fatos/ext_documento_item_detalhe.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "ACABAMENTO_DOCITEMDET",
+      "AUTOINCITEMDETALHE_DOCITEMDET",
+      "AUTOINCITEM_DOCITEMDET",
+      "AUTOINC_DOCITEMDET",
+      "COR_DOCITEMDET",
+      "QTDEABERTA_DOCITEMDET",
+      "QTDECHAPAS_DOCITEMDET",
+      "VARIACAO_DOCITEMDET",
+      "VLRBRUTOLIQUIDO_DOCITEMDET",
+      "VLRUNITARIOBRUTO_DOCITEMDET",
+      "VLRUNITARIOLIQUIDO_DOCITEMDET"
+    ]
+  },
+  {
+    "source": "DOCUMENTO_PEDIDO",
+    "staging": "stg_documento_pedido",
+    "pipeline": "pipelines/extracao/fatos/ext_documento_pedido.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "DOCUMENTO_DOCPED",
+      "DTPREVISAOFATURAMENTO_DOCPED"
+    ]
+  },
+  {
+    "source": "FAMILIA",
+    "staging": "stg_familia",
+    "pipeline": "pipelines/extracao/dimensoes/ext_familia.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_FAMILIA",
+      "DESCRICAO_FAMILIA"
+    ]
+  },
+  {
+    "source": "GRUPO",
+    "staging": "stg_grupo",
+    "pipeline": "pipelines/extracao/dimensoes/ext_grupo.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_GRUPO",
+      "DESCRICAO_GRUPO"
+    ]
+  },
+  {
+    "source": "ITEM",
+    "staging": "stg_item",
+    "pipeline": "pipelines/extracao/dimensoes/ext_item.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "ARQUIVO_ITEM",
+      "CODIGO_ITEM",
+      "COLECAO_ITEM",
+      "DESCRICAO_ITEM",
+      "GRUPO_ITEM",
+      "ITENSPORVOLUME_ITEM",
+      "LINHA_ITEM",
+      "PESOBRUTO_ITEM",
+      "QUANTVOLUME_ITEM",
+      "SUBGRUPO_ITEM",
+      "TIPOPRODUTO_ITEM",
+      "VOLUMEM3_ITEM"
+    ]
+  },
+  {
+    "source": "ITEM_DETALHE",
+    "staging": "stg_item_detalhe",
+    "pipeline": "pipelines/extracao/dimensoes/ext_item_detalhe.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "AUTOINC_ITEM_DETALHE",
+      "PESOBRUTO_ITEM_DETALHE",
+      "VOLUMEM3_ITEM_DETALHE"
+    ]
+  },
+  {
+    "source": "LINHA",
+    "staging": "stg_linha",
+    "pipeline": "pipelines/extracao/dimensoes/ext_linha.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_LINHA",
+      "DESCRICAO_LINHA"
+    ]
+  },
+  {
+    "source": "METAS_VENDAS",
+    "staging": "stg_metas_vendas",
+    "pipeline": "pipelines/extracao/fatos/ext_metas_vendas.hpl",
+    "existedInPortal": false,
+    "columns": [
+      "ANO_METASVEN",
+      "AUTOINC_METASVEN",
+      "CODIGO_METASVEN",
+      "DATAHORAALTERACAO_METASVEN",
+      "DATAHORAINCLUSAO_METASVEN",
+      "EMPRESA_METASVEN",
+      "META_01_METASVEN",
+      "META_02_METASVEN",
+      "META_03_METASVEN",
+      "META_04_METASVEN",
+      "META_05_METASVEN",
+      "META_06_METASVEN",
+      "META_07_METASVEN",
+      "META_08_METASVEN",
+      "META_09_METASVEN",
+      "META_10_METASVEN",
+      "META_11_METASVEN",
+      "META_12_METASVEN",
+      "TIPODOC_METASVEN",
+      "TIPO_METASVEN",
+      "USUARIOALTERACAO_METASVEN",
+      "USUARIOINCLUSAO_METASVEN"
+    ]
+  },
+  {
+    "source": "NOTA_FISCAL_DOCUMENTOS",
+    "staging": "stg_nota_fiscal_documentos",
+    "pipeline": "pipelines/extracao/fatos/ext_nota_fiscal_documentos.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "AUTOINCDOC_NFDOCUMENTOS",
+      "NUMERONF_NFDOCUMENTOS",
+      "ORIGEMDOC_NFDOCUMENTOS"
+    ]
+  },
+  {
+    "source": "ORGAO",
+    "staging": "stg_orgao",
+    "pipeline": "pipelines/extracao/dimensoes/ext_orgao.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_ORGAO",
+      "DESCRICAO_ORGAO"
+    ]
+  },
+  {
+    "source": "ORIGEM",
+    "staging": "stg_origem",
+    "pipeline": "pipelines/extracao/dimensoes/ext_origem.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_ORIGEM",
+      "DESCRICAO_ORIGEM"
+    ]
+  },
+  {
+    "source": "PESSOA",
+    "staging": "stg_pessoa",
+    "pipeline": "pipelines/extracao/dimensoes/ext_pessoa.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CLIENTE_PESSOA",
+      "CODIGO_PESSOA",
+      "CONSVENDAS_PESSOA",
+      "ENDERECO_PESSOA",
+      "GRUPO_PESSOA",
+      "NOMEFANTASIA_PESSOA",
+      "RAZAOSOCIAL_PESSOA"
+    ]
+  },
+  {
+    "source": "PESSOA_CLIENTE",
+    "staging": "stg_pessoa_cliente",
+    "pipeline": "pipelines/extracao/dimensoes/ext_pessoa_cliente.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "PESSOA_PESSOA_CLI"
+    ]
+  },
+  {
+    "source": "PESSOA_CONSULTORVENDAS",
+    "staging": "stg_pessoa_consultorvendas",
+    "pipeline": "pipelines/extracao/dimensoes/ext_pessoa_consultorvendas.hpl",
+    "existedInPortal": false,
+    "columns": [
+      "METAPORCONSULTOR_CONSVEN",
+      "METAPORGRUPO_CONSVEN",
+      "METAPORLINHA_CONSVEN",
+      "METAPORORIGEM_CONSVEN",
+      "METAPORREGIAO_CONSVEN",
+      "METAPORSUPERVISOR_CONSVEN",
+      "METAPORTIPOPRODUTO_CONSVEN",
+      "METAPORUNIDFABRIL_CONSVEN",
+      "PESSOA_CONSVEN"
+    ]
+  },
+  {
+    "source": "PESSOA_ENDERECO",
+    "staging": "stg_pessoa_endereco",
+    "pipeline": "pipelines/extracao/dimensoes/ext_pessoa_endereco.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "AUTOINC_PESSOA_END",
+      "CIDADE_PESSOA_END",
+      "REGIAO_PESSOA_END"
+    ]
+  },
+  {
+    "source": "REGIAO",
+    "staging": "stg_regiao",
+    "pipeline": "pipelines/extracao/dimensoes/ext_regiao.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_REGIAO",
+      "DESCRICAO_REGIAO"
+    ]
+  },
+  {
+    "source": "STATUS",
+    "staging": "stg_status",
+    "pipeline": "pipelines/extracao/dimensoes/ext_status.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_STATUS",
+      "DESCRICAO_STATUS"
+    ]
+  },
+  {
+    "source": "SUBGRUPO",
+    "staging": "stg_subgrupo",
+    "pipeline": "pipelines/extracao/dimensoes/ext_subgrupo.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_SUBGRUPO",
+      "DESCRICAO_SUBGRUPO"
+    ]
+  },
+  {
+    "source": "TIPOPRODUTO",
+    "staging": "stg_tipoproduto",
+    "pipeline": "pipelines/extracao/dimensoes/ext_tipoproduto.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_TIPOPROD",
+      "DESCRICAO_TIPOPROD"
+    ]
+  },
+  {
+    "source": "UF",
+    "staging": "stg_uf",
+    "pipeline": "pipelines/extracao/dimensoes/ext_uf.hpl",
+    "existedInPortal": true,
+    "columns": [
+      "CODIGO_UF",
+      "REGIAO_UF",
+      "SIGLA_UF"
+    ]
+  }
+]

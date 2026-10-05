@@ -1,0 +1,1912 @@
+{
+  "version": 2,
+  "naming": "original source names (PostgreSQL lowercase); derived Portuguese snake_case",
+  "numericTreatment": "Float32, optional volume correction, shortest decimal text, Double Precision (legacy CSV)",
+  "areas": {
+    "abertos": {
+      "query": "QUERY_ABERTOS",
+      "columns": [
+        {
+          "name": "codigo_docfat",
+          "type": "<class 'int'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_PEDIDO",
+          "kind": "copied",
+          "sourceColumn": "CODIGO_DOCFAT"
+        },
+        {
+          "name": "cliente_docfat",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_CLIENTE",
+          "kind": "copied",
+          "sourceColumn": "CLIENTE_DOCFAT"
+        },
+        {
+          "name": "razaosocial_pessoa",
+          "type": "<class 'str'>",
+          "length": 70,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "RAZAO_SOCIAL",
+          "kind": "copied",
+          "sourceColumn": "RAZAOSOCIAL_PESSOA"
+        },
+        {
+          "name": "grupo_cliente_descricao",
+          "type": "<class 'str'>",
+          "length": 70,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "GRUPO_CLIENTE",
+          "kind": "calculated"
+        },
+        {
+          "name": "consultor_descricao",
+          "type": "<class 'str'>",
+          "length": 84,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CONSULTOR",
+          "kind": "calculated"
+        },
+        {
+          "name": "supervisor_descricao",
+          "type": "<class 'str'>",
+          "length": 84,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "SUPERVISOR",
+          "kind": "calculated"
+        },
+        {
+          "name": "data_emissao_pedido",
+          "type": "<class 'datetime.date'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "DATA_EMISSAO_PEDIDO",
+          "kind": "calculated"
+        },
+        {
+          "name": "dia",
+          "type": "<class 'int'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "DIA",
+          "kind": "calculated"
+        },
+        {
+          "name": "mes",
+          "type": "<class 'int'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "MES",
+          "kind": "calculated"
+        },
+        {
+          "name": "ano",
+          "type": "<class 'int'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "ANO",
+          "kind": "calculated"
+        },
+        {
+          "name": "nivel_de_servico",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "NIVEL_DE_SERVICO",
+          "kind": "calculated"
+        },
+        {
+          "name": "data_previsao_faturamento",
+          "type": "<class 'datetime.date'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DT_PREVISAO_FATURAMENTO",
+          "kind": "calculated"
+        },
+        {
+          "name": "tipo_entrega",
+          "type": "<class 'str'>",
+          "length": 7,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "TIPO_ENTREGA",
+          "kind": "calculated"
+        },
+        {
+          "name": "valor_em_aberto",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -10,
+          "nullable": false,
+          "legacy": "VALOR_EM_ABERTO",
+          "kind": "calculated"
+        },
+        {
+          "name": "qtdeaberta_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "QTDEABERTA_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "QTDEABERTA_DOCITEMDET"
+        },
+        {
+          "name": "peso_em_aberto",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -7,
+          "nullable": true,
+          "legacy": "PESO_EM_ABERTO",
+          "kind": "calculated"
+        },
+        {
+          "name": "volume_m3_em_aberto",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -8,
+          "nullable": true,
+          "legacy": "VOLUME_M3_EM_ABERTO",
+          "kind": "calculated"
+        },
+        {
+          "name": "sigla_uf",
+          "type": "<class 'str'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "UF",
+          "kind": "copied",
+          "sourceColumn": "SIGLA_UF"
+        },
+        {
+          "name": "regiao_uf_descricao",
+          "type": "<class 'str'>",
+          "length": 12,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "REGIAO_UF",
+          "kind": "calculated"
+        },
+        {
+          "name": "descricao_regiao",
+          "type": "<class 'str'>",
+          "length": 50,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "MICRO_REGIAO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_REGIAO"
+        },
+        {
+          "name": "descricao_cidade",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CIDADE",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_CIDADE"
+        },
+        {
+          "name": "descricao_classif",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CLASSIFICACAO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_CLASSIF"
+        },
+        {
+          "name": "descricao_origem",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "ORIGEM",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_ORIGEM"
+        },
+        {
+          "name": "descricao_orgao",
+          "type": "<class 'str'>",
+          "length": 40,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "ORGAO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_ORGAO"
+        },
+        {
+          "name": "descricao_status",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "STATUS",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_STATUS"
+        },
+        {
+          "name": "codigo_item",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_ITEM",
+          "kind": "copied",
+          "sourceColumn": "CODIGO_ITEM"
+        },
+        {
+          "name": "descricao_item",
+          "type": "<class 'str'>",
+          "length": 255,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DESCRICAO_ITEM",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_ITEM"
+        },
+        {
+          "name": "cor_descricao",
+          "type": "<class 'str'>",
+          "length": 269,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "COR",
+          "kind": "calculated"
+        },
+        {
+          "name": "grupo_item_descricao",
+          "type": "<class 'str'>",
+          "length": 54,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "GRUPO_ITEM",
+          "kind": "calculated"
+        },
+        {
+          "name": "subgrupo_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "SUBGRUPO",
+          "kind": "calculated"
+        },
+        {
+          "name": "tipo_produto_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "TIPO",
+          "kind": "calculated"
+        },
+        {
+          "name": "colecao_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "COLECAO",
+          "kind": "calculated"
+        },
+        {
+          "name": "linha_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "LINHA",
+          "kind": "calculated"
+        },
+        {
+          "name": "vlrbrutoliquido_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "VLRBRUTOLIQUIDO_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "VLRBRUTOLIQUIDO_DOCITEMDET"
+        },
+        {
+          "name": "vlrunitariobruto_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "VLRUNITARIOBRUTO_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "VLRUNITARIOBRUTO_DOCITEMDET"
+        },
+        {
+          "name": "vlrunitarioliquido_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "VLRUNITARIOLIQUIDO_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "VLRUNITARIOLIQUIDO_DOCITEMDET"
+        },
+        {
+          "name": "valor_unitario_bruto_liquido",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -6,
+          "nullable": false,
+          "legacy": "VLR_UNIT_BRULIQ",
+          "kind": "calculated"
+        },
+        {
+          "name": "vlrliquido_docfat",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "VLRLIQUIDO_DOCFAT",
+          "kind": "copied",
+          "sourceColumn": "VLRLIQUIDO_DOCFAT"
+        },
+        {
+          "legacy": "DATA_EMISSAO_PEDIDO_DATE",
+          "name": "data_emissao_pedido_tratada",
+          "type": "<class 'datetime.datetime'>",
+          "kind": "date-treatment",
+          "input": "DATA_EMISSAO_PEDIDO"
+        },
+        {
+          "legacy": "DT_PREVISAO_FATURAMENTO_DATE",
+          "name": "data_previsao_faturamento_tratada",
+          "type": "<class 'datetime.datetime'>",
+          "kind": "date-treatment",
+          "input": "DT_PREVISAO_FATURAMENTO"
+        },
+        {
+          "legacy": "VALOR_EM_ABERTO_CLEAN",
+          "name": "valor_em_aberto_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "VALOR_EM_ABERTO",
+          "volumeScale": false
+        },
+        {
+          "legacy": "PESO_EM_ABERTO_CLEAN",
+          "name": "peso_em_aberto_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "PESO_EM_ABERTO",
+          "volumeScale": false
+        },
+        {
+          "legacy": "QTDEABERTA_DOCITEMDET_CLEAN",
+          "name": "quantidade_em_aberto_tratada",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "QTDEABERTA_DOCITEMDET",
+          "volumeScale": false
+        },
+        {
+          "legacy": "VOLUME_M3_EM_ABERTO_CLEAN",
+          "name": "volume_m3_em_aberto_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "VOLUME_M3_EM_ABERTO",
+          "volumeScale": true
+        },
+        {
+          "legacy": "NIVEL_DE_SERVICO_CLEAN",
+          "name": "nivel_de_servico_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "NIVEL_DE_SERVICO",
+          "volumeScale": false
+        }
+      ]
+    },
+    "emitidos": {
+      "query": "QUERY_EMITIDOS",
+      "columns": [
+        {
+          "name": "codigo_docfat",
+          "type": "<class 'int'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_PEDIDO",
+          "kind": "copied",
+          "sourceColumn": "CODIGO_DOCFAT"
+        },
+        {
+          "name": "cliente_docfat",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_CLIENTE",
+          "kind": "copied",
+          "sourceColumn": "CLIENTE_DOCFAT"
+        },
+        {
+          "name": "razaosocial_pessoa",
+          "type": "<class 'str'>",
+          "length": 70,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "RAZAO_SOCIAL",
+          "kind": "copied",
+          "sourceColumn": "RAZAOSOCIAL_PESSOA"
+        },
+        {
+          "name": "grupo_cliente_descricao",
+          "type": "<class 'str'>",
+          "length": 70,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "GRUPO_CLIENTE",
+          "kind": "calculated"
+        },
+        {
+          "name": "pessoa_doccom",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CODIGO_CONSULTOR",
+          "kind": "copied",
+          "sourceColumn": "PESSOA_DOCCOM"
+        },
+        {
+          "name": "consultor_descricao",
+          "type": "<class 'str'>",
+          "length": 84,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CONSULTOR",
+          "kind": "calculated"
+        },
+        {
+          "name": "supervisor_descricao",
+          "type": "<class 'str'>",
+          "length": 84,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "SUPERVISOR",
+          "kind": "calculated"
+        },
+        {
+          "name": "data_emissao_pedido",
+          "type": "<class 'datetime.date'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "DATA_EMISSAO_PEDIDO",
+          "kind": "calculated"
+        },
+        {
+          "name": "dia",
+          "type": "<class 'int'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "DIA",
+          "kind": "calculated"
+        },
+        {
+          "name": "mes",
+          "type": "<class 'int'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "MES",
+          "kind": "calculated"
+        },
+        {
+          "name": "ano",
+          "type": "<class 'int'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "ANO",
+          "kind": "calculated"
+        },
+        {
+          "name": "nivel_de_servico",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "NIVEL_DE_SERVICO",
+          "kind": "calculated"
+        },
+        {
+          "name": "data_previsao_faturamento",
+          "type": "<class 'datetime.date'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DT_PREVISAO_FATURAMENTO",
+          "kind": "calculated"
+        },
+        {
+          "name": "tipo_entrega",
+          "type": "<class 'str'>",
+          "length": 7,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "TIPO_ENTREGA",
+          "kind": "calculated"
+        },
+        {
+          "name": "vlrbrutoliquido_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "VALOR_EMITIDO",
+          "kind": "copied",
+          "sourceColumn": "VLRBRUTOLIQUIDO_DOCITEMDET"
+        },
+        {
+          "name": "qtdechapas_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "QUANTIDADE_EMITIDA",
+          "kind": "copied",
+          "sourceColumn": "QTDECHAPAS_DOCITEMDET"
+        },
+        {
+          "name": "peso_emitido",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -7,
+          "nullable": true,
+          "legacy": "PESO_EMITIDO",
+          "kind": "calculated"
+        },
+        {
+          "name": "volume_m3_emitido",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -8,
+          "nullable": true,
+          "legacy": "VOLUME_M3_EMITIDO",
+          "kind": "calculated"
+        },
+        {
+          "name": "sigla_uf",
+          "type": "<class 'str'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "UF",
+          "kind": "copied",
+          "sourceColumn": "SIGLA_UF"
+        },
+        {
+          "name": "regiao_uf_descricao",
+          "type": "<class 'str'>",
+          "length": 12,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "REGIAO_UF",
+          "kind": "calculated"
+        },
+        {
+          "name": "descricao_regiao",
+          "type": "<class 'str'>",
+          "length": 50,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "MICRO_REGIAO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_REGIAO"
+        },
+        {
+          "name": "descricao_cidade",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CIDADE",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_CIDADE"
+        },
+        {
+          "name": "descricao_classif",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CLASSIFICACAO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_CLASSIF"
+        },
+        {
+          "name": "descricao_origem",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "ORIGEM",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_ORIGEM"
+        },
+        {
+          "name": "descricao_orgao",
+          "type": "<class 'str'>",
+          "length": 40,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "ORGAO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_ORGAO"
+        },
+        {
+          "name": "descricao_status",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "STATUS",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_STATUS"
+        },
+        {
+          "name": "codigo_item",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_ITEM",
+          "kind": "copied",
+          "sourceColumn": "CODIGO_ITEM"
+        },
+        {
+          "name": "descricao_item",
+          "type": "<class 'str'>",
+          "length": 255,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DESCRICAO_ITEM",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_ITEM"
+        },
+        {
+          "name": "cor_descricao",
+          "type": "<class 'str'>",
+          "length": 269,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "COR",
+          "kind": "calculated"
+        },
+        {
+          "name": "grupo_item_descricao",
+          "type": "<class 'str'>",
+          "length": 54,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "GRUPO_ITEM",
+          "kind": "calculated"
+        },
+        {
+          "name": "subgrupo_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "SUBGRUPO",
+          "kind": "calculated"
+        },
+        {
+          "name": "tipo_produto_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "TIPO",
+          "kind": "calculated"
+        },
+        {
+          "name": "colecao_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "COLECAO",
+          "kind": "calculated"
+        },
+        {
+          "name": "linha_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "LINHA",
+          "kind": "calculated"
+        },
+        {
+          "name": "vlrunitariobruto_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "VLRUNITARIOBRUTO_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "VLRUNITARIOBRUTO_DOCITEMDET"
+        },
+        {
+          "name": "vlrunitarioliquido_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "VLRUNITARIOLIQUIDO_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "VLRUNITARIOLIQUIDO_DOCITEMDET"
+        },
+        {
+          "name": "valor_unitario_bruto_liquido",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -6,
+          "nullable": false,
+          "legacy": "VLR_UNIT_BRULIQ",
+          "kind": "calculated"
+        },
+        {
+          "name": "vlrliquido_docfat",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "VLRLIQUIDO_DOCFAT",
+          "kind": "copied",
+          "sourceColumn": "VLRLIQUIDO_DOCFAT"
+        },
+        {
+          "legacy": "DATA_EMISSAO_PEDIDO_DATE",
+          "name": "data_emissao_pedido_tratada",
+          "type": "<class 'datetime.datetime'>",
+          "kind": "date-treatment",
+          "input": "DATA_EMISSAO_PEDIDO"
+        },
+        {
+          "legacy": "DT_PREVISAO_FATURAMENTO_DATE",
+          "name": "data_previsao_faturamento_tratada",
+          "type": "<class 'datetime.datetime'>",
+          "kind": "date-treatment",
+          "input": "DT_PREVISAO_FATURAMENTO"
+        },
+        {
+          "legacy": "VALOR_EMITIDO_CLEAN",
+          "name": "valor_emitido_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "VALOR_EMITIDO",
+          "volumeScale": false
+        },
+        {
+          "legacy": "PESO_EMITIDO_CLEAN",
+          "name": "peso_emitido_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "PESO_EMITIDO",
+          "volumeScale": false
+        },
+        {
+          "legacy": "QUANTIDADE_EMITIDA_CLEAN",
+          "name": "quantidade_emitida_tratada",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "QUANTIDADE_EMITIDA",
+          "volumeScale": false
+        },
+        {
+          "legacy": "VOLUME_M3_EMITIDO_CLEAN",
+          "name": "volume_m3_emitido_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "VOLUME_M3_EMITIDO",
+          "volumeScale": true
+        },
+        {
+          "legacy": "NIVEL_DE_SERVICO_CLEAN",
+          "name": "nivel_de_servico_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "NIVEL_DE_SERVICO",
+          "volumeScale": false
+        }
+      ]
+    },
+    "faturados": {
+      "query": "QUERY_FATURADOS",
+      "columns": [
+        {
+          "name": "codigo_docfat",
+          "type": "<class 'int'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_PEDIDO",
+          "kind": "copied",
+          "sourceColumn": "CODIGO_DOCFAT"
+        },
+        {
+          "name": "cliente_docfat",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_CLIENTE",
+          "kind": "copied",
+          "sourceColumn": "CLIENTE_DOCFAT"
+        },
+        {
+          "name": "razaosocial_pessoa",
+          "type": "<class 'str'>",
+          "length": 70,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "RAZAO_SOCIAL",
+          "kind": "copied",
+          "sourceColumn": "RAZAOSOCIAL_PESSOA"
+        },
+        {
+          "name": "grupo_cliente_descricao",
+          "type": "<class 'str'>",
+          "length": 84,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "GRUPO_CLIENTE",
+          "kind": "calculated"
+        },
+        {
+          "name": "consultor_descricao",
+          "type": "<class 'str'>",
+          "length": 84,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CONSULTOR",
+          "kind": "calculated"
+        },
+        {
+          "name": "supervisor_descricao",
+          "type": "<class 'str'>",
+          "length": 84,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "SUPERVISOR",
+          "kind": "calculated"
+        },
+        {
+          "name": "data_emissao_pedido",
+          "type": "<class 'datetime.date'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "DATA_EMISSAO_PEDIDO",
+          "kind": "calculated"
+        },
+        {
+          "name": "dia",
+          "type": "<class 'int'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "DIA",
+          "kind": "calculated"
+        },
+        {
+          "name": "mes",
+          "type": "<class 'int'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "MES",
+          "kind": "calculated"
+        },
+        {
+          "name": "ano",
+          "type": "<class 'int'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "ANO",
+          "kind": "calculated"
+        },
+        {
+          "name": "nivel_de_servico",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "NIVEL_DE_SERVICO",
+          "kind": "calculated"
+        },
+        {
+          "name": "data_previsao_faturamento",
+          "type": "<class 'datetime.date'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DT_PREVISAO_FATURAMENTO",
+          "kind": "calculated"
+        },
+        {
+          "name": "entrega_no_prazo",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "ON_TIME",
+          "kind": "calculated"
+        },
+        {
+          "name": "dias_desvio_faturamento",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DIAS_DESVIO_FATURAMENTO",
+          "kind": "calculated"
+        },
+        {
+          "name": "tipo_entrega",
+          "type": "<class 'str'>",
+          "length": 7,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "TIPO_ENTREGA",
+          "kind": "calculated"
+        },
+        {
+          "name": "valor_faturado",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -10,
+          "nullable": false,
+          "legacy": "VALOR_FATURADO",
+          "kind": "calculated"
+        },
+        {
+          "name": "qtdechapas_docent",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "QUANTIDADE_FATURADA",
+          "kind": "copied",
+          "sourceColumn": "QTDECHAPAS_DOCENT"
+        },
+        {
+          "name": "peso_faturado",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -7,
+          "nullable": true,
+          "legacy": "PESO_FATURADO",
+          "kind": "calculated"
+        },
+        {
+          "name": "volume_m3_faturado",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -8,
+          "nullable": true,
+          "legacy": "VOLUME_M3_FATURADO",
+          "kind": "calculated"
+        },
+        {
+          "name": "sigla_uf",
+          "type": "<class 'str'>",
+          "length": 2,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "UF",
+          "kind": "copied",
+          "sourceColumn": "SIGLA_UF"
+        },
+        {
+          "name": "regiao_uf_descricao",
+          "type": "<class 'str'>",
+          "length": 12,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "REGIAO_UF",
+          "kind": "calculated"
+        },
+        {
+          "name": "descricao_regiao",
+          "type": "<class 'str'>",
+          "length": 50,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "MICRO_REGIAO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_REGIAO"
+        },
+        {
+          "name": "descricao_cidade",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CIDADE",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_CIDADE"
+        },
+        {
+          "name": "descricao_classif",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CLASSIFICACAO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_CLASSIF"
+        },
+        {
+          "name": "descricao_origem",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "ORIGEM",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_ORIGEM"
+        },
+        {
+          "name": "descricao_orgao",
+          "type": "<class 'str'>",
+          "length": 40,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "ORGAO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_ORGAO"
+        },
+        {
+          "name": "descricao_status",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "STATUS",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_STATUS"
+        },
+        {
+          "name": "codigo_item",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CODIGO_ITEM",
+          "kind": "copied",
+          "sourceColumn": "CODIGO_ITEM"
+        },
+        {
+          "name": "descricao_item",
+          "type": "<class 'str'>",
+          "length": 255,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DESCRICAO_ITEM",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_ITEM"
+        },
+        {
+          "name": "cor_descricao",
+          "type": "<class 'str'>",
+          "length": 269,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "COR",
+          "kind": "calculated"
+        },
+        {
+          "name": "grupo_item_descricao",
+          "type": "<class 'str'>",
+          "length": 54,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "GRUPO_ITEM",
+          "kind": "calculated"
+        },
+        {
+          "name": "subgrupo_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "SUBGRUPO",
+          "kind": "calculated"
+        },
+        {
+          "name": "tipo_produto_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "TIPO",
+          "kind": "calculated"
+        },
+        {
+          "name": "colecao_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "COLECAO",
+          "kind": "calculated"
+        },
+        {
+          "name": "linha_descricao",
+          "type": "<class 'str'>",
+          "length": 44,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "LINHA",
+          "kind": "calculated"
+        },
+        {
+          "name": "familia_descricao",
+          "type": "<class 'str'>",
+          "length": 34,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "FAMILIA",
+          "kind": "calculated"
+        },
+        {
+          "name": "carga_cardoc",
+          "type": "<class 'int'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "CARGA",
+          "kind": "copied",
+          "sourceColumn": "CARGA_CARDOC"
+        },
+        {
+          "name": "descricao_carga",
+          "type": "<class 'str'>",
+          "length": 30,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DESCRICAO_CARGA",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_CARGA"
+        },
+        {
+          "name": "codigo_docfat_entrega",
+          "type": "<class 'int'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "ENTREGA",
+          "kind": "copied",
+          "sourceColumn": "CODIGO_DOCFAT",
+          "context": "DOCUMENTO_FATURA ENTREGA; pedido utiliza CODIGO_DOCFAT na mesma consulta"
+        },
+        {
+          "name": "dtemissao_docfat",
+          "type": "<class 'datetime.datetime'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "DT_FATURA",
+          "kind": "copied",
+          "sourceColumn": "DTEMISSAO_DOCFAT"
+        },
+        {
+          "name": "numeronf_nfdocumentos",
+          "type": "<class 'int'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "NOTAFISCAL",
+          "kind": "copied",
+          "sourceColumn": "NUMERONF_NFDOCUMENTOS"
+        },
+        {
+          "name": "vlrbrutoliquido_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "VLRBRUTOLIQUIDO_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "VLRBRUTOLIQUIDO_DOCITEMDET"
+        },
+        {
+          "name": "qtdeaberta_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "QTDEABERTA_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "QTDEABERTA_DOCITEMDET"
+        },
+        {
+          "name": "vlrunitariobruto_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "VLRUNITARIOBRUTO_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "VLRUNITARIOBRUTO_DOCITEMDET"
+        },
+        {
+          "name": "vlrunitarioliquido_docitemdet",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -4,
+          "nullable": false,
+          "legacy": "VLRUNITARIOLIQUIDO_DOCITEMDET",
+          "kind": "copied",
+          "sourceColumn": "VLRUNITARIOLIQUIDO_DOCITEMDET"
+        },
+        {
+          "name": "valor_unitario_bruto_liquido",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 0,
+          "scale": -6,
+          "nullable": false,
+          "legacy": "VLR_UNIT_BRULIQ",
+          "kind": "calculated"
+        },
+        {
+          "name": "vlrliquido_docfat",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "VLRLIQUIDO_DOCFAT",
+          "kind": "copied",
+          "sourceColumn": "VLRLIQUIDO_DOCFAT"
+        },
+        {
+          "legacy": "DATA_EMISSAO_PEDIDO_DATE",
+          "name": "data_emissao_pedido_tratada",
+          "type": "<class 'datetime.datetime'>",
+          "kind": "date-treatment",
+          "input": "DATA_EMISSAO_PEDIDO"
+        },
+        {
+          "legacy": "DT_FATURA_DATE",
+          "name": "data_faturamento_tratada",
+          "type": "<class 'datetime.datetime'>",
+          "kind": "date-treatment",
+          "input": "DT_FATURA"
+        },
+        {
+          "legacy": "DT_PREVISAO_FATURAMENTO_DATE",
+          "name": "data_previsao_faturamento_tratada",
+          "type": "<class 'datetime.datetime'>",
+          "kind": "date-treatment",
+          "input": "DT_PREVISAO_FATURAMENTO"
+        },
+        {
+          "legacy": "VALOR_FATURADO_CLEAN",
+          "name": "valor_faturado_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "VALOR_FATURADO",
+          "volumeScale": false
+        },
+        {
+          "legacy": "PESO_FATURADO_CLEAN",
+          "name": "peso_faturado_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "PESO_FATURADO",
+          "volumeScale": false
+        },
+        {
+          "legacy": "QUANTIDADE_FATURADA_CLEAN",
+          "name": "quantidade_faturada_tratada",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "QUANTIDADE_FATURADA",
+          "volumeScale": false
+        },
+        {
+          "legacy": "VOLUME_M3_FATURADO_CLEAN",
+          "name": "volume_m3_faturado_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "VOLUME_M3_FATURADO",
+          "volumeScale": true
+        },
+        {
+          "legacy": "NIVEL_DE_SERVICO_CLEAN",
+          "name": "nivel_de_servico_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "NIVEL_DE_SERVICO",
+          "volumeScale": false
+        },
+        {
+          "legacy": "ON_TIME_CLEAN",
+          "name": "entrega_no_prazo_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "ON_TIME",
+          "volumeScale": false
+        },
+        {
+          "legacy": "DIAS_DESVIO_FATURAMENTO_CLEAN",
+          "name": "dias_desvio_faturamento_tratado",
+          "type": "<class 'float'>",
+          "kind": "numeric-treatment",
+          "input": "DIAS_DESVIO_FATURAMENTO",
+          "volumeScale": false
+        }
+      ]
+    },
+    "carteira": {
+      "query": "QUERY_CARTEIRA",
+      "columns": [
+        {
+          "name": "codigo_pessoa",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_PESSOA",
+          "kind": "copied",
+          "sourceColumn": "CODIGO_PESSOA"
+        },
+        {
+          "name": "razaosocial_pessoa",
+          "type": "<class 'str'>",
+          "length": 70,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "RAZAOSOCIAL_PESSOA",
+          "kind": "copied",
+          "sourceColumn": "RAZAOSOCIAL_PESSOA"
+        },
+        {
+          "name": "cliente_pessoa",
+          "type": "<class 'str'>",
+          "length": 1,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CLIENTE_PESSOA",
+          "kind": "copied",
+          "sourceColumn": "CLIENTE_PESSOA"
+        },
+        {
+          "name": "grupo_pessoa",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "GRUPO_PESSOA",
+          "kind": "copied",
+          "sourceColumn": "GRUPO_PESSOA"
+        },
+        {
+          "name": "descricao_grupo",
+          "type": "<class 'str'>",
+          "length": 40,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DESCRICAO_GRUPO",
+          "kind": "copied",
+          "sourceColumn": "DESCRICAO_GRUPO"
+        },
+        {
+          "name": "grupo_cliente_descricao",
+          "type": "<class 'str'>",
+          "length": 70,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "GRUPO_CLIENTE",
+          "kind": "calculated"
+        }
+      ]
+    },
+    "metas": {
+      "query": "QUERY_METAS_CONSULTORES",
+      "columns": [
+        {
+          "name": "autoinc_metasven",
+          "type": "<class 'int'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "AUTOINC_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "AUTOINC_METASVEN"
+        },
+        {
+          "name": "empresa_metasven",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "EMPRESA_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "EMPRESA_METASVEN"
+        },
+        {
+          "name": "tipo_metasven",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "TIPO_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "TIPO_METASVEN"
+        },
+        {
+          "name": "tipodoc_metasven",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "TIPODOC_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "TIPODOC_METASVEN"
+        },
+        {
+          "name": "ano_metasven",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "ANO_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "ANO_METASVEN"
+        },
+        {
+          "name": "codigo_metasven",
+          "type": "<class 'int'>",
+          "length": 4,
+          "precision": 0,
+          "scale": 0,
+          "nullable": false,
+          "legacy": "CODIGO_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "CODIGO_METASVEN"
+        },
+        {
+          "name": "razaosocial_pessoa",
+          "type": "<class 'str'>",
+          "length": 70,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DESCRICAO",
+          "kind": "copied",
+          "sourceColumn": "RAZAOSOCIAL_PESSOA"
+        },
+        {
+          "name": "metaporlinha_consven",
+          "type": "<class 'str'>",
+          "length": 1,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "METAPORLINHA",
+          "kind": "copied",
+          "sourceColumn": "METAPORLINHA_CONSVEN"
+        },
+        {
+          "name": "metaporgrupo_consven",
+          "type": "<class 'str'>",
+          "length": 1,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "METAPORGRUPO",
+          "kind": "copied",
+          "sourceColumn": "METAPORGRUPO_CONSVEN"
+        },
+        {
+          "name": "metaportipoproduto_consven",
+          "type": "<class 'str'>",
+          "length": 1,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "METAPORTIPOPRODUTO",
+          "kind": "copied",
+          "sourceColumn": "METAPORTIPOPRODUTO_CONSVEN"
+        },
+        {
+          "name": "metaporregiao_consven",
+          "type": "<class 'str'>",
+          "length": 1,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "METAPORREGIAO",
+          "kind": "copied",
+          "sourceColumn": "METAPORREGIAO_CONSVEN"
+        },
+        {
+          "name": "metaporunidfabril_consven",
+          "type": "<class 'str'>",
+          "length": 1,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "METAPORUNIDADEFABRIL",
+          "kind": "copied",
+          "sourceColumn": "METAPORUNIDFABRIL_CONSVEN"
+        },
+        {
+          "name": "metapororigem_consven",
+          "type": "<class 'str'>",
+          "length": 1,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "METAPORORIGEM",
+          "kind": "copied",
+          "sourceColumn": "METAPORORIGEM_CONSVEN"
+        },
+        {
+          "name": "metaporsupervisor_consven",
+          "type": "<class 'str'>",
+          "length": 1,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "METAPORSUPERVISOR",
+          "kind": "copied",
+          "sourceColumn": "METAPORSUPERVISOR_CONSVEN"
+        },
+        {
+          "name": "metaporconsultor_consven",
+          "type": "<class 'str'>",
+          "length": 1,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "METAPORCONSULTOR",
+          "kind": "copied",
+          "sourceColumn": "METAPORCONSULTOR_CONSVEN"
+        },
+        {
+          "name": "meta_01_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_01_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_01_METASVEN"
+        },
+        {
+          "name": "meta_02_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_02_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_02_METASVEN"
+        },
+        {
+          "name": "meta_03_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_03_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_03_METASVEN"
+        },
+        {
+          "name": "meta_04_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_04_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_04_METASVEN"
+        },
+        {
+          "name": "meta_05_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_05_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_05_METASVEN"
+        },
+        {
+          "name": "meta_06_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_06_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_06_METASVEN"
+        },
+        {
+          "name": "meta_07_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_07_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_07_METASVEN"
+        },
+        {
+          "name": "meta_08_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_08_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_08_METASVEN"
+        },
+        {
+          "name": "meta_09_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_09_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_09_METASVEN"
+        },
+        {
+          "name": "meta_10_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_10_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_10_METASVEN"
+        },
+        {
+          "name": "meta_11_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_11_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_11_METASVEN"
+        },
+        {
+          "name": "meta_12_metasven",
+          "type": "<class 'decimal.Decimal'>",
+          "length": 8,
+          "precision": 18,
+          "scale": -2,
+          "nullable": false,
+          "legacy": "META_12_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "META_12_METASVEN"
+        },
+        {
+          "name": "datahorainclusao_metasven",
+          "type": "<class 'datetime.datetime'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DATAHORAINCLUSAO_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "DATAHORAINCLUSAO_METASVEN"
+        },
+        {
+          "name": "usuarioinclusao_metasven",
+          "type": "<class 'str'>",
+          "length": 20,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "USUARIOINCLUSAO_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "USUARIOINCLUSAO_METASVEN"
+        },
+        {
+          "name": "datahoraalteracao_metasven",
+          "type": "<class 'datetime.datetime'>",
+          "length": 8,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "DATAHORAALTERACAO_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "DATAHORAALTERACAO_METASVEN"
+        },
+        {
+          "name": "usuarioalteracao_metasven",
+          "type": "<class 'str'>",
+          "length": 20,
+          "precision": 0,
+          "scale": 0,
+          "nullable": true,
+          "legacy": "USUARIOALTERACAO_METASVEN",
+          "kind": "copied",
+          "sourceColumn": "USUARIOALTERACAO_METASVEN"
+        }
+      ]
+    }
+  }
+}

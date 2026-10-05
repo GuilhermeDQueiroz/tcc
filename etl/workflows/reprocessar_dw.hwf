@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='utf-8'?>
+<workflow>
+  <name>reprocessar_dw</name>
+  <name_sync_with_filename>Y</name_sync_with_filename>
+  <description>Reprocessar somente DW a partir do staging bruto existente, sem conexão ao Firebird</description>
+  <actions>
+    <action>
+      <name>Start</name>
+      <type>SPECIAL</type>
+      <parallel>N</parallel>
+      <xloc>60</xloc>
+      <yloc>160</yloc>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+    </action>
+    <action>
+      <name>Identificar execução</name>
+      <type>EVAL</type>
+      <parallel>N</parallel>
+      <xloc>240</xloc>
+      <yloc>160</yloc>
+      <script>if (java.lang.System.getProperty("HOP_PLATFORM_RUNTIME") == "GUI" || !parent_workflow.getVariable("ETL_RUN_ID")) { parent_workflow.setVariable("ETL_RUN_ID", java.util.UUID.randomUUID().toString()); } true;</script>
+    </action>
+    <action>
+      <name>Atualizar modelo e nomes</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>440</xloc>
+      <yloc>160</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/002_modelo_analitico.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Preparar somente DW</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>640</xloc>
+      <yloc>160</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/010_preparacao_dw.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>wf_load</name>
+      <type>WORKFLOW</type>
+      <parallel>N</parallel>
+      <xloc>840</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/workflows/wf_load.hwf</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Success</name>
+      <type>SUCCESS</type>
+      <parallel>N</parallel>
+      <xloc>1040</xloc>
+      <yloc>160</yloc>
+    </action>
+    <action>
+      <name>Registrar falha</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>650</xloc>
+      <yloc>360</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/006_falha.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Abortar</name>
+      <type>ABORT</type>
+      <parallel>N</parallel>
+      <xloc>850</xloc>
+      <yloc>360</yloc>
+      <message>Carga interrompida; consulte o log. Publicação é transacional.</message>
+    </action>
+  </actions>
+  <hops>
+    <hop>
+      <from>Start</from>
+      <to>Identificar execução</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Identificar execução</from>
+      <to>Atualizar modelo e nomes</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Identificar execução</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Atualizar modelo e nomes</from>
+      <to>Preparar somente DW</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Atualizar modelo e nomes</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Preparar somente DW</from>
+      <to>wf_load</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Preparar somente DW</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>wf_load</from>
+      <to>Success</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>wf_load</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Registrar falha</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+  </hops>
+</workflow>

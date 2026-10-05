@@ -1,0 +1,220 @@
+/* Shared typography and interaction scale across every analytics area. */
+:root {
+  --font-body: 14px;
+  --font-detail: 12px;
+  --font-title: 14px;
+  --font-value: 26px;
+  --table-height: 440px;
+  font-family: Inter, "Segoe UI", sans-serif;
+}
+body, button, input, select, textarea { font-family: Inter, "Segoe UI", sans-serif; }
+body { font-size: var(--font-body); -webkit-font-smoothing: antialiased; }
+button, label, input, select, .analysis-tabs button, .dimension-tabs button { font-size: var(--font-body); }
+.sidebar nav { padding: 8px 10px; }
+.sidebar nav a, .sidebar-footer button { font-size: var(--font-body); }
+.sidebar-caption { font-size: var(--font-detail); letter-spacing: .06em; margin-top: 22px; }
+.brand img { max-width: 240px; object-position: left center; }
+.sidebar-collapsed .brand img { width: 48px; height: 48px; object-fit: cover; object-position: left; }
+
+.metric-label, .overview-metrics .metric-label {
+  font-size: var(--font-detail); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; line-height: 1.5; color: #64748b;
+}
+.metric-card > strong, .overview-metrics .metric-card > strong,
+.overview-metrics .metric-card[data-format=currency] > strong,
+.overview-deliveries > .metric-card > strong, .backlog-values > span {
+  font-size: var(--font-value); font-weight: 800; letter-spacing: -.02em; line-height: 1.2;
+  font-variant-numeric: tabular-nums; white-space: normal; overflow-wrap: anywhere; color: #0f172a;
+}
+.metric-subtitle, .metric-comparison, .metric-comparison span, .metric-details,
+.overview-metrics .metric-subtitle, .overview-metrics .metric-details,
+.overview-deliveries .metric-details, .metric-details small,
+.backlog-combined p, .metric-tip-text, .gauge-summary, .gauge-summary small { font-size: var(--font-detail); line-height: 1.6; }
+.overview-metrics { grid-template-columns: repeat(5,minmax(0,1fr)); gap: 14px; }
+.overview-metrics > .metric-card, .backlog-combined { padding: 14px; min-height: 146px; justify-content: flex-start; border-radius: 16px; }
+.metric-card, .metric-grid > .metric-card, .overview-deliveries > .metric-card { border-radius: 16px; }
+.metric-card > strong { margin-top: 8px; }
+.overview-metrics .metric-details { gap: 4px 8px; margin-top: 8px; }
+.overview-metrics .metric-card[data-metric-id$=".orders"] .metric-details,
+.service-summary .metric-details { display: grid; grid-template-columns: minmax(0,1fr) auto; }
+.overview-metrics .metric-card[data-metric-id$=".orders"] .metric-details dt,
+.service-summary .metric-details dt { display: block; color: #64748b; }
+.service-summary .metric-details dd:not(:last-child):after { content: none; }
+.backlog-values { margin-top: 8px; gap: 8px; }
+.backlog-values > span:nth-of-type(2) { font-size: var(--font-body); }
+.panel-heading h2, .open-overview h2, .overview-dimensions h2 { font-size: var(--font-title); font-weight: 600; letter-spacing: .035em; line-height: 1.5; }
+.forecast-controls button, .forecast-controls strong, .search-feedback { font-size: var(--font-detail); }
+.open-overview .calendar-grid button strong, .open-overview .calendar-day,
+.open-overview .weekday, .calendar-grid button small { font-size: var(--font-detail); line-height: 1.5; }
+.open-overview .calendar-grid button strong { white-space: normal; overflow-wrap: anywhere; }
+
+/* The button stays easy to find, with a consistent hit area and keyboard focus. */
+.analysis-actions .analysis-config-trigger {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: 40px; min-width: 40px; padding: 9px 12px; border-radius: 10px;
+  color: #006a3a; background: #fff; border: 1px solid #cbdcd0;
+  font-size: var(--font-detail); font-weight: 600; transition: background .18s, border-color .18s, box-shadow .18s;
+}
+.analysis-config-trigger:hover, .analysis-config-trigger[aria-expanded=true] { background: #e2f2d9; border-color: #8bc53f; box-shadow: 0 2px 8px #006a3a12; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #8bc53f80; outline-offset: 3px; }
+.analysis-config-trigger .app-icon { width: 18px; height: 18px; }
+
+/* Portaled and bounded by the viewport; only the options area scrolls. */
+.analysis-config {
+  position: fixed; z-index: 160; right: auto; padding: 0; gap: 0; display: flex; flex-direction: column;
+  max-width: calc(100vw - 32px); overflow: hidden; border: 1px solid #dce5de; border-radius: 14px;
+  box-shadow: 0 16px 48px #16352826; animation: menu-appear .2s ease-out;
+}
+.config-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 16px 18px; border-bottom: 1px solid #e5ece6; background: #f8fbf6; }
+.config-heading > div { display: grid; gap: 4px; min-width: 0; }
+.config-heading strong { font-size: var(--font-body); color: #244536; font-weight: 600; }
+.config-heading span { font-size: var(--font-detail); color: #64748b; line-height: 1.5; }
+.config-heading button { padding: 6px; display: grid; place-items: center; border: 0; background: transparent; }
+.config-content { display: grid; gap: 18px; padding: 18px; overflow-y: auto; min-height: 0; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #cbd9cf transparent; }
+.analysis-config fieldset { gap: 5px; padding-bottom: 16px; }
+.analysis-config legend { font-size: var(--font-detail); color: #64748b; letter-spacing: .04em; }
+.analysis-config label { font-size: var(--font-body); gap: 8px; color: #334155; }
+.analysis-config fieldset label { min-height: 40px; padding: 8px 10px; gap: 10px; cursor: pointer; }
+.analysis-config fieldset label:hover { background: #f1f7ec; }
+.analysis-config input[type=radio], .analysis-config input[type=checkbox] { width: 18px; height: 18px; min-height: 18px; flex-shrink: 0; accent-color: #006a3a; }
+.analysis-config select, .analysis-config input:not([type=radio]):not([type=checkbox]) { font-size: var(--font-body); min-height: 42px; }
+.config-actions button, .analysis-config button { font-size: var(--font-detail); min-height: 36px; }
+
+/* Each table keeps its viewport, including while a request is pending. */
+.table-viewport { position: relative; height: var(--table-height); min-height: var(--table-height); isolation: isolate; }
+.table-viewport > .table-scroll, .analytic-chart .table-scroll { height: var(--table-height); max-height: none; overflow: auto; background: #fff; }
+.analytic-table table, .analytic-chart table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: var(--font-body); }
+.analytic-table th, .overview-dimensions .analytic-table th, .analytic-chart th { font-size: var(--font-detail); font-weight: 600; text-transform: none; letter-spacing: .015em; padding: 14px; background: #f4f7f3; }
+.analytic-table td, .overview-dimensions .analytic-table td, .analytic-chart td, .child-row td { font-size: var(--font-body); line-height: 1.5; padding: 13px 14px; }
+.analytic-table tfoot td { font-size: var(--font-body); font-weight: 600; }
+.table-footer { min-height: 68px; }
+.table-footer, .table-footer label, .table-footer select { font-size: var(--font-detail); color: #64748b; }
+.table-footer select { min-height: 34px; }
+.analytic-table .analysis-body, .analytic-chart .analysis-body { position: relative; }
+.table-scroll[inert] { opacity: .48; }
+.analysis-expanded .table-viewport, .analysis-expanded .analytic-chart .table-scroll { height: var(--table-height); min-height: var(--table-height); }
+
+/* Hierarchy Tree Table styling matching Legacy */
+.analytic-table table.has-tree th:first-child,
+.analytic-table table.has-tree td:first-child {
+  min-width: 360px;
+  max-width: none;
+  overflow: visible;
+  white-space: nowrap;
+}
+.analytic-table th:first-child,
+.analytic-table td:first-child {
+  min-width: 140px;
+}
+.analytic-table .expand-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border: 0;
+  padding: 0;
+  margin-right: 6px;
+  background: #eef6e8;
+  color: #006a3a;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.analytic-table .expand-row:hover {
+  background: #d9ecc9;
+}
+.analytic-table .expand-row.is-expanded {
+  background: #006a3a;
+  color: #ffffff;
+}
+.analytic-table .tree-branch-icon {
+  display: inline-block;
+  font-weight: 700;
+  margin-right: 4px;
+  font-size: 13px;
+  line-height: 1;
+  vertical-align: middle;
+}
+.analytic-table .matrix-expand-all {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #006a3a;
+  background: #eef6e8;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 6px;
+  vertical-align: middle;
+  transition: background 0.15s ease;
+}
+.analytic-table .matrix-expand-all:hover {
+  background: #d9ecc9;
+}
+.analytic-table .cell-link {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  white-space: nowrap;
+  text-align: left;
+  color: #006a3a;
+  font-weight: 500;
+  vertical-align: middle;
+}
+.analytic-table .cell-link:hover {
+  text-decoration: underline;
+}
+.analytic-table tbody tr.child-row td {
+  background-color: #f8faf6;
+  border-bottom: 1px solid #ebf0e6;
+  color: #334155;
+}
+.analytic-table tbody tr.child-row:hover td {
+  background-color: #edf5e6;
+}
+
+.loading-orbit { animation: spin 2.8s linear infinite; box-shadow: none; }
+.loading-orbit:before { background: #f8faf7; }
+.smooth-loading { font-size: var(--font-body); color: #475569; }
+.loading-overlay, .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0; min-height: 0; gap: 18px; }
+.loading-overlay { position: absolute; inset: 0; z-index: 5; background: #f8faf7b8; border-radius: inherit; }
+.loading-screen { position: fixed; inset: 0; z-index: 180; background: #f4f6f4d9; backdrop-filter: blur(2px); pointer-events: none; }
+.loading-screen .loading-orbit { width: 48px; height: 48px; }
+.loading-overlay .loading-orbit { position: absolute; left: calc(50% - 21px); top: calc(50% - 21px); }
+.loading-screen .loading-orbit { position: absolute; left: calc(50% - 24px); top: calc(50% - 24px); }
+.loading-overlay > span:last-child, .loading-screen > span:last-child { position: absolute; top: calc(50% + 40px); left: 0; width: 100%; }
+.loading-state > span:last-child { text-align: center; padding-inline: 16px; }
+
+[data-entrance=pending] { opacity: 0; }
+[data-entrance=visible] { animation: element-appear .5s cubic-bezier(.2,.65,.3,1); }
+/* Sidebar transforms also control its mobile drawer, so its entrance fades only. */
+.sidebar[data-entrance=visible] { animation: loading-appear .5s ease-out; }
+@keyframes element-appear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+@media(max-width:1250px) { .overview-metrics { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media(max-width:767px) {
+  :root { --font-value: 20px; }
+  .overview-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .overview-metrics > .metric-card, .backlog-combined { padding: 14px 12px; min-height: 146px; }
+  .overview-metrics .metric-card[data-format=currency] { grid-column: span 2; }
+  .config-trigger-label { display: none; }
+  .analysis-actions .analysis-config-trigger { padding: 9px; }
+  .sidebar-caption { font-size: var(--font-detail); }
+  .overview-dimensions > .panel-heading > .analysis-actions { gap: 8px; }
+  .analysis-tabs button, .dimension-tabs button { font-size: var(--font-body); }
+  .panel-heading h2, .open-overview h2 { font-size: var(--font-title); }
+  .table-footer > span { font-size: var(--font-detail); }
+}
+@media(prefers-reduced-motion:reduce) {
+  [data-entrance] { opacity: 1; animation: none !important; }
+  .analysis-config, .smooth-loading { animation: none; }
+  .loading-orbit { animation: spin 2.8s linear infinite; }
+}

@@ -1,0 +1,7 @@
+{
+  "metadataBaseFolder": "${PROJECT_HOME}/metadata",
+  "enforcingExecutionInHome": true,
+  "config": {
+    "variables": []
+  }
+}

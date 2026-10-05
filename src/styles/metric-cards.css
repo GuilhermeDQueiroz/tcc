@@ -1,0 +1,182 @@
+/* Local Manrope keeps dashboard indicators readable without a font CDN request. */
+.metric-card, .backlog-combined {
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  border-radius: 16px;
+  min-width: 0;
+}
+.metric-card button, .backlog-combined button { font-family: inherit; }
+.metric-card > strong, .overview-metrics .metric-card > strong,
+.overview-metrics .metric-card[data-format=currency] > strong,
+.overview-deliveries > .metric-card > strong, .backlog-values > span {
+  font-size: 26px;
+  font-weight: 800;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  margin-top: 8px;
+  color: #0f172a;
+}
+.metric-card > strong {width:100%;min-width:0;max-width:100%;}
+.metric-card {overflow:visible;}
+.metric-card:hover,.metric-card:focus-within {z-index:5;}
+.metric-tooltip-details {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 12px;margin:9px 0 0;padding-top:8px;border-top:1px solid #ffffff30;text-transform:none;letter-spacing:0;}
+.metric-tooltip-details dt {font-weight:500;}
+.metric-tooltip-details dd {margin:0;font-weight:700;text-align:right;white-space:nowrap;}
+.metric-tooltip-details small {display:block;font-size:inherit;}
+.metric-card[data-format=currency] > strong,
+.overview-metrics .metric-card[data-format=currency] > strong,
+.overview-deliveries > .metric-card[data-format=currency] > strong {
+  font-size: 26px;
+}
+.metric-card .metric-label, .overview-metrics .metric-card .metric-label,
+.backlog-combined .metric-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  line-height: 1.5;
+  color: #64748b;
+}
+.overview-metrics > .metric-card, .metric-grid > .metric-card,
+.overview-deliveries > .metric-card, .backlog-combined {
+  border-color: #E5E7E6;
+  border-left-color: #8bc53f;
+  border-left-width: 4px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.overview-metrics > .metric-card, .backlog-combined { min-height: 122px; }
+.overview-metrics .late-summary { border-left-color: #dc2626; }
+.backlog-combined.warning { border-left-color: #f59e0b; }
+.backlog-combined.critical { border-left-color: #dc2626; }
+.overview-metrics .late-summary .metric-label { color: #9b2424; }
+.backlog-combined.warning .metric-label { color: #92400e; }
+.backlog-combined.critical .metric-label { color: #9b2424; }
+.backlog-values { margin-top: 12px; }
+.backlog-values > span { margin-top: 0; }
+.backlog-values > span:nth-of-type(2) { font-size: 20px; font-weight: 500; }
+.metric-card .metric-label, .backlog-combined .metric-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+.metric-label-title { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.overview-metrics .metric-card[data-metric-id$=".orders"] .metric-details,
+.service-summary .metric-details { row-gap: 6px; }
+.overview-metrics .metric-card[data-metric-id$=".orders"] .metric-details dt,
+.service-summary .metric-details dt {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+.overview-metrics .metric-card[data-metric-id$=".orders"] .metric-details dd,
+.service-summary .metric-details dd {
+  font-size: 13px;
+  font-weight: 700;
+  color: #173c27;
+  font-variant-numeric: tabular-nums;
+}
+.metric-card .metric-tip, .backlog-combined .metric-tip {
+  position: static;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.metric-tip > button {
+  width: 24px;
+  height: 24px;
+  margin-top: -2px;
+  border: 1px solid #dae6dc;
+  border-radius: 7px;
+  color: #507a60;
+  background: #f5f9f4;
+  cursor: help;
+}
+.metric-tip > button::before { content: none; }
+.metric-tip > button .app-icon { width: 16px; height: 16px; stroke-width: 1.8; }
+.metric-tip > button:hover, .metric-tip > button:focus-visible { color: #006a3a; border-color: #8bc53f; background: #eaf3e4; }
+.metric-card .metric-tip-text, .backlog-combined .metric-tip-text,
+.overview-metrics > .metric-card:nth-child(5n+1) .metric-tip-text,
+.overview-metrics > .metric-card:nth-child(5n) .metric-tip-text {
+  top: 48px;
+  left: 12px;
+  right: 12px;
+  width: auto;
+  max-width: none;
+  transform: none;
+}
+.metric-card > .metric-watermark, .backlog-combined > .metric-watermark {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 78px;
+  height: 78px;
+  color: #006a3a;
+  opacity: .075;
+  stroke-width: 1.4;
+  transform: rotate(-10deg);
+  pointer-events: none;
+  user-select: none;
+  z-index: -1;
+}
+.late-summary > .metric-watermark, .backlog-combined.critical > .metric-watermark { color: #c62828; }
+.backlog-combined.warning > .metric-watermark { color: #b45309; }
+.overview-deliveries > .metric-card > .metric-watermark { width: 64px; height: 64px; bottom: 10px; }
+@media(max-width:767px) {
+  .overview-metrics > .metric-card[data-format=currency] {grid-column:span 2;}
+  .metric-card > strong, .overview-metrics .metric-card > strong, .backlog-values > span { font-size: clamp(24px, 15cqi, 30px); }
+  .metric-card[data-format=weight] > strong, .metric-card[data-format=volume] > strong,
+  .overview-metrics .metric-card[data-format=weight] > strong,
+  .overview-metrics .metric-card[data-format=volume] > strong { font-size: clamp(20px, 15cqi, 28px); }
+  .metric-card[data-format=currency] > strong,
+  .overview-metrics .metric-card[data-format=currency] > strong { font-size: clamp(22px, 8cqi, 28px); }
+  .metric-card .metric-label, .overview-metrics .metric-card .metric-label,
+  .backlog-combined .metric-label { font-size: 12px; letter-spacing: .025em; }
+  .overview-metrics .metric-card[data-metric-id$=".orders"] .metric-details dt,
+  .overview-metrics .metric-card[data-metric-id$=".orders"] .metric-details dd,
+  .service-summary .metric-details dt, .service-summary .metric-details dd { font-size: 12px; }
+  .metric-card > .metric-watermark, .backlog-combined > .metric-watermark { width: 62px; height: 62px; right: 10px; bottom: 10px; }
+}
+/* Exact favicon extracted from legacy/dashboard.py, centered in both menu sizes. */
+.sidebar .sidebar-caption {text-align:center;margin:2px 20px 0;}
+.sidebar .sidebar-brand-row {height:72px;position:relative;}
+.sidebar .close-mobile-menu {position:absolute;right:12px;top:20px;}
+.sidebar .brand {justify-content:center;gap:0;padding:0;}
+.sidebar .brand img {width:56px;height:56px;max-width:56px;flex:none;object-fit:contain;}
+.sidebar-collapsed .sidebar-brand-row {height:64px;}
+.sidebar-collapsed .brand img {width:40px;height:40px;max-width:40px;object-fit:contain;}
+.app-header .header-context h1 {font-size:16px;font-weight:600;line-height:1.3;letter-spacing:0;}
+.app-header .module-icon {width:26px;height:26px;flex-basis:26px;}
+.sidebar .sidebar-separator {border:0;border-top:1px solid #E5E7E6;flex:none;height:0;}
+.sidebar .sidebar-menu-separator {margin:16px 20px;}
+.sidebar .sidebar-footer {border-top:0;padding-top:0;}
+.sidebar .sidebar-filter-separator {margin:16px 10px;}
+.sidebar .sidebar-last-update {display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;color:#64748b;font-size:11.68px;line-height:1.5;}
+.sidebar-last-update i {font-style:normal;color:#006a3a;font-size:9px;}
+.sidebar-last-update time {font-weight:600;color:#1e293b;}
+.sidebar-collapsed .sidebar-last-update {display:none;}
+.backlog-values > span {font-size:clamp(18px,11cqi,26px);}
+/* No resize delay: the complete value scales with the card's content width and
+   its character count. The number and its original formatting stay unchanged. */
+.metric-card > strong,.overview-metrics .metric-card > strong,
+.overview-metrics .metric-card[data-format=currency] > strong,
+.overview-metrics .metric-card[data-format=weight] > strong,
+.overview-metrics .metric-card[data-format=volume] > strong,
+.overview-deliveries > .metric-card > strong,
+.overview-deliveries > .metric-card[data-format=currency] > strong {
+ font-size:min(26px,calc(100cqi * 1.7 / var(--metric-characters,16)));
+}
+@media(min-width:768px) and (max-width:1100px){
+ .overview-metrics {grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+@media(max-width:767px){
+ .app-header .header-context h1 {font-size:14px;}
+ .sidebar-collapsed .sidebar-brand-row {height:72px;}
+ .sidebar-collapsed .brand img {width:56px;height:56px;max-width:56px;}
+ .sidebar-collapsed .sidebar-last-update {display:flex;}
+}

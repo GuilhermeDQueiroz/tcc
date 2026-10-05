@@ -1,0 +1,3 @@
+# Execução/inspeção do ETL no Python 3.12; referências do legacy têm ambiente próprio.
+fdb==2.0.4
+psycopg2-binary==2.9.13

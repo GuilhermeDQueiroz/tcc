@@ -1,0 +1,62 @@
+.logistics-page{position:relative;display:flex;flex-direction:column;gap:12px;min-width:0;width:100%}
+.logistics-tools{margin-left:auto;position:relative;z-index:4}
+.logistics-help{position:relative;margin-left:auto}
+.logistics-help summary{display:grid;place-items:center;width:24px;height:28px;cursor:pointer;list-style:none;color:#68806c}
+.logistics-help summary::-webkit-details-marker{display:none}
+.logistics-help-content{position:absolute;right:0;bottom:34px;width:min(340px,calc(100vw - 40px));padding:16px;background:#f7faf5;border:1px solid #d7e4d4;box-shadow:0 8px 32px #16352820;border-radius:10px;z-index:40;font-size:12px;line-height:1.55}
+.logistics-help-content p{margin:5px 0 12px;color:#607565}.logistics-help-content strong{color:#2b5138;font-size:12px}.logistics-help-content>span{font-size:11px;color:#7b8e7e}
+.logistics-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;min-width:0}
+.logistics-metrics :deep(.metric-card){min-height:96px;padding:13px 14px;border-radius:12px}
+.logistics-metrics :deep(.metric-card strong){font-size:clamp(17px,1.5vw,26px)}
+.logistics-metrics :deep(.metric-label){font-size:11px;letter-spacing:.025em}
+.logistics-workspace{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;min-width:0;max-width:100%;border-top:1px solid #dfe7de;padding-top:10px}
+.logistics-selection{display:flex;align-items:center;gap:8px;width:max-content;max-width:100%;height:30px;padding:4px 6px 4px 10px;border:1px solid #bad9ac;background:#e5f2dd;border-radius:7px;font-size:12px;color:#006a3a}
+.logistics-selection>.app-icon{width:15px;height:15px}.logistics-selection>strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.logistics-selection>button{display:grid;place-items:center;border:0;background:transparent;padding:3px;width:23px;height:23px}
+.logistics-selection>button .app-icon{width:14px;height:14px}
+.logistics-selection-empty{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);border:0;white-space:nowrap}
+/* Explicit zero-minimum tracks keep wide tables inside their own scroll areas. */
+.logistics-workspace-grid{display:grid;grid-template-columns:minmax(260px,.32fr) minmax(0,.68fr);gap:20px;height:clamp(560px,calc(100dvh - 345px),780px);min-width:0;max-width:100%}
+.logistics-workspace-grid>*{min-width:0;max-width:100%;min-height:0}
+.logistics-destinations{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:6px;min-width:0;min-height:0;height:100%;border-right:1px solid #dfe7de;padding-right:18px}
+.logistics-destinations :deep(.logistics-map-panel){display:flex;flex-direction:column;min-height:0;min-width:0;max-width:100%;height:100%;overflow:hidden}
+.logistics-destinations :deep(.logistics-map-panel .analysis-body){display:flex;flex-direction:column;flex:1;min-height:0;min-width:0}
+.logistics-destinations :deep(.logistics-map-panel .visualization-viewport){flex:1;height:auto;min-height:0;min-width:0;width:100%}
+.logistics-destinations :deep(.logistics-map-panel .chart-host){max-width:100%;min-width:0}
+.logistics-map-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;height:28px}
+.logistics-coordinate-coverage{display:flex;align-items:center;gap:5px;min-width:0;font-size:11px;color:#6d8270;white-space:nowrap}
+.logistics-coordinate-coverage .app-icon{width:13px;height:13px}
+.logistics-destination-filter{display:flex;align-items:center;gap:5px;padding:4px 6px;font-size:11px;color:#006a3a;border-color:#c5dbbd;background:#eaf3e3}
+.logistics-destination-filter .app-icon{width:12px;height:12px}
+.logistics-linked-tables{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr));gap:16px;height:100%;min-width:0;min-height:0;max-width:100%}
+.logistics-linked-tables>*{min-width:0;max-width:100%;min-height:0}
+.logistics-table-count{display:inline-flex;align-items:center;justify-content:center;padding:3px 7px;border-radius:5px;font-size:11px;font-weight:600;color:#607663;background:#e9efE5;font-variant-numeric:tabular-nums}
+/* Same open composition as Pedidos em Aberto; the scrollable data stays framed. */
+.logistics-page :deep(.analysis-frame:not(.analysis-expanded)){background:transparent;box-shadow:none;border:0;border-radius:0;min-width:0;max-width:100%}
+.logistics-page :deep(.panel-heading){padding:0 0 8px;min-height:36px;gap:8px}
+.logistics-page :deep(.panel-heading h2){min-width:0;font-size:13px;line-height:1.4;letter-spacing:.025em;text-transform:uppercase;color:#5b7464}
+.logistics-page :deep(.panel-heading h2 .app-icon){width:17px;height:17px}
+.logistics-page :deep(.table-viewport){min-width:0;max-width:100%;border:1px solid #dce5d9;border-radius:7px;overflow:hidden}
+.logistics-page :deep(.table-scroll){max-width:100%;min-width:0;background:transparent}
+.logistics-page :deep(.analytic-table .table-scroll>table){height:100%!important}
+.logistics-page :deep(tbody tr){background:transparent}.logistics-page :deep(tbody tr:nth-child(even)){background:#ecf1e9}
+.logistics-page :deep(tbody td){background:transparent}.logistics-page :deep(tbody td:first-child){background:#f4f6f4}
+.logistics-page :deep(tbody tr:nth-child(even) td:first-child){background:#ecf1e9}
+.logistics-page :deep(tbody tr.selected-row td){background:#e2f1d9}
+.logistics-page :deep(tbody tr:hover td){background:#e6eee1}
+.logistics-page :deep(thead th){background:#eaf0e6;font-size:11px}.logistics-page :deep(thead th:first-child){background:#eaf0e6}
+.logistics-page :deep(tfoot td){background:#e2edd9;font-size:12px}.logistics-page :deep(tfoot td:first-child){background:#e2edd9}
+.logistics-page :deep(.table-footer){padding:7px 1px;min-height:43px;border:0;gap:8px}
+.logistics-page :deep(.table-footer label){gap:6px}
+.logistics-city-details{display:grid;grid-template-columns:minmax(0,1fr);min-width:0;max-width:100%;border-top:1px solid #dfe7de;padding-top:8px}
+.logistics-cities{min-width:0;max-width:100%}.logistics-city-details :deep(.logistics-cities .table-viewport){height:320px;min-height:320px}
+.logistics-city-details :deep(.logistics-cities .table-scroll){height:100%}
+.logistics-planning{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0;padding-top:14px;border-top:1px solid #dfe7de}
+.logistics-chart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;min-width:0}
+.logistics-chart-grid>*{min-width:0;max-width:100%}
+.logistics-error{display:flex;align-items:center;gap:12px;padding:12px;background:#fff1f0;border:1px solid #f5cbc8;color:#9b2525;border-radius:8px;font-size:12px}
+@media(max-width:1200px){.logistics-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.logistics-workspace-grid{grid-template-columns:minmax(240px,.34fr) minmax(0,.66fr);gap:14px}.logistics-destinations{padding-right:12px}.logistics-advanced-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.logistics-workspace-grid{grid-template-columns:minmax(0,1fr);height:auto;gap:18px}.logistics-destinations{height:400px;border-right:0;border-bottom:1px solid #dfe7de;padding:0 0 10px}.logistics-linked-tables{height:720px}.logistics-chart-grid{grid-template-columns:minmax(0,1fr)}.logistics-filters>label{flex:1;min-width:170px}.logistics-metrics :deep(.metric-card strong){font-size:22px}}
+@media(max-width:600px){.logistics-page{gap:10px}.logistics-filters>label{flex:1 1 100%;min-width:0}.logistics-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.logistics-metrics :deep(.metric-card){padding:12px;min-height:92px}.logistics-metrics :deep(.metric-label){font-size:10px}.logistics-metrics :deep(.metric-card strong){font-size:20px}.logistics-metrics :deep(.metric-card[data-format=currency] strong){font-size:16px}.logistics-help{margin-left:auto}.logistics-advanced-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.logistics-linked-tables{height:760px}.logistics-page :deep(.panel-heading h2){font-size:12px}.logistics-page :deep(.analysis-actions){gap:4px}}
+
+.logistics-linked-tables :deep(.title-hidden .panel-heading){min-height:26px;padding:0 0 4px;justify-content:flex-end}

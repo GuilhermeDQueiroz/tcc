@@ -1,0 +1,346 @@
+<?xml version='1.0' encoding='utf-8'?>
+<pipeline>
+  <info>
+    <name>load_metas_consultores</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description>Consulta original QUERY_METAS_CONSULTORES adaptada para PostgreSQL: staging → dw.carga_metas.</description>
+    <extended_description />
+    <pipeline_version />
+    <pipeline_type>Normal</pipeline_type>
+    <parameters>
+    </parameters>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <created_user>-</created_user>
+    <created_date>2026/08/13 09:00:00.000</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2026/08/13 09:00:00.000</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <order>
+    <hop>
+      <from>Ler staging (joins e cálculos)</from>
+      <to>Gravar DW (dados transformados)</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <transform>
+    <name>Gravar DW (dados transformados)</name>
+    <type>TableOutput</type>
+    <custom_select>N</custom_select>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <add_columns>N</add_columns>
+    <always_drop_and_recreate>N</always_drop_and_recreate>
+    <auto_update_table_structure>N</auto_update_table_structure>
+    <change_column_types>N</change_column_types>
+    <commit>1000</commit>
+    <connection>DW</connection>
+    <drop_columns>N</drop_columns>
+    <fields>
+      <field>
+        <column_name>autoinc_metasven</column_name>
+        <stream_name>autoinc_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>empresa_metasven</column_name>
+        <stream_name>empresa_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>tipo_metasven</column_name>
+        <stream_name>tipo_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>tipodoc_metasven</column_name>
+        <stream_name>tipodoc_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>ano_metasven</column_name>
+        <stream_name>ano_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>codigo_metasven</column_name>
+        <stream_name>codigo_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>razaosocial_pessoa</column_name>
+        <stream_name>razaosocial_pessoa</stream_name>
+      </field>
+      <field>
+        <column_name>metaporlinha_consven</column_name>
+        <stream_name>metaporlinha_consven</stream_name>
+      </field>
+      <field>
+        <column_name>metaporgrupo_consven</column_name>
+        <stream_name>metaporgrupo_consven</stream_name>
+      </field>
+      <field>
+        <column_name>metaportipoproduto_consven</column_name>
+        <stream_name>metaportipoproduto_consven</stream_name>
+      </field>
+      <field>
+        <column_name>metaporregiao_consven</column_name>
+        <stream_name>metaporregiao_consven</stream_name>
+      </field>
+      <field>
+        <column_name>metaporunidfabril_consven</column_name>
+        <stream_name>metaporunidfabril_consven</stream_name>
+      </field>
+      <field>
+        <column_name>metapororigem_consven</column_name>
+        <stream_name>metapororigem_consven</stream_name>
+      </field>
+      <field>
+        <column_name>metaporsupervisor_consven</column_name>
+        <stream_name>metaporsupervisor_consven</stream_name>
+      </field>
+      <field>
+        <column_name>metaporconsultor_consven</column_name>
+        <stream_name>metaporconsultor_consven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_01_metasven</column_name>
+        <stream_name>meta_01_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_02_metasven</column_name>
+        <stream_name>meta_02_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_03_metasven</column_name>
+        <stream_name>meta_03_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_04_metasven</column_name>
+        <stream_name>meta_04_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_05_metasven</column_name>
+        <stream_name>meta_05_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_06_metasven</column_name>
+        <stream_name>meta_06_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_07_metasven</column_name>
+        <stream_name>meta_07_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_08_metasven</column_name>
+        <stream_name>meta_08_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_09_metasven</column_name>
+        <stream_name>meta_09_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_10_metasven</column_name>
+        <stream_name>meta_10_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_11_metasven</column_name>
+        <stream_name>meta_11_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>meta_12_metasven</column_name>
+        <stream_name>meta_12_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>datahorainclusao_metasven</column_name>
+        <stream_name>datahorainclusao_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>usuarioinclusao_metasven</column_name>
+        <stream_name>usuarioinclusao_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>datahoraalteracao_metasven</column_name>
+        <stream_name>datahoraalteracao_metasven</stream_name>
+      </field>
+      <field>
+        <column_name>usuarioalteracao_metasven</column_name>
+        <stream_name>usuarioalteracao_metasven</stream_name>
+      </field>
+    </fields>
+    <ignore_errors>N</ignore_errors>
+    <only_when_have_rows>N</only_when_have_rows>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_monthly>N</partitioning_monthly>
+    <return_keys>N</return_keys>
+    <schema>dw</schema>
+    <specify_fields>Y</specify_fields>
+    <table>carga_metas</table>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_in_table>N</tablename_in_table>
+    <truncate>N</truncate>
+    <use_batch>Y</use_batch>
+    <attributes />
+    <GUI>
+      <xloc>608</xloc>
+      <yloc>160</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Ler staging (joins e cálculos)</name>
+    <type>TableInput</type>
+    <custom_select>N</custom_select>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>DW</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit />
+    <sql>SELECT
+  original."autoinc_metasven" AS "autoinc_metasven",
+  original."empresa_metasven" AS "empresa_metasven",
+  original."tipo_metasven" AS "tipo_metasven",
+  original."tipodoc_metasven" AS "tipodoc_metasven",
+  original."ano_metasven" AS "ano_metasven",
+  original."codigo_metasven" AS "codigo_metasven",
+  original."descricao" AS "razaosocial_pessoa",
+  original."metaporlinha" AS "metaporlinha_consven",
+  original."metaporgrupo" AS "metaporgrupo_consven",
+  original."metaportipoproduto" AS "metaportipoproduto_consven",
+  original."metaporregiao" AS "metaporregiao_consven",
+  original."metaporunidadefabril" AS "metaporunidfabril_consven",
+  original."metapororigem" AS "metapororigem_consven",
+  original."metaporsupervisor" AS "metaporsupervisor_consven",
+  original."metaporconsultor" AS "metaporconsultor_consven",
+  original."meta_01_metasven" AS "meta_01_metasven",
+  original."meta_02_metasven" AS "meta_02_metasven",
+  original."meta_03_metasven" AS "meta_03_metasven",
+  original."meta_04_metasven" AS "meta_04_metasven",
+  original."meta_05_metasven" AS "meta_05_metasven",
+  original."meta_06_metasven" AS "meta_06_metasven",
+  original."meta_07_metasven" AS "meta_07_metasven",
+  original."meta_08_metasven" AS "meta_08_metasven",
+  original."meta_09_metasven" AS "meta_09_metasven",
+  original."meta_10_metasven" AS "meta_10_metasven",
+  original."meta_11_metasven" AS "meta_11_metasven",
+  original."meta_12_metasven" AS "meta_12_metasven",
+  original."datahorainclusao_metasven" AS "datahorainclusao_metasven",
+  original."usuarioinclusao_metasven" AS "usuarioinclusao_metasven",
+  original."datahoraalteracao_metasven" AS "datahoraalteracao_metasven",
+  original."usuarioalteracao_metasven" AS "usuarioalteracao_metasven"
+FROM (
+select
+    METAS_VENDAS.AUTOINC_METASVEN,
+    METAS_VENDAS.EMPRESA_METASVEN,
+    METAS_VENDAS.TIPO_METASVEN,
+    METAS_VENDAS.TIPODOC_METASVEN,
+    METAS_VENDAS.ANO_METASVEN,
+    METAS_VENDAS.CODIGO_METASVEN,
+    PESSOA.RAZAOSOCIAL_PESSOA as DESCRICAO,
+    PESSOA_CONSULTORVENDAS.METAPORLINHA_CONSVEN as METAPORLINHA,
+    PESSOA_CONSULTORVENDAS.METAPORGRUPO_CONSVEN as METAPORGRUPO,
+    PESSOA_CONSULTORVENDAS.METAPORTIPOPRODUTO_CONSVEN as METAPORTIPOPRODUTO,
+    PESSOA_CONSULTORVENDAS.METAPORREGIAO_CONSVEN as METAPORREGIAO,
+    PESSOA_CONSULTORVENDAS.METAPORUNIDFABRIL_CONSVEN as METAPORUNIDADEFABRIL,
+    PESSOA_CONSULTORVENDAS.METAPORORIGEM_CONSVEN as METAPORORIGEM,
+    PESSOA_CONSULTORVENDAS.METAPORSUPERVISOR_CONSVEN as METAPORSUPERVISOR,
+    PESSOA_CONSULTORVENDAS.METAPORCONSULTOR_CONSVEN as METAPORCONSULTOR,
+    METAS_VENDAS.META_01_METASVEN,
+    METAS_VENDAS.META_02_METASVEN,
+    METAS_VENDAS.META_03_METASVEN,
+    METAS_VENDAS.META_04_METASVEN,
+    METAS_VENDAS.META_05_METASVEN,
+    METAS_VENDAS.META_06_METASVEN,
+    METAS_VENDAS.META_07_METASVEN,
+    METAS_VENDAS.META_08_METASVEN,
+    METAS_VENDAS.META_09_METASVEN,
+    METAS_VENDAS.META_10_METASVEN,
+    METAS_VENDAS.META_11_METASVEN,
+    METAS_VENDAS.META_12_METASVEN,
+    METAS_VENDAS.DATAHORAINCLUSAO_METASVEN,
+    METAS_VENDAS.USUARIOINCLUSAO_METASVEN,
+    METAS_VENDAS.DATAHORAALTERACAO_METASVEN,
+    METAS_VENDAS.USUARIOALTERACAO_METASVEN
+from staging.stg_metas_vendas METAS_VENDAS inner join staging.stg_pessoa PESSOA on PESSOA.CODIGO_PESSOA = METAS_VENDAS.CODIGO_METASVEN
+left join staging.stg_pessoa_consultorvendas PESSOA_CONSULTORVENDAS on PESSOA_CONSULTORVENDAS.PESSOA_CONSVEN = PESSOA.CODIGO_PESSOA
+where METAS_VENDAS.TIPO_METASVEN = 2
+  and METAS_VENDAS.TIPODOC_METASVEN = 1
+  and METAS_VENDAS.EMPRESA_METASVEN = 0
+
+union all
+
+select
+    0 as AUTOINC_METASVEN,
+    0 as EMPRESA_METASVEN,
+    2 as TIPO_METASVEN,
+    1 as TIPODOC_METASVEN,
+    ANOS.ANO_METASVEN,
+    PESSOA.CODIGO_PESSOA as CODIGO_METASVEN,
+    PESSOA.RAZAOSOCIAL_PESSOA as DESCRICAO,
+    PESSOA_CONSULTORVENDAS.METAPORLINHA_CONSVEN as METAPORLINHA,
+    PESSOA_CONSULTORVENDAS.METAPORGRUPO_CONSVEN as METAPORGRUPO,
+    PESSOA_CONSULTORVENDAS.METAPORTIPOPRODUTO_CONSVEN as METAPORTIPOPRODUTO,
+    PESSOA_CONSULTORVENDAS.METAPORREGIAO_CONSVEN as METAPORREGIAO,
+    PESSOA_CONSULTORVENDAS.METAPORUNIDFABRIL_CONSVEN as METAPORUNIDADEFABRIL,
+    PESSOA_CONSULTORVENDAS.METAPORORIGEM_CONSVEN as METAPORORIGEM,
+    PESSOA_CONSULTORVENDAS.METAPORSUPERVISOR_CONSVEN as METAPORSUPERVISOR,
+    PESSOA_CONSULTORVENDAS.METAPORCONSULTOR_CONSVEN as METAPORCONSULTOR,
+    0.00 as META_01_METASVEN,
+    0.00 as META_02_METASVEN,
+    0.00 as META_03_METASVEN,
+    0.00 as META_04_METASVEN,
+    0.00 as META_05_METASVEN,
+    0.00 as META_06_METASVEN,
+    0.00 as META_07_METASVEN,
+    0.00 as META_08_METASVEN,
+    0.00 as META_09_METASVEN,
+    0.00 as META_10_METASVEN,
+    0.00 as META_11_METASVEN,
+    0.00 as META_12_METASVEN,
+    LOCALTIMESTAMP as DATAHORAINCLUSAO_METASVEN,
+    'DASHBOARD' as USUARIOINCLUSAO_METASVEN,
+    LOCALTIMESTAMP as DATAHORAALTERACAO_METASVEN,
+    'DASHBOARD' as USUARIOALTERACAO_METASVEN
+from staging.stg_pessoa PESSOA cross join (
+    select distinct MV_ANO.ANO_METASVEN
+    from staging.stg_metas_vendas MV_ANO
+    where MV_ANO.TIPO_METASVEN = 2
+      and MV_ANO.TIPODOC_METASVEN = 1
+      and MV_ANO.EMPRESA_METASVEN = 0
+    union
+    select cast(extract(year from current_date) as integer)
+    
+) ANOS
+left join staging.stg_pessoa_consultorvendas PESSOA_CONSULTORVENDAS on PESSOA_CONSULTORVENDAS.PESSOA_CONSVEN = PESSOA.CODIGO_PESSOA
+where PESSOA.CONSVENDAS_PESSOA = 'S'
+  and PESSOA.CODIGO_PESSOA &gt; 0
+  and not exists (
+      select MV.AUTOINC_METASVEN
+      from staging.stg_metas_vendas MV
+      where MV.TIPO_METASVEN = 2
+        and MV.TIPODOC_METASVEN = 1
+        and MV.ANO_METASVEN = ANOS.ANO_METASVEN
+        and MV.EMPRESA_METASVEN = 0
+        and MV.CODIGO_METASVEN = PESSOA.CODIGO_PESSOA
+  )
+) original</sql>
+    <variables_active>Y</variables_active>
+    <attributes />
+    <GUI>
+      <xloc>224</xloc>
+      <yloc>160</yloc>
+    </GUI>
+  </transform>
+  <transform_error_handling>
+  </transform_error_handling>
+  <attributes />
+</pipeline>

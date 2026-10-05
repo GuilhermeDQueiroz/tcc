@@ -1,0 +1,30 @@
+/* Legacy: assets/styles.css loader-spinner; views/shared.py table-loading-curtain.
+   Motion and colors match the source; feedback stays visible for at least 2s. */
+.legacy-loading.loading-state {display:flex;align-items:center;justify-content:center;gap:12px;color:#006a3a}
+.legacy-loading.loading-overlay,.legacy-loading.loading-screen {flex-direction:column;pointer-events:none;animation:none}
+.legacy-loading.loading-screen {background:#f4f6f4;backdrop-filter:none;z-index:80}
+.legacy-loading.loading-overlay {background:#fff;gap:12px}
+.legacy-loading .loading-orbit.loader-spinner {
+  position:static;width:32px;height:32px;flex:none;padding:0;border:3.5px solid #e2f2d9;
+  border-top-color:#006a3a;border-right-color:#4e9d2d;border-radius:50%;
+  background:none;box-shadow:none;animation:legacy-loader-spin .7s linear infinite;
+}
+.legacy-loading .loading-orbit::before,.legacy-loading .loading-orbit::after {content:none}
+.legacy-loading.loading-screen .loading-orbit {width:56px;height:56px;border:5px solid #8bc53f40;border-top-color:#006a3a;animation-duration:.75s}
+.legacy-loading.loading-compact .loading-orbit {width:24px;height:24px;border-width:3px}
+.legacy-loading .loading-label {position:static;width:auto;padding:0 16px;text-align:center;font-size:.78rem;font-weight:700;letter-spacing:.04em;line-height:1.5}
+.legacy-loading.loading-overlay .loading-label {text-transform:uppercase}
+.legacy-loading .loading-label-sr {position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.loading-skeleton {width:86%;max-width:500px;display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.loading-skeleton > span {height:12px;border-radius:4px;background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%);background-size:200% 100%;animation:legacy-loader-shimmer 1.4s linear infinite}
+/* Replay entrances on reused data, without hiding content while off screen. */
+[data-entrance] {opacity:1;animation:none!important}
+[data-loading-reveal=waiting] {opacity:0!important}
+@keyframes legacy-loader-spin {to{transform:rotate(360deg)}}
+@keyframes legacy-loader-shimmer {from{background-position:200% 0}to{background-position:-200% 0}}
+/* Explicitly requested feedback remains visible with reduced motion: a slower
+   spinner and opacity-only entrances, with no slide or shimmering lines. */
+@media(prefers-reduced-motion:reduce) {
+  .legacy-loading .loading-orbit.loader-spinner {animation:legacy-loader-spin 1.1s linear infinite;animation-duration:1.1s!important}
+  .loading-skeleton > span {animation:none}
+}

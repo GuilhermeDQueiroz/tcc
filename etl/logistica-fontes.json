@@ -1,0 +1,159 @@
+[
+  {
+    "source": "DOCUMENTO_FATURA",
+    "staging": "logistica_stage.documento_fatura",
+    "columns": {
+      "CODIGO_DOCFAT": "bigint",
+      "EMPRESA_DOCFAT": "integer",
+      "DTEMISSAO_DOCFAT": "timestamp without time zone",
+      "TIPO_DOCFAT": "smallint",
+      "OPCAO_DOCFAT": "smallint",
+      "ENTREGA_DOCFAT": "text",
+      "DATAENTREGA_DOCFAT": "timestamp without time zone",
+      "DTSAIDA_DOCFAT": "timestamp without time zone",
+      "CLIENTE_DOCFAT": "integer",
+      "LOCALENTREGA_DOCFAT": "integer",
+      "STATUS_DOCFAT": "integer",
+      "ENTREGARMERCADORIA_DOCFAT": "text"
+    }
+  },
+  {
+    "source": "DOCUMENTO_ITEM",
+    "staging": "logistica_stage.documento_item",
+    "columns": {
+      "AUTOINC_DOCITEM": "bigint",
+      "DOCUMENTO_DOCITEM": "bigint",
+      "COMPOSICAOITEM_DOCITEM": "bigint",
+      "TIPO_DOCITEM": "smallint"
+    }
+  },
+  {
+    "source": "DOCUMENTO_ITEM_DETALHE",
+    "staging": "logistica_stage.documento_item_detalhe",
+    "columns": {
+      "AUTOINC_DOCITEMDET": "bigint",
+      "AUTOINCITEM_DOCITEMDET": "bigint",
+      "DOCUMENTO_DOCITEMDET": "bigint",
+      "ITEM_DOCITEMDET": "integer",
+      "QTDECHAPAS_DOCITEMDET": "numeric(18,4)",
+      "QTDEABERTA_DOCITEMDET": "numeric(18,4)",
+      "QTDEFATURADO_DOCITEMDET": "numeric(18,4)",
+      "QTDECANCELADO_DOCITEMDET": "numeric(18,4)",
+      "QTDECARGA_DOCITEMDET": "numeric(18,4)",
+      "QTDECARGAFAT_DOCITEMDET": "numeric(18,4)",
+      "VLRBRUTOLIQUIDO_DOCITEMDET": "numeric(18,2)",
+      "AUTOINCITEMDETALHE_DOCITEMDET": "integer"
+    }
+  },
+  {
+    "source": "DOCUMENTO_PEDIDO",
+    "staging": "logistica_stage.documento_pedido",
+    "columns": {
+      "DOCUMENTO_DOCPED": "bigint",
+      "DTPREVISAOFATURAMENTO_DOCPED": "timestamp without time zone",
+      "DTPROMESSAENTREGA_DOCPED": "timestamp without time zone"
+    }
+  },
+  {
+    "source": "CARGA_ITENS",
+    "staging": "logistica_stage.carga_itens",
+    "columns": {
+      "AUTOINC_CARITE": "bigint",
+      "AUTOINCCARDOC_CARITE": "bigint",
+      "AUTOINCITEMDETDOC_CARITE": "bigint",
+      "QTDECHAPAS_CARITE": "numeric(18,4)",
+      "QTDEFATURADO_CARITE": "numeric(18,4)",
+      "QTDEABERTA_CARITE": "numeric(18,4)"
+    }
+  },
+  {
+    "source": "CARGA_DOCUMENTOS",
+    "staging": "logistica_stage.carga_documentos",
+    "columns": {
+      "AUTOINC_CARDOC": "bigint",
+      "CARGA_CARDOC": "bigint",
+      "DOCUMENTO_CARDOC": "bigint",
+      "DTPREVISAOFATURAMENTO_CARDOC": "timestamp without time zone"
+    }
+  },
+  {
+    "source": "CARGA",
+    "staging": "logistica_stage.carga",
+    "columns": {
+      "CODIGO_CARGA": "bigint",
+      "EMPRESA_CARGA": "integer",
+      "DTEMISSAO_CARGA": "timestamp without time zone",
+      "DATAINICIO_SEPARACAO_CARGA": "timestamp without time zone",
+      "DATA_SEPARACAO_CARGA": "timestamp without time zone",
+      "DATAINICIO_CONFERENCIA_CARGA": "timestamp without time zone",
+      "DATA_CONFERENCIA_CARGA": "timestamp without time zone",
+      "DATAHORAFECHAMENTO_CARGA": "timestamp without time zone",
+      "DATAHORALIB_SAIDA_CARGA": "timestamp without time zone",
+      "DESCRICAO_CARGA": "text",
+      "DTPREVISAOFATURAMENTO_CARGA": "timestamp without time zone"
+    }
+  },
+  {
+    "source": "ITEM",
+    "staging": "logistica_stage.item",
+    "columns": {
+      "CODIGO_ITEM": "integer",
+      "DESCRICAO_ITEM": "text",
+      "PESOBRUTO_ITEM": "numeric(18,3)",
+      "VOLUMEM3_ITEM": "numeric(18,4)"
+    }
+  },
+  {
+    "source": "ITEM_DETALHE",
+    "staging": "logistica_stage.item_detalhe",
+    "columns": {
+      "AUTOINC_ITEM_DETALHE": "integer",
+      "PESOBRUTO_ITEM_DETALHE": "numeric(18,3)",
+      "VOLUMEM3_ITEM_DETALHE": "numeric(18,4)"
+    }
+  },
+  {
+    "source": "PESSOA",
+    "staging": "logistica_stage.pessoa",
+    "columns": {
+      "CODIGO_PESSOA": "integer",
+      "RAZAOSOCIAL_PESSOA": "text"
+    }
+  },
+  {
+    "source": "PESSOA_ENDERECO",
+    "staging": "logistica_stage.pessoa_endereco",
+    "columns": {
+      "AUTOINC_PESSOA_END": "integer",
+      "CIDADE_PESSOA_END": "integer",
+      "LATITUDE_PESSOA_END": "numeric(18,7)",
+      "LONGITUDE_PESSOA_END": "numeric(18,7)"
+    }
+  },
+  {
+    "source": "CIDADE",
+    "staging": "logistica_stage.cidade",
+    "columns": {
+      "CODIGO_CIDADE": "integer",
+      "DESCRICAO_CIDADE": "text",
+      "UF_CIDADE": "integer"
+    }
+  },
+  {
+    "source": "UF",
+    "staging": "logistica_stage.uf",
+    "columns": {
+      "CODIGO_UF": "integer",
+      "SIGLA_UF": "text",
+      "REGIAO_UF": "smallint"
+    }
+  },
+  {
+    "source": "STATUS",
+    "staging": "logistica_stage.status",
+    "columns": {
+      "CODIGO_STATUS": "integer",
+      "DESCRICAO_STATUS": "text"
+    }
+  }
+]

@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='utf-8'?>
+<pipeline>
+  <info>
+    <name>ext_metas_vendas</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description>Espelho bruto de METAS_VENDAS; sem joins, cálculos ou deduplicação.</description>
+    <extended_description />
+    <pipeline_version />
+    <pipeline_type>Normal</pipeline_type>
+    <parameters>
+    </parameters>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <created_user>-</created_user>
+    <created_date>2026/08/13 09:00:00.000</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2026/08/13 09:00:00.000</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <order>
+    <hop>
+      <from>Ler Firebird (dados brutos)</from>
+      <to>Gravar staging (dados brutos)</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <transform>
+    <name>Gravar staging (dados brutos)</name>
+    <type>TableOutput</type>
+    <custom_select>N</custom_select>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <add_columns>N</add_columns>
+    <always_drop_and_recreate>N</always_drop_and_recreate>
+    <auto_update_table_structure>N</auto_update_table_structure>
+    <change_column_types>N</change_column_types>
+    <commit>1000</commit>
+    <connection>DW</connection>
+    <drop_columns>N</drop_columns>
+    <fields>
+      <field>
+        <column_name>ano_metasven</column_name>
+        <stream_name>ANO_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>autoinc_metasven</column_name>
+        <stream_name>AUTOINC_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>codigo_metasven</column_name>
+        <stream_name>CODIGO_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>datahoraalteracao_metasven</column_name>
+        <stream_name>DATAHORAALTERACAO_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>datahorainclusao_metasven</column_name>
+        <stream_name>DATAHORAINCLUSAO_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>empresa_metasven</column_name>
+        <stream_name>EMPRESA_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_01_metasven</column_name>
+        <stream_name>META_01_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_02_metasven</column_name>
+        <stream_name>META_02_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_03_metasven</column_name>
+        <stream_name>META_03_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_04_metasven</column_name>
+        <stream_name>META_04_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_05_metasven</column_name>
+        <stream_name>META_05_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_06_metasven</column_name>
+        <stream_name>META_06_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_07_metasven</column_name>
+        <stream_name>META_07_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_08_metasven</column_name>
+        <stream_name>META_08_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_09_metasven</column_name>
+        <stream_name>META_09_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_10_metasven</column_name>
+        <stream_name>META_10_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_11_metasven</column_name>
+        <stream_name>META_11_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>meta_12_metasven</column_name>
+        <stream_name>META_12_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>tipodoc_metasven</column_name>
+        <stream_name>TIPODOC_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>tipo_metasven</column_name>
+        <stream_name>TIPO_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>usuarioalteracao_metasven</column_name>
+        <stream_name>USUARIOALTERACAO_METASVEN</stream_name>
+      </field>
+      <field>
+        <column_name>usuarioinclusao_metasven</column_name>
+        <stream_name>USUARIOINCLUSAO_METASVEN</stream_name>
+      </field>
+    </fields>
+    <ignore_errors>N</ignore_errors>
+    <only_when_have_rows>N</only_when_have_rows>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_monthly>N</partitioning_monthly>
+    <return_keys>N</return_keys>
+    <schema>staging</schema>
+    <specify_fields>Y</specify_fields>
+    <table>stg_metas_vendas</table>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_in_table>N</tablename_in_table>
+    <truncate>N</truncate>
+    <use_batch>Y</use_batch>
+    <attributes />
+    <GUI>
+      <xloc>608</xloc>
+      <yloc>160</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Ler Firebird (dados brutos)</name>
+    <type>TableInput</type>
+    <custom_select>N</custom_select>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>DADOS</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit />
+    <sql>SELECT ANO_METASVEN, AUTOINC_METASVEN, CODIGO_METASVEN, DATAHORAALTERACAO_METASVEN, DATAHORAINCLUSAO_METASVEN, EMPRESA_METASVEN, META_01_METASVEN, META_02_METASVEN, META_03_METASVEN, META_04_METASVEN, META_05_METASVEN, META_06_METASVEN, META_07_METASVEN, META_08_METASVEN, META_09_METASVEN, META_10_METASVEN, META_11_METASVEN, META_12_METASVEN, TIPODOC_METASVEN, TIPO_METASVEN, USUARIOALTERACAO_METASVEN, USUARIOINCLUSAO_METASVEN FROM METAS_VENDAS</sql>
+    <variables_active>Y</variables_active>
+    <attributes />
+    <GUI>
+      <xloc>224</xloc>
+      <yloc>160</yloc>
+    </GUI>
+  </transform>
+  <transform_error_handling>
+  </transform_error_handling>
+  <attributes />
+</pipeline>

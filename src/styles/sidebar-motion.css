@@ -1,0 +1,60 @@
+/* Keep the icon positions steady while width and text animate together. */
+.sidebar {
+  --sidebar-ease: cubic-bezier(.22,.61,.36,1);
+  transition: width .55s var(--sidebar-ease), flex-basis .55s var(--sidebar-ease);
+}
+.sidebar .sidebar-brand-row { transition: height .55s var(--sidebar-ease); }
+.sidebar .brand img { transition: width .55s var(--sidebar-ease), height .55s var(--sidebar-ease), max-width .55s var(--sidebar-ease); }
+.collapse-menu svg { transition: transform .55s var(--sidebar-ease); }
+
+@media(min-width:768px) {
+  .sidebar nav, .sidebar-collapsed .sidebar nav { padding: 8px 10px; }
+  .sidebar nav a, .sidebar-collapsed .sidebar nav a { justify-content: flex-start; padding: 10px 12px; overflow: hidden; white-space: nowrap; }
+  .sidebar nav a.router-link-active { padding-left: 12px; }
+  .sidebar .sidebar-footer > button { justify-content: flex-start; padding-inline: 14px; overflow: hidden; white-space: nowrap; }
+  .sidebar .nav-label, .sidebar .sidebar-footer > button > span {
+    display: block; max-width: 190px; opacity: 1; visibility: visible; transform: translateX(0); overflow: hidden; white-space: nowrap;
+    transition: max-width .55s var(--sidebar-ease), opacity .3s ease .12s, transform .45s var(--sidebar-ease), visibility 0s;
+  }
+  .sidebar-collapsed .sidebar .nav-label, .sidebar-collapsed .sidebar .sidebar-footer > button > span {
+    display: block; max-width: 0; opacity: 0; visibility: hidden; transform: translateX(-8px); margin-left: 0;
+    transition: max-width .55s var(--sidebar-ease), opacity .18s ease, transform .35s var(--sidebar-ease), visibility 0s .18s;
+  }
+  .sidebar .sidebar-caption {
+    display: block; max-height: 30px; opacity: 1; visibility: visible; overflow: hidden; white-space: nowrap;
+    transition: max-height .55s var(--sidebar-ease), opacity .3s ease .12s, visibility 0s;
+  }
+  .sidebar-collapsed .sidebar .sidebar-caption {
+    display: block; max-height: 0; opacity: 0; visibility: hidden;
+    transition: max-height .55s var(--sidebar-ease), opacity .18s ease, visibility 0s .18s;
+  }
+  .sidebar .sidebar-last-update {
+    display: flex; max-height: 64px; opacity: 1; visibility: visible; overflow: hidden; white-space: nowrap;
+    transition: max-height .55s var(--sidebar-ease), padding .55s var(--sidebar-ease), opacity .3s ease .12s, visibility 0s;
+  }
+  .sidebar .sidebar-last-update > span { display: block; }
+  .sidebar-collapsed .sidebar .sidebar-last-update {
+    display: flex; max-height: 0; padding-block: 0; opacity: 0; visibility: hidden;
+    transition: max-height .55s var(--sidebar-ease), padding .55s var(--sidebar-ease), opacity .18s ease, visibility 0s .18s;
+  }
+}
+
+@media(max-width:767px) {
+  .sidebar {
+    opacity: 0; visibility: hidden;
+    transition: transform .55s var(--sidebar-ease), opacity .3s ease, visibility 0s .55s;
+  }
+  .sidebar.mobile-open { opacity: 1; visibility: visible; transition-delay: 0s; }
+  .sidebar .sidebar-brand-row, .sidebar .sidebar-caption, .sidebar nav, .sidebar .sidebar-footer {
+    opacity: 0; transform: translateX(-10px);
+    transition: opacity .25s ease, transform .45s var(--sidebar-ease);
+  }
+  .sidebar.mobile-open .sidebar-brand-row, .sidebar.mobile-open .sidebar-caption,
+  .sidebar.mobile-open nav, .sidebar.mobile-open .sidebar-footer { opacity: 1; transform: translateX(0); transition-delay: .1s; }
+  .sidebar-backdrop-enter-active, .sidebar-backdrop-leave-active { transition: opacity .35s ease; }
+  .sidebar-backdrop-enter-from, .sidebar-backdrop-leave-to { opacity: 0; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .sidebar, .sidebar *, .sidebar-backdrop-enter-active, .sidebar-backdrop-leave-active { transition-duration: .01s !important; transition-delay: 0s !important; }
+}

@@ -1,0 +1,65 @@
+/* Configuration stays secondary to the title and the analytical content. */
+.analysis-actions .analysis-config-trigger {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 7px;
+  color: #738477;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  box-shadow: none;
+}
+.analysis-actions .analysis-config-trigger:hover,
+.analysis-actions .analysis-config-trigger[aria-expanded=true] {
+  color: #006a3a;
+  background: #eaf2e6;
+  border-color: #d5e1d0;
+  box-shadow: none;
+}
+.analysis-config-trigger .app-icon { width: 17px; height: 17px; }
+.overview-dimensions > .panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0;
+}
+.overview-dimensions > .panel-heading > .analysis-actions { width: auto; flex: none; }
+.analysis-toolbar { min-width: 0; flex-shrink: 0; }
+.analysis-toolbar .dimension-tabs { width: 100%; margin: 0; }
+
+/* A chart and its table occupy precisely the same viewport. */
+.analytic-chart { --analysis-height: 350px; }
+.open-overview .analytic-chart { --analysis-height: 320px; }
+.overview-map-row .analytic-chart { --analysis-height: 440px; }
+.visualization-viewport { height: var(--analysis-height); min-width: 0; position: relative; }
+.analytic-chart .visualization-viewport > .table-scroll { height: 100%; max-height: none; overflow: auto; }
+.analytic-chart .visualization-viewport table { color: #334155; }
+.analytic-chart .visualization-viewport th, .analytic-chart .visualization-viewport td { white-space: nowrap; }
+.analytic-chart .visualization-viewport > .chart-host { height: 100% !important; min-height: 0; }
+.visualization-viewport th { position: sticky; top: 0; z-index: 1; }
+.analytic-table .table-scroll > table,
+.analytic-chart .visualization-viewport > .table-scroll > table { height: 100%; }
+.analytic-table .table-scroll > table > thead > tr,
+.analytic-chart .visualization-viewport > .table-scroll > table > thead > tr { height: 48px; }
+.analytic-table .table-scroll > table > tfoot > tr { height: 52px; }
+.dimension-viewport { height: calc(var(--table-height) + 68px); min-width: 0; position: relative; }
+.overview-dimensions .dimension-viewport > .analysis-embedded {
+  height: 100%; display: flex; flex-direction: column; border: 0; padding: 0;
+}
+.dimension-viewport > .analysis-embedded > .analysis-body { flex: 1; min-height: 0; }
+.dimension-viewport > .analytic-table > .analysis-body { display: flex; flex-direction: column; }
+.dimension-viewport .table-viewport { flex: 1; height: auto; min-height: 0; }
+.dimension-viewport .table-viewport > .table-scroll { height: 100%; }
+.dimension-viewport .table-footer { flex-shrink: 0; }
+.dimension-viewport .visualization-viewport { height: 100%; }
+.analysis-expanded.analytic-chart > .analysis-body { display: flex; flex-direction: column; }
+.analysis-expanded.analytic-chart .visualization-viewport { flex: 1; height: auto; min-height: 0; }
+.overview-dimensions.analysis-expanded > .analysis-body { display: flex; flex-direction: column; }
+.overview-dimensions.analysis-expanded .dimension-viewport { flex: 1; height: auto; min-height: 0; }
+@media(max-width:760px) {
+  .analytic-chart { --analysis-height: 310px; }
+  .analysis-actions .analysis-config-trigger { padding: 7px; }
+}

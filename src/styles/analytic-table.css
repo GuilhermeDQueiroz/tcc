@@ -1,0 +1,26 @@
+/* AnalysisFrame has Teleport roots; opt-in sizing must reach its actual section. */
+.analytic-table.title-hidden:not(.analysis-expanded) .panel-heading h2{display:none}
+.analytic-table.title-hidden:not(.analysis-expanded) .panel-heading{justify-content:flex-end;min-height:26px;padding:0 0 4px}
+.analytic-table.title-hidden:not(.analysis-expanded) .analysis-config-trigger{width:24px;height:24px;min-height:24px;padding:3px}
+.analytic-table.fit-viewport{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden}
+.analytic-table.fit-viewport:not(.analysis-expanded){height:100%}
+.analytic-table.fit-viewport .panel-heading{flex:none;padding:12px 14px;min-height:50px;gap:8px}
+.analytic-table.fit-viewport .panel-heading h2{font-size:14px;min-width:0}
+.analytic-table.fit-viewport .analysis-body{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0;overflow:hidden}
+.analytic-table.fit-viewport .table-viewport{flex:1;height:auto;min-height:0;min-width:0}
+.analytic-table.fit-viewport .table-scroll{height:100%;min-width:0;max-width:100%;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.analytic-table.fit-viewport table{height:auto!important}
+.analytic-table.fit-viewport th,.analytic-table.fit-viewport td{font-size:12px;padding:9px 12px;line-height:1.45}
+.analytic-table.fit-viewport thead tr{height:36px!important}.analytic-table.fit-viewport tfoot tr{height:38px!important}
+.analytic-table.fit-viewport .table-footer{flex:none;min-height:48px;padding:8px 12px;gap:8px;border-top:1px solid #e5ebe5;flex-wrap:nowrap;font-size:11px}
+.analytic-table.fit-viewport .table-footer label,.analytic-table.fit-viewport .table-footer select{font-size:11px}.analytic-table.fit-viewport .table-footer select{min-height:28px;width:60px;padding:4px}
+.analytic-table.fit-viewport .table-footer>span{margin-left:auto;white-space:nowrap}.analytic-table.fit-viewport .table-footer>div{gap:7px;white-space:nowrap}
+.analytic-table.sized-columns table.has-tree th:first-child,.analytic-table.sized-columns table.has-tree td:first-child{min-width:0;max-width:none;overflow:hidden}
+.analytic-table.sized-columns td{max-width:none;overflow:hidden;text-overflow:ellipsis}
+.analytic-table.sized-columns th{overflow:hidden}
+.analytic-table.sized-columns .cell-link{max-width:calc(100% - 34px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle;display:inline-block}
+.analytic-table.sized-columns td:first-child,.analytic-table.sized-columns th:first-child{position:sticky;left:0;background:#fff;z-index:1;border-right:1px solid #e4ebe4}
+.analytic-table.sized-columns thead th:first-child{z-index:4;background:#f4f7f3}.analytic-table.sized-columns tfoot td:first-child{z-index:4;background:#eaf3e3}
+.analytic-table.sized-columns .child-row td:first-child{background:#f8faf6}.analytic-table.sized-columns tbody tr:hover td:first-child{background:#edf5e6}
+.analytic-table.sized-columns .selected-row td:first-child{background:#e4f3db}
+@media(max-width:600px){.analytic-table.fit-viewport .table-footer{flex-wrap:wrap}.analytic-table.fit-viewport .table-footer>span{margin-left:0}}

@@ -1,0 +1,15 @@
+/* Import order preserves the existing cascade. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "./style.css";
+@import "./analytic-table.css";
+@import "./portal-layout.css";
+@import "./overview-layout.css";
+@import "./review-layout.css";
+@import "./interface-refinements.css";
+@import "../assets/fonts/manrope.css";
+@import "./metric-cards.css";
+@import "./analysis-layout.css";
+@import "./loading-effects.css";
+@import "./filter-modal.css";
+@import "./sidebar-motion.css";
+@import "./table-presentation.css";

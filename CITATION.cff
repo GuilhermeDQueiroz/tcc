@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "Ao citar a parte prática deste TCC, identifique também o commit ou a tag avaliada."
+type: software
+title: "Business Intelligence aplicado à logística: painel analítico com dados de um ERP"
+authors:
+  - family-names: "Queiroz"
+    given-names: "Guilherme Diniz"
+repository-code: "https://github.com/GuilhermeDQueiroz/tcc"
+url: "https://github.com/GuilhermeDQueiroz/tcc"
+version: "1.0.0"
+keywords:
+  - Business Intelligence
+  - Logística
+  - Apache Hop
+  - Firebird
+  - PostgreSQL
+  - TCC

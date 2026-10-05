@@ -1,0 +1,458 @@
+<?xml version='1.0' encoding='utf-8'?>
+<workflow>
+  <name>logistica_local</name>
+  <name_sync_with_filename>Y</name_sync_with_filename>
+  <description>Formação de cargas: extração nativa de cópia local e publicação isolada, validada e atômica.</description>
+  <actions>
+    <action>
+      <name>Start</name>
+      <type>SPECIAL</type>
+      <parallel>N</parallel>
+      <xloc>80</xloc>
+      <yloc>160</yloc>
+      <repeat>N</repeat>
+    </action>
+    <action>
+      <name>Preparar logística</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>260</xloc>
+      <yloc>160</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/logistica/001_preparar.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Extrair DOCUMENTO_FATURA</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>440</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_documento_fatura.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair DOCUMENTO_ITEM</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>620</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_documento_item.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair DOCUMENTO_ITEM_DETALHE</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>800</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_documento_item_detalhe.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair DOCUMENTO_PEDIDO</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>980</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_documento_pedido.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair CARGA_ITENS</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>1160</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_carga_itens.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair CARGA_DOCUMENTOS</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>1340</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_carga_documentos.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair CARGA</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>1520</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_carga.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair ITEM</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>1700</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_item.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair ITEM_DETALHE</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>1880</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_item_detalhe.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair PESSOA</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>2060</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_pessoa.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair PESSOA_ENDERECO</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>2240</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_pessoa_endereco.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair CIDADE</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>2420</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_cidade.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair UF</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>2600</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_uf.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair STATUS</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>2780</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_status.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Validar e publicar logística</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>2960</xloc>
+      <yloc>160</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/logistica/002_publicar.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Success</name>
+      <type>SUCCESS</type>
+      <parallel>N</parallel>
+      <xloc>3140</xloc>
+      <yloc>160</yloc>
+    </action>
+    <action>
+      <name>Abortar</name>
+      <type>ABORT</type>
+      <parallel>N</parallel>
+      <xloc>3320</xloc>
+      <yloc>160</yloc>
+      <message>Publicação logística interrompida. Versão anterior preservada.</message>
+    </action>
+  </actions>
+  <hops>
+    <hop>
+      <from>Start</from>
+      <to>Preparar logística</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Preparar logística</from>
+      <to>Extrair DOCUMENTO_FATURA</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Preparar logística</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair DOCUMENTO_FATURA</from>
+      <to>Extrair DOCUMENTO_ITEM</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair DOCUMENTO_FATURA</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair DOCUMENTO_ITEM</from>
+      <to>Extrair DOCUMENTO_ITEM_DETALHE</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair DOCUMENTO_ITEM</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair DOCUMENTO_ITEM_DETALHE</from>
+      <to>Extrair DOCUMENTO_PEDIDO</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair DOCUMENTO_ITEM_DETALHE</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair DOCUMENTO_PEDIDO</from>
+      <to>Extrair CARGA_ITENS</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair DOCUMENTO_PEDIDO</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair CARGA_ITENS</from>
+      <to>Extrair CARGA_DOCUMENTOS</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair CARGA_ITENS</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair CARGA_DOCUMENTOS</from>
+      <to>Extrair CARGA</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair CARGA_DOCUMENTOS</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair CARGA</from>
+      <to>Extrair ITEM</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair CARGA</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair ITEM</from>
+      <to>Extrair ITEM_DETALHE</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair ITEM</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair ITEM_DETALHE</from>
+      <to>Extrair PESSOA</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair ITEM_DETALHE</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair PESSOA</from>
+      <to>Extrair PESSOA_ENDERECO</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair PESSOA</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair PESSOA_ENDERECO</from>
+      <to>Extrair CIDADE</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair PESSOA_ENDERECO</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair CIDADE</from>
+      <to>Extrair UF</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair CIDADE</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair UF</from>
+      <to>Extrair STATUS</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair UF</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair STATUS</from>
+      <to>Validar e publicar logística</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair STATUS</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Validar e publicar logística</from>
+      <to>Success</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Validar e publicar logística</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+  </hops>
+</workflow>

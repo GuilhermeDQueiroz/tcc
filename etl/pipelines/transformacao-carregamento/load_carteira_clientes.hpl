@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8'?>
+<pipeline>
+  <info>
+    <name>load_carteira_clientes</name>
+    <name_sync_with_filename>Y</name_sync_with_filename>
+    <description>Consulta original QUERY_CARTEIRA adaptada para PostgreSQL: staging → dw.carga_carteira.</description>
+    <extended_description />
+    <pipeline_version />
+    <pipeline_type>Normal</pipeline_type>
+    <parameters>
+    </parameters>
+    <capture_transform_performance>N</capture_transform_performance>
+    <transform_performance_capturing_delay>1000</transform_performance_capturing_delay>
+    <transform_performance_capturing_size_limit>100</transform_performance_capturing_size_limit>
+    <created_user>-</created_user>
+    <created_date>2026/08/13 09:00:00.000</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2026/08/13 09:00:00.000</modified_date>
+  </info>
+  <notepads>
+  </notepads>
+  <order>
+    <hop>
+      <from>Ler staging (joins e cálculos)</from>
+      <to>Gravar DW (dados transformados)</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <transform>
+    <name>Gravar DW (dados transformados)</name>
+    <type>TableOutput</type>
+    <custom_select>N</custom_select>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <add_columns>N</add_columns>
+    <always_drop_and_recreate>N</always_drop_and_recreate>
+    <auto_update_table_structure>N</auto_update_table_structure>
+    <change_column_types>N</change_column_types>
+    <commit>1000</commit>
+    <connection>DW</connection>
+    <drop_columns>N</drop_columns>
+    <fields>
+      <field>
+        <column_name>codigo_pessoa</column_name>
+        <stream_name>codigo_pessoa</stream_name>
+      </field>
+      <field>
+        <column_name>razaosocial_pessoa</column_name>
+        <stream_name>razaosocial_pessoa</stream_name>
+      </field>
+      <field>
+        <column_name>cliente_pessoa</column_name>
+        <stream_name>cliente_pessoa</stream_name>
+      </field>
+      <field>
+        <column_name>grupo_pessoa</column_name>
+        <stream_name>grupo_pessoa</stream_name>
+      </field>
+      <field>
+        <column_name>descricao_grupo</column_name>
+        <stream_name>descricao_grupo</stream_name>
+      </field>
+      <field>
+        <column_name>grupo_cliente_descricao</column_name>
+        <stream_name>grupo_cliente_descricao</stream_name>
+      </field>
+    </fields>
+    <ignore_errors>N</ignore_errors>
+    <only_when_have_rows>N</only_when_have_rows>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_monthly>N</partitioning_monthly>
+    <return_keys>N</return_keys>
+    <schema>dw</schema>
+    <specify_fields>Y</specify_fields>
+    <table>carga_carteira</table>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_in_table>N</tablename_in_table>
+    <truncate>N</truncate>
+    <use_batch>Y</use_batch>
+    <attributes />
+    <GUI>
+      <xloc>608</xloc>
+      <yloc>160</yloc>
+    </GUI>
+  </transform>
+  <transform>
+    <name>Ler staging (joins e cálculos)</name>
+    <type>TableInput</type>
+    <custom_select>N</custom_select>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>DW</connection>
+    <execute_each_row>N</execute_each_row>
+    <limit />
+    <sql>SELECT
+  original."codigo_pessoa" AS "codigo_pessoa",
+  original."razaosocial_pessoa" AS "razaosocial_pessoa",
+  original."cliente_pessoa" AS "cliente_pessoa",
+  original."grupo_pessoa" AS "grupo_pessoa",
+  original."descricao_grupo" AS "descricao_grupo",
+  original."grupo_cliente" AS "grupo_cliente_descricao"
+FROM (
+select 
+    pessoa.codigo_pessoa,
+    pessoa.razaosocial_pessoa,
+    pessoa.cliente_pessoa,
+    pessoa.grupo_pessoa,
+    grupo.descricao_grupo,
+    case when coalesce(pessoa.grupo_pessoa, 0) = 0 
+         then coalesce(pessoa.razaosocial_pessoa, 'SEM NOME') 
+         else pessoa.grupo_pessoa || ' - ' || coalesce(grupo.descricao_grupo, 'SEM GRUPO') 
+    end as GRUPO_CLIENTE
+ from staging.stg_pessoa PESSOA left join staging.stg_grupo GRUPO on (pessoa.grupo_pessoa = grupo.codigo_grupo)
+ where 
+    (
+       (pessoa.cliente_pessoa = 'S')
+    )
+) original</sql>
+    <variables_active>Y</variables_active>
+    <attributes />
+    <GUI>
+      <xloc>224</xloc>
+      <yloc>160</yloc>
+    </GUI>
+  </transform>
+  <transform_error_handling>
+  </transform_error_handling>
+  <attributes />
+</pipeline>

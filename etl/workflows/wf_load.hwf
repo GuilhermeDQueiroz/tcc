@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='utf-8'?>
+<workflow>
+  <name>wf_load</name>
+  <name_sync_with_filename>Y</name_sync_with_filename>
+  <description>Validação e publicação atômica do modelo analítico</description>
+  <actions>
+    <action>
+      <name>Start</name>
+      <type>SPECIAL</type>
+      <parallel>N</parallel>
+      <xloc>60</xloc>
+      <yloc>160</yloc>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+    </action>
+    <action>
+      <name>Preparar índices e estatísticas</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>240</xloc>
+      <yloc>160</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/008_indices_staging.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Transformar abertos</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>440</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/transformacao-carregamento/load_pedidos_abertos.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Transformar emitidos</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>640</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/transformacao-carregamento/load_pedidos_emitidos.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Transformar faturados</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>840</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/transformacao-carregamento/load_pedidos_faturados.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Transformar carteira</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>1040</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/transformacao-carregamento/load_carteira_clientes.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Transformar metas</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>240</xloc>
+      <yloc>310</yloc>
+      <filename>${PROJECT_HOME}/pipelines/transformacao-carregamento/load_metas_consultores.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Validar bases transformadas</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>440</xloc>
+      <yloc>310</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/004_validacao.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Publicar modelo analítico</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>640</xloc>
+      <yloc>310</yloc>
+      <filename>${PROJECT_HOME}/pipelines/transformacao-carregamento/load_modelo_analitico.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Success</name>
+      <type>SUCCESS</type>
+      <parallel>N</parallel>
+      <xloc>840</xloc>
+      <yloc>310</yloc>
+    </action>
+    <action>
+      <name>Abortar</name>
+      <type>ABORT</type>
+      <parallel>N</parallel>
+      <xloc>850</xloc>
+      <yloc>510</yloc>
+      <message>Carga interrompida; consulte o log. Publicação é transacional.</message>
+    </action>
+  </actions>
+  <hops>
+    <hop>
+      <from>Start</from>
+      <to>Preparar índices e estatísticas</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Preparar índices e estatísticas</from>
+      <to>Transformar abertos</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Preparar índices e estatísticas</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar abertos</from>
+      <to>Transformar emitidos</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar abertos</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar emitidos</from>
+      <to>Transformar faturados</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar emitidos</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar faturados</from>
+      <to>Transformar carteira</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar faturados</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar carteira</from>
+      <to>Transformar metas</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar carteira</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar metas</from>
+      <to>Validar bases transformadas</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformar metas</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Validar bases transformadas</from>
+      <to>Publicar modelo analítico</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Validar bases transformadas</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Publicar modelo analítico</from>
+      <to>Success</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Publicar modelo analítico</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+  </hops>
+</workflow>

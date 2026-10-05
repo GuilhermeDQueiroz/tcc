@@ -1,0 +1,1292 @@
+{
+  "QUERY_FATURADOS": [
+    {
+      "name": "CODIGO_PEDIDO",
+      "type": "<class 'int'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "CODIGO_CLIENTE",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "RAZAO_SOCIAL",
+      "type": "<class 'str'>",
+      "length": 70,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "GRUPO_CLIENTE",
+      "type": "<class 'str'>",
+      "length": 84,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CONSULTOR",
+      "type": "<class 'str'>",
+      "length": 84,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "SUPERVISOR",
+      "type": "<class 'str'>",
+      "length": 84,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "DATA_EMISSAO_PEDIDO",
+      "type": "<class 'datetime.date'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DIA",
+      "type": "<class 'int'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "MES",
+      "type": "<class 'int'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "ANO",
+      "type": "<class 'int'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "NIVEL_DE_SERVICO",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DT_PREVISAO_FATURAMENTO",
+      "type": "<class 'datetime.date'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "ON_TIME",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DIAS_DESVIO_FATURAMENTO",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "TIPO_ENTREGA",
+      "type": "<class 'str'>",
+      "length": 7,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "VALOR_FATURADO",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -10,
+      "nullable": false
+    },
+    {
+      "name": "QUANTIDADE_FATURADA",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "PESO_FATURADO",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -7,
+      "nullable": true
+    },
+    {
+      "name": "VOLUME_M3_FATURADO",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -8,
+      "nullable": true
+    },
+    {
+      "name": "UF",
+      "type": "<class 'str'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "REGIAO_UF",
+      "type": "<class 'str'>",
+      "length": 12,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "MICRO_REGIAO",
+      "type": "<class 'str'>",
+      "length": 50,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CIDADE",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CLASSIFICACAO",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "ORIGEM",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "ORGAO",
+      "type": "<class 'str'>",
+      "length": 40,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "STATUS",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CODIGO_ITEM",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "DESCRICAO_ITEM",
+      "type": "<class 'str'>",
+      "length": 255,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "COR",
+      "type": "<class 'str'>",
+      "length": 269,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "GRUPO_ITEM",
+      "type": "<class 'str'>",
+      "length": 54,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "SUBGRUPO",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "TIPO",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "COLECAO",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "LINHA",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "FAMILIA",
+      "type": "<class 'str'>",
+      "length": 34,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CARGA",
+      "type": "<class 'int'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "DESCRICAO_CARGA",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "ENTREGA",
+      "type": "<class 'int'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DT_FATURA",
+      "type": "<class 'datetime.datetime'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "NOTAFISCAL",
+      "type": "<class 'int'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "VLRBRUTOLIQUIDO_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "QTDEABERTA_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "VLRUNITARIOBRUTO_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "VLRUNITARIOLIQUIDO_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "VLR_UNIT_BRULIQ",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -6,
+      "nullable": false
+    },
+    {
+      "name": "VLRLIQUIDO_DOCFAT",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    }
+  ],
+  "QUERY_ABERTOS": [
+    {
+      "name": "CODIGO_PEDIDO",
+      "type": "<class 'int'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "CODIGO_CLIENTE",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "RAZAO_SOCIAL",
+      "type": "<class 'str'>",
+      "length": 70,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "GRUPO_CLIENTE",
+      "type": "<class 'str'>",
+      "length": 70,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CONSULTOR",
+      "type": "<class 'str'>",
+      "length": 84,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "SUPERVISOR",
+      "type": "<class 'str'>",
+      "length": 84,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "DATA_EMISSAO_PEDIDO",
+      "type": "<class 'datetime.date'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DIA",
+      "type": "<class 'int'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "MES",
+      "type": "<class 'int'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "ANO",
+      "type": "<class 'int'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "NIVEL_DE_SERVICO",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DT_PREVISAO_FATURAMENTO",
+      "type": "<class 'datetime.date'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "TIPO_ENTREGA",
+      "type": "<class 'str'>",
+      "length": 7,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "VALOR_EM_ABERTO",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -10,
+      "nullable": false
+    },
+    {
+      "name": "QTDEABERTA_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "PESO_EM_ABERTO",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -7,
+      "nullable": true
+    },
+    {
+      "name": "VOLUME_M3_EM_ABERTO",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -8,
+      "nullable": true
+    },
+    {
+      "name": "UF",
+      "type": "<class 'str'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "REGIAO_UF",
+      "type": "<class 'str'>",
+      "length": 12,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "MICRO_REGIAO",
+      "type": "<class 'str'>",
+      "length": 50,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CIDADE",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CLASSIFICACAO",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "ORIGEM",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "ORGAO",
+      "type": "<class 'str'>",
+      "length": 40,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "STATUS",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "CODIGO_ITEM",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DESCRICAO_ITEM",
+      "type": "<class 'str'>",
+      "length": 255,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "COR",
+      "type": "<class 'str'>",
+      "length": 269,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "GRUPO_ITEM",
+      "type": "<class 'str'>",
+      "length": 54,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "SUBGRUPO",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "TIPO",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "COLECAO",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "LINHA",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "VLRBRUTOLIQUIDO_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "VLRUNITARIOBRUTO_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "VLRUNITARIOLIQUIDO_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "VLR_UNIT_BRULIQ",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -6,
+      "nullable": false
+    },
+    {
+      "name": "VLRLIQUIDO_DOCFAT",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    }
+  ],
+  "QUERY_EMITIDOS": [
+    {
+      "name": "CODIGO_PEDIDO",
+      "type": "<class 'int'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "CODIGO_CLIENTE",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "RAZAO_SOCIAL",
+      "type": "<class 'str'>",
+      "length": 70,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "GRUPO_CLIENTE",
+      "type": "<class 'str'>",
+      "length": 70,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CODIGO_CONSULTOR",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CONSULTOR",
+      "type": "<class 'str'>",
+      "length": 84,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "SUPERVISOR",
+      "type": "<class 'str'>",
+      "length": 84,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "DATA_EMISSAO_PEDIDO",
+      "type": "<class 'datetime.date'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DIA",
+      "type": "<class 'int'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "MES",
+      "type": "<class 'int'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "ANO",
+      "type": "<class 'int'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "NIVEL_DE_SERVICO",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DT_PREVISAO_FATURAMENTO",
+      "type": "<class 'datetime.date'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "TIPO_ENTREGA",
+      "type": "<class 'str'>",
+      "length": 7,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "VALOR_EMITIDO",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "QUANTIDADE_EMITIDA",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "PESO_EMITIDO",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -7,
+      "nullable": true
+    },
+    {
+      "name": "VOLUME_M3_EMITIDO",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -8,
+      "nullable": true
+    },
+    {
+      "name": "UF",
+      "type": "<class 'str'>",
+      "length": 2,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "REGIAO_UF",
+      "type": "<class 'str'>",
+      "length": 12,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "MICRO_REGIAO",
+      "type": "<class 'str'>",
+      "length": 50,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CIDADE",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CLASSIFICACAO",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "ORIGEM",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "ORGAO",
+      "type": "<class 'str'>",
+      "length": 40,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "STATUS",
+      "type": "<class 'str'>",
+      "length": 30,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "CODIGO_ITEM",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DESCRICAO_ITEM",
+      "type": "<class 'str'>",
+      "length": 255,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "COR",
+      "type": "<class 'str'>",
+      "length": 269,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "GRUPO_ITEM",
+      "type": "<class 'str'>",
+      "length": 54,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "SUBGRUPO",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "TIPO",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "COLECAO",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "LINHA",
+      "type": "<class 'str'>",
+      "length": 44,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "VLRUNITARIOBRUTO_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "VLRUNITARIOLIQUIDO_DOCITEMDET",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -4,
+      "nullable": false
+    },
+    {
+      "name": "VLR_UNIT_BRULIQ",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 0,
+      "scale": -6,
+      "nullable": false
+    },
+    {
+      "name": "VLRLIQUIDO_DOCFAT",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    }
+  ],
+  "QUERY_CARTEIRA": [
+    {
+      "name": "CODIGO_PESSOA",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "RAZAOSOCIAL_PESSOA",
+      "type": "<class 'str'>",
+      "length": 70,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "CLIENTE_PESSOA",
+      "type": "<class 'str'>",
+      "length": 1,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "GRUPO_PESSOA",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DESCRICAO_GRUPO",
+      "type": "<class 'str'>",
+      "length": 40,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "GRUPO_CLIENTE",
+      "type": "<class 'str'>",
+      "length": 70,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    }
+  ],
+  "QUERY_METAS_CONSULTORES": [
+    {
+      "name": "AUTOINC_METASVEN",
+      "type": "<class 'int'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "EMPRESA_METASVEN",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "TIPO_METASVEN",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "TIPODOC_METASVEN",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "ANO_METASVEN",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "CODIGO_METASVEN",
+      "type": "<class 'int'>",
+      "length": 4,
+      "precision": 0,
+      "scale": 0,
+      "nullable": false
+    },
+    {
+      "name": "DESCRICAO",
+      "type": "<class 'str'>",
+      "length": 70,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "METAPORLINHA",
+      "type": "<class 'str'>",
+      "length": 1,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "METAPORGRUPO",
+      "type": "<class 'str'>",
+      "length": 1,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "METAPORTIPOPRODUTO",
+      "type": "<class 'str'>",
+      "length": 1,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "METAPORREGIAO",
+      "type": "<class 'str'>",
+      "length": 1,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "METAPORUNIDADEFABRIL",
+      "type": "<class 'str'>",
+      "length": 1,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "METAPORORIGEM",
+      "type": "<class 'str'>",
+      "length": 1,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "METAPORSUPERVISOR",
+      "type": "<class 'str'>",
+      "length": 1,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "METAPORCONSULTOR",
+      "type": "<class 'str'>",
+      "length": 1,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "META_01_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_02_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_03_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_04_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_05_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_06_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_07_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_08_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_09_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_10_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_11_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "META_12_METASVEN",
+      "type": "<class 'decimal.Decimal'>",
+      "length": 8,
+      "precision": 18,
+      "scale": -2,
+      "nullable": false
+    },
+    {
+      "name": "DATAHORAINCLUSAO_METASVEN",
+      "type": "<class 'datetime.datetime'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "USUARIOINCLUSAO_METASVEN",
+      "type": "<class 'str'>",
+      "length": 20,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "DATAHORAALTERACAO_METASVEN",
+      "type": "<class 'datetime.datetime'>",
+      "length": 8,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    },
+    {
+      "name": "USUARIOALTERACAO_METASVEN",
+      "type": "<class 'str'>",
+      "length": 20,
+      "precision": 0,
+      "scale": 0,
+      "nullable": true
+    }
+  ]
+}

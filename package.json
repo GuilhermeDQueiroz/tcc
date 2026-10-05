@@ -1,0 +1,47 @@
+{
+  "name": "legacy-refatorado-tcc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Painel analítico de logística para o TCC, com ETL Apache Hop, PostgreSQL, API Node.js e Vue.",
+  "engines": {"node": ">=24 <25"},
+  "packageManager": "npm@11.13.0",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/run-tests.mjs public",
+    "test:real": "node scripts/run-tests.mjs real",
+    "test:etl": "node scripts/run-python.mjs etl/scripts/validate_raw_etl.py",
+    "etl:commercial": "node --env-file=.env scripts/run-python.mjs etl/scripts/run_hop.py",
+    "etl:logistics": "node --env-file=.env scripts/run-python.mjs etl/scripts/run_logistica.py",
+    "check:repository": "node scripts/check-repository.mjs",
+    "check": "npm test && npm run build && npm run check:repository",
+    "dev": "vite --host 127.0.0.1",
+    "api": "node --watch api-server/server.js",
+    "start": "node api-server/server.js",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test:ui": "playwright test"
+  },
+  "dependencies": {
+    "compression": "1.8.2",
+    "dotenv": "18.0.5",
+    "echarts": "6.1.0",
+    "express": "5.2.1",
+    "pg": "8.23.1",
+    "pinia": "4.0.3",
+    "vue": "3.5.43",
+    "vue-echarts": "8.3.1",
+    "vue-router": "5.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/compression": "1.8.1",
+    "@types/express": "5.0.6",
+    "@types/node": "26.6.3",
+    "@vitejs/plugin-vue": "6.0.9",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "vite": "8.3.2",
+    "vue-tsc": "3.3.11"
+  }
+}

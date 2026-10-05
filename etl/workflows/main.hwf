@@ -1,0 +1,269 @@
+<?xml version='1.0' encoding='utf-8'?>
+<workflow>
+  <name>main</name>
+  <name_sync_with_filename>Y</name_sync_with_filename>
+  <description>Carga diária completa: dimensões, fatos e publicação</description>
+  <actions>
+    <action>
+      <name>Start</name>
+      <type>SPECIAL</type>
+      <parallel>N</parallel>
+      <xloc>60</xloc>
+      <yloc>160</yloc>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+    </action>
+    <action>
+      <name>Identificar execução</name>
+      <type>EVAL</type>
+      <parallel>N</parallel>
+      <xloc>240</xloc>
+      <yloc>160</yloc>
+      <script>if (java.lang.System.getProperty("HOP_PLATFORM_RUNTIME") == "GUI" || !parent_workflow.getVariable("ETL_RUN_ID")) { parent_workflow.setVariable("ETL_RUN_ID", java.util.UUID.randomUUID().toString()); } true;</script>
+    </action>
+    <action>
+      <name>Preservar referência curada</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>440</xloc>
+      <yloc>160</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/007_preservar_referencia.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Criar staging</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>640</xloc>
+      <yloc>160</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/001_staging.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Criar modelo</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>840</xloc>
+      <yloc>160</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/002_modelo_analitico.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Preparar carga</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>1040</xloc>
+      <yloc>160</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/005_preparacao.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>wf_extracao_dimensoes</name>
+      <type>WORKFLOW</type>
+      <parallel>N</parallel>
+      <xloc>240</xloc>
+      <yloc>310</yloc>
+      <filename>${PROJECT_HOME}/workflows/wf_extracao_dimensoes.hwf</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>wf_extracao_fatos</name>
+      <type>WORKFLOW</type>
+      <parallel>N</parallel>
+      <xloc>440</xloc>
+      <yloc>310</yloc>
+      <filename>${PROJECT_HOME}/workflows/wf_extracao_fatos.hwf</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>wf_load</name>
+      <type>WORKFLOW</type>
+      <parallel>N</parallel>
+      <xloc>640</xloc>
+      <yloc>310</yloc>
+      <filename>${PROJECT_HOME}/workflows/wf_load.hwf</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Success</name>
+      <type>SUCCESS</type>
+      <parallel>N</parallel>
+      <xloc>840</xloc>
+      <yloc>310</yloc>
+    </action>
+    <action>
+      <name>Registrar falha</name>
+      <type>SQL</type>
+      <parallel>N</parallel>
+      <xloc>650</xloc>
+      <yloc>510</yloc>
+      <connection>DW</connection>
+      <sqlfromfile>Y</sqlfromfile>
+      <sqlfilename>${PROJECT_HOME}/sql/006_falha.sql</sqlfilename>
+      <sqlfilename_encoding>UTF-8</sqlfilename_encoding>
+      <useVariableSubstitution>Y</useVariableSubstitution>
+      <sendOneStatement>Y</sendOneStatement>
+    </action>
+    <action>
+      <name>Abortar</name>
+      <type>ABORT</type>
+      <parallel>N</parallel>
+      <xloc>850</xloc>
+      <yloc>510</yloc>
+      <message>Carga interrompida; consulte o log. Publicação é transacional.</message>
+    </action>
+  </actions>
+  <hops>
+    <hop>
+      <from>Start</from>
+      <to>Identificar execução</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Identificar execução</from>
+      <to>Preservar referência curada</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Identificar execução</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Preservar referência curada</from>
+      <to>Criar staging</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Preservar referência curada</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Criar staging</from>
+      <to>Criar modelo</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Criar staging</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Criar modelo</from>
+      <to>Preparar carga</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Criar modelo</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Preparar carga</from>
+      <to>wf_extracao_dimensoes</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Preparar carga</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>wf_extracao_dimensoes</from>
+      <to>wf_extracao_fatos</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>wf_extracao_dimensoes</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>wf_extracao_fatos</from>
+      <to>wf_load</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>wf_extracao_fatos</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>wf_load</from>
+      <to>Success</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>wf_load</from>
+      <to>Registrar falha</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Registrar falha</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+  </hops>
+</workflow>

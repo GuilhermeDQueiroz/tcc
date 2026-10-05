@@ -1,0 +1,8 @@
+{
+  "default": {
+    "financeira": 0,
+    "peso": 0,
+    "emissao_financeira": 0,
+    "emissao_peso": 0
+  }
+}

@@ -1,0 +1,38 @@
+import {test,expect} from '@playwright/test'
+test('resumo organiza indicadores, calendário, entregas, mapa e uma tabela por dimensão',async({page})=>{
+  await page.goto('/abertos')
+  await expect(page.locator('.open-overview')).toBeVisible()
+  await expect(page.locator('.overview-metrics > *')).toHaveCount(10)
+  await expect(page.locator('[data-section="forecast"] .forecast-calendar')).toBeVisible()
+  await expect(page.locator('[data-section="delivery-metrics"] [data-testid="metric-card"]')).toHaveCount(2)
+  await expect(page.locator('[data-section="geography"] [data-series-id="abertos.resumo.UF"]')).toBeVisible()
+  await expect(page.locator('.overview-dimensions .analytic-table')).toHaveCount(1)
+  await expect(page.locator('.overview-dimensions .table-footer')).toHaveCount(0)
+  const amounts=page.locator('.overview-metrics > .metric-card[data-format="currency"] > strong')
+  expect(await amounts.evaluateAll(elements=>elements.every(element=>element.scrollWidth<=element.clientWidth))).toBe(true)
+  await expect(page.locator('.backlog-values')).toContainText('|')
+  await page.getByRole('button',{name:'Configurar Análise por dimensão',exact:true}).click()
+  await page.getByLabel('Barras Horizontais',{exact:true}).check()
+  await expect(page.locator('.overview-dimensions .chart-host canvas').first()).toBeAttached()
+  const changedMetric=page.waitForResponse(response=>response.url().includes('/bi/abertos/dimensoes?')&&new URL(response.url()).searchParams.get('metric')==='weightKg')
+  await page.getByLabel('Peso (Ton)',{exact:true}).check()
+  const metricResponse=await changedMetric
+  expect(metricResponse.status()).toBe(200)
+  expect((await metricResponse.json()).series[0].format).toBe('weight')
+  await page.getByLabel('Valor (R$)',{exact:true}).check()
+  await page.getByLabel('Tabela',{exact:true}).check()
+  await expect(page.locator('.overview-dimensions .analytic-table')).toHaveCount(1)
+  await page.getByRole('button',{name:'Configurar Análise por dimensão',exact:true}).click()
+  const toggle=page.getByRole('button',{name:'Status do Pedido',exact:true})
+  await toggle.scrollIntoViewIfNeeded();await toggle.click()
+  await expect(page.locator('[data-table-id="abertos.dimensoes.STATUS"]')).toBeVisible()
+  await page.screenshot({path:'tests/ui/screenshots/abertos-organizacao-desktop.png'})
+  await page.getByRole('button',{name:'Resumo Mensal',exact:true}).click()
+  await expect(page.locator('[data-table-id="abertos.dimensoes.Mes_Grupo"]')).toBeVisible()
+  await page.evaluate(()=>{
+    document.querySelectorAll<HTMLElement>('.app-shell,.main-shell,.main-shell main').forEach(element=>{element.style.height='auto';element.style.overflow='visible';element.style.flex='none'})
+    document.body.style.overflow='visible'
+    document.querySelector<HTMLElement>('.main-shell')!.style.width='calc(100% - 250px)'
+  })
+  await page.screenshot({path:'tests/ui/screenshots/abertos-organizacao-completa.png',fullPage:true,animations:'disabled'})
+})

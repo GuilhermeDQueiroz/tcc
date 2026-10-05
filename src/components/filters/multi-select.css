@@ -1,0 +1,28 @@
+/* Reusable select presentation; the modal provides the same project tokens. */
+.filter-select {position:relative;display:flex;flex-direction:column;gap:6px;min-width:0;width:100%;font-family:inherit;}
+.filter-select-label {font-size:12px;font-weight:600;color:var(--filter-text,#334155);line-height:1.5;}
+.filter-select-box {min-height:40px;min-width:0;padding:5px 8px;border:1px solid var(--filter-border,#E5E7E6);border-radius:10px;background:#fff;display:flex;align-items:center;gap:6px;cursor:text;transition:border-color .2s,box-shadow .2s;}
+.filter-select-box:hover {border-color:#A4D675;}
+.filter-select-box.is-open,.filter-select-box:focus-within {border-color:var(--filter-green,#006A3A);box-shadow:0 0 0 2px rgba(139,197,63,.2);}
+.filter-select-tags {flex:1;min-width:0;display:flex;align-items:center;flex-wrap:wrap;gap:5px;}
+.filter-select-chip {max-width:100%;display:inline-flex;align-items:center;gap:4px;padding:3px 6px;background:var(--filter-selected,#E2F2D9);color:var(--filter-green,#006A3A);border:1px solid #C8E6B2;border-radius:6px;font-size:12px;font-weight:600;line-height:1.4;}
+.filter-select-chip > span {max-width:180px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.filter-select .filter-select-chip > button,.filter-select .filter-select-controls > button {border:0;background:transparent;display:grid;place-items:center;flex:none;width:22px;height:22px;padding:3px;border-radius:6px;color:inherit;cursor:pointer;}
+.filter-select .filter-select-chip > button {width:16px;height:16px;padding:1px;}
+.filter-select .filter-select-chip .app-icon {width:12px;height:12px;}
+.filter-select-chip > button:hover,.filter-select-controls > button:hover {background:rgba(139,197,63,.15);color:var(--filter-green,#006A3A);}
+.filter-select .filter-select-search {flex:1;width:0;min-width:65px;max-width:100%;min-height:27px;padding:2px 0;margin:0;border:0;border-radius:0;outline:none;box-shadow:none;background:transparent;font:inherit;font-size:14px;color:var(--filter-text,#334155);}
+.filter-select-search::placeholder {color:#8c9ba5;opacity:1;}
+.filter-select-controls {display:flex;align-items:center;gap:1px;flex:none;color:var(--filter-muted,#64748b);}
+.filter-select-controls .app-icon {width:14px;height:14px;transition:transform .2s;}
+.filter-select-controls .app-icon.is-open {transform:rotate(180deg);}
+.filter-select-menu {position:absolute;top:calc(100% + 6px);left:0;right:0;padding:4px;overflow:auto;z-index:2;min-width:0;background:#fff;border:1px solid var(--filter-border,#E5E7E6);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.filter-select-menu.opens-above {top:auto;bottom:calc(100% + 6px);}
+.filter-select-option {display:flex;align-items:center;gap:8px;padding:8px;border-radius:6px;font-size:14px;line-height:1.5;color:var(--filter-text,#334155);cursor:pointer;}
+.filter-select-option:hover,.filter-select-option.is-highlighted {background:var(--filter-hover,#EDF7E7);}
+.filter-select-option.is-selected {background:var(--filter-selected,#E2F2D9);color:var(--filter-green,#006A3A);font-weight:600;}
+.filter-select-check {width:15px;height:15px;flex:none;display:grid;place-items:center;border:1px solid #c5cec6;border-radius:4px;}
+.filter-select-option.is-selected .filter-select-check {background:var(--filter-green,#006A3A);border-color:var(--filter-green,#006A3A);color:#fff;}
+.filter-select .filter-select-check .app-icon {width:11px;height:11px;}
+.filter-select-option-text {min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.filter-select-empty,.filter-select-more {padding:12px 8px;margin:0;color:var(--filter-muted,#64748b);text-align:center;font-size:12px;line-height:1.5;}

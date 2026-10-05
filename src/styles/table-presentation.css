@@ -1,0 +1,41 @@
+/* One alignment rule for headers, records and totals; percentage widths do not
+   depend on the number of digits in individual rows. */
+.analytic-table th.numeric,.analytic-table td.numeric{text-align:right;font-variant-numeric:tabular-nums}
+.analytic-table th.numeric>button{width:100%;justify-content:flex-end}
+.analytic-table .progress-cell{display:grid;grid-template-columns:minmax(30px,65px) 4ch;justify-content:end;gap:8px;min-width:0;align-items:center}
+.analytic-table .progress-track{width:100%;min-width:0}
+.analytic-table .progress-value{display:block;text-align:right;font-variant-numeric:tabular-nums}
+.analytic-table tfoot td{padding-inline:14px}
+.analytic-table.fit-viewport tfoot td{padding-inline:12px}
+
+/* Hierarchy labels must retain usable space after indentation and controls.
+   Wrapping keeps actual group/order names visible in narrow fixed columns. */
+.analytic-table .tree-identity{display:flex;align-items:center;gap:4px;min-width:0;width:100%}
+.analytic-table .tree-identity>.tree-branch-icon,.analytic-table .tree-identity>.expand-row{flex:none;margin-right:0}
+.analytic-table .tree-identity>.cell-link,.analytic-table .tree-identity>span:last-child:not(.tree-branch-icon){flex:1;min-width:0;max-width:none;white-space:normal;overflow-wrap:anywhere;overflow:visible;text-overflow:clip;line-height:1.4;text-align:left}
+.analytic-table.sized-columns .tree-identity>.cell-link{max-width:none;white-space:normal;overflow:visible;text-overflow:clip;display:block}
+
+/* Keep scrollbars inside their viewport, with the same unobtrusive treatment
+   on the page and in both dashboards' tables. Preserve native keyboard/scroll. */
+.main-shell main,.table-scroll,.dimension-tabs{scrollbar-width:thin;scrollbar-color:#a4b6a7 transparent}
+.main-shell main{scrollbar-gutter:stable}
+.main-shell main::-webkit-scrollbar,.table-scroll::-webkit-scrollbar,.dimension-tabs::-webkit-scrollbar{width:7px;height:7px}
+.main-shell main::-webkit-scrollbar-track,.table-scroll::-webkit-scrollbar-track,.dimension-tabs::-webkit-scrollbar-track{background:transparent}
+.main-shell main::-webkit-scrollbar-thumb,.table-scroll::-webkit-scrollbar-thumb,.dimension-tabs::-webkit-scrollbar-thumb{background:#a4b6a7;border-radius:8px;border:2px solid #f4f6f4}
+.main-shell main::-webkit-scrollbar-thumb:hover,.table-scroll::-webkit-scrollbar-thumb:hover,.dimension-tabs::-webkit-scrollbar-thumb:hover{background:#688570}
+.main-shell main::-webkit-scrollbar-button,.table-scroll::-webkit-scrollbar-button,.dimension-tabs::-webkit-scrollbar-button{display:none;width:0;height:0}
+.table-scroll::-webkit-scrollbar-corner{background:transparent}
+
+.open-overview .dimension-viewport{height:var(--table-height);min-width:0}
+.open-overview .open-orders>.analytic-table{height:var(--table-height)}
+.open-overview .analytic-table:not(.analysis-expanded){background:transparent;border:0;box-shadow:none;min-width:0;max-width:100%}
+.open-overview .analytic-table .table-viewport{border:1px solid #dce5d9;border-radius:7px;min-height:0;min-width:0;max-width:100%;overflow:hidden}
+.open-overview .analytic-table tbody td{padding:9px 12px;font-size:12px}
+.open-overview .analytic-table th{padding:9px 12px;font-size:12px}
+.open-overview .analytic-table tfoot td{padding:9px 12px;font-size:12px}
+.open-overview .analytic-table .table-scroll{background:transparent}
+.open-overview .analytic-table.fit-viewport .table-scroll>table{height:100%!important}
+.open-overview .analytic-table tbody tr:nth-child(even){background:#ecf1e9}
+.open-overview .analytic-table tbody td:first-child{background:#f4f6f4}
+.open-overview .analytic-table tbody tr:nth-child(even) td:first-child{background:#ecf1e9}
+.open-overview .analytic-table .panel-heading{padding:0 0 4px;min-height:26px}
