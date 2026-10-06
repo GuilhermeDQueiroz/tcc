@@ -1,8 +1,10 @@
 import {buildLogisticsDashboard} from '../domain/logistics.js';
 import {AsyncCache,stableKey} from '../cache.js';
+import {readGeoCache,enrichLocations} from '../geolocation.js';
 export class LogisticsRepository {
-  constructor(pool){
+  constructor(pool,{readLocations=readGeoCache}={}){
     this.pool=pool;
+    this.readLocations=readLocations;
     this.snapshots=new AsyncCache({maxEntries:2,ttl:1800000});
     this.payloads=new AsyncCache({maxEntries:6,ttl:300000});
   }
@@ -16,11 +18,12 @@ export class LogisticsRepository {
         FROM logistica.publicacao p JOIN logistica.execucao e ON e.id=p.execucao_id WHERE e.status='publicado'`);
       const execution=result.rows[0];
       if(!execution)throw Object.assign(new Error('Ainda não há publicação logística válida.'),{status:409});
-      const snapshot=await this.snapshots.get(String(execution.id),async()=>{
+      const locations=await this.readLocations();
+      const snapshot=await this.snapshots.get(stableKey([execution.id,locations.version]),async()=>{
         const items=await client.query(`SELECT *,emissao::text,previsao_faturamento::text,promessa_entrega::text FROM logistica.item_pedido WHERE execucao_id=$1 ORDER BY pedido_id DESC,item_id`,[execution.id]);
         const allocations=await client.query(`SELECT *,emissao::text,previsao_faturamento::text,inicio_separacao::text,fim_separacao::text,inicio_conferencia::text,fim_conferencia::text,fechamento::text,liberacao_saida::text
           FROM logistica.alocacao WHERE execucao_id=$1 ORDER BY carga_id DESC,pedido_id,item_id`,[execution.id]);
-        return {execution,items:items.rows,allocations:allocations.rows};
+        return {execution,items:enrichLocations(items.rows,locations),allocations:allocations.rows,geoVersion:locations.version,geoWarning:locations.warning};
       });
       await client.query('COMMIT');return snapshot;
     }catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
@@ -28,7 +31,7 @@ export class LogisticsRepository {
   async getDashboard(filters={}){
     // Always check the active publication. Cached data never masks an outage.
     const snapshot=await this.snapshot();
-    return this.payloads.get(stableKey([snapshot.execution.id,filters]),()=>
+    return this.payloads.get(stableKey([snapshot.execution.id,snapshot.geoVersion,filters]),()=>
       buildLogisticsDashboard({...snapshot,filters}));
   }
 }

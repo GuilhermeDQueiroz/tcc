@@ -7,6 +7,12 @@ const order=(id,qty)=>({id:'pedido-'+id,pedido_id:id,uf:'SP',cidade:'Cidade A',c
 const load=(id,rows)=>({id:'carga-'+id,carga_id:id,children:rows,pedidos:rows.length,quantidade_alocada:rows.flatMap(row=>row.children).reduce((sum,row)=>sum+row.quantidade_alocada,0)});
 const tables=[{id:'orders',columns:[],rows:[order('1',10),order('2',4),{...order('3',2),children:[{...allocation('free','3','item3',2),quantidade_alocada:0,quantidade_sem_carga:2,cubagem_em_carga:0,cubagem_sem_carga:.4}]}]},
  {id:'loads',columns:[],rows:[load('A',[{pedido_id:'1',...{children:[allocation('a','1','item1',3)]},quantidade_alocada:3,valor_em_carga:30,peso_em_carga:15,cubagem_em_carga:.6},{pedido_id:'2',children:[allocation('b','2','item2',4)],quantidade_alocada:4,valor_em_carga:40,peso_em_carga:20,cubagem_em_carga:.8}]),load('B',[{pedido_id:'1',children:[allocation('c','1','item1',2)],quantidade_alocada:2,valor_em_carga:20,peso_em_carga:10,cubagem_em_carga:.4}])]}];
+test('map preserves CEP provenance and selected-load amounts',()=>{
+ const located=[{...tables[0],rows:tables[0].rows.map(row=>({...row,cep:'01001000',geo_origin:'CEP'}))},tables[1]];
+ const map=destinationSeries(formationOrders(located,{kind:'load',id:'A'}));
+ assert.equal(map.points[0].cep,'01001000');assert.equal(map.points[0].geo_origin,'CEP');
+ assert.equal(map.points[0].valor_aberto,30);assert.equal(map.rows[0].value,70);
+});
 test('selecionar carga preserva tabela de origem e recorta somente seus vínculos, até o item',()=>{
  const result=formationTables(tables,{kind:'load',id:'A'});
  assert.equal(result.loads,tables[1]);assert.equal(result.orders.rows.length,2);

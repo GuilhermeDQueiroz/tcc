@@ -12,6 +12,7 @@
     "test:etl": "node scripts/run-python.mjs etl/scripts/validate_raw_etl.py",
     "etl:commercial": "node --env-file=.env scripts/run-python.mjs etl/scripts/run_hop.py",
     "etl:logistics": "node --env-file=.env scripts/run-python.mjs etl/scripts/run_logistica.py",
+    "geocode:cep": "node scripts/geocode-cep.mjs",
     "check:repository": "node scripts/check-repository.mjs",
     "check": "npm test && npm run build && npm run check:repository",
     "dev": "vite --host 127.0.0.1",

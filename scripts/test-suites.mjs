@@ -1,6 +1,6 @@
 const publicFiles=new Set([
  'api.test.js','cache.test.js','config.test.js','contracts.test.js','dates.test.js',
- 'dw-treatment.test.js','etl-organization.test.js','logistics-filter-draft.test.js',
+ 'dw-treatment.test.js','etl-organization.test.js','geolocation.test.js','logistics-filter-draft.test.js',
  'logistics-filters.test.js','logistics-repository.test.js','logistics-selection.test.js',
  'python-runtime.test.js','repository-policy.test.js','settings.test.js','strategic-navigation.test.js',
  'strategic.test.js','test-suites.test.js',

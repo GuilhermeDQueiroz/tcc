@@ -6,7 +6,7 @@ import {emptyLogisticsFilters,type LogisticsFilters} from '../domain/logistics/f
 export interface LogisticsDashboard {
  dataVersion:string;referenceDate:string;metrics:Metric[];tables:AnalyticTable[];companies:string[];
  series:Series[];operationalTables:AnalyticTable[];options:{ufs:string[];cities:string[];statuses:string[];clients:string[];products:string[];loadStages:string[]};
- meta:{publishedAt:string;startDate:string;source:string;selectedItems:number;unpricedItems:number;allocationQuantity:number;openQuantity:number;freeQuantity:number;ordersMultipleLoads:number;missingGeographyOrders:number;forecast:{withoutDateQuantity:number;overdueQuantity:number;scheduledQuantity:number};measures:Record<string,{value:number;missing:number}>}
+ meta:{publishedAt:string;startDate:string;source:string;selectedItems:number;unpricedItems:number;allocationQuantity:number;openQuantity:number;freeQuantity:number;ordersMultipleLoads:number;missingGeographyOrders:number;geoWarning?:string|null;forecast:{withoutDateQuantity:number;overdueQuantity:number;scheduledQuantity:number};measures:Record<string,{value:number;missing:number}>}
 }
 export const useLogisticsStore=defineStore('logistics',()=>{
  const dashboard=shallowRef<LogisticsDashboard|null>(null),loading=ref(false),error=ref(''),filtersOpen=ref(false)

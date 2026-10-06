@@ -27,6 +27,7 @@ const mappedOrders=computed(()=>selection.value?.kind==='order'?tables.value[0]!
 const mapSeries=computed(()=>destinationSeries(mappedOrders.value))
 const cityTable=computed(()=>destinationTable(mappedOrders.value,destinationUf.value))
 const mappedCount=computed(()=>((mapSeries.value.points||[]) as Row[]).length)
+const cepCount=computed(()=>((mapSeries.value.points||[]) as Row[]).filter(row=>row.geo_origin==='CEP').length)
 const selectionLabel=computed(()=>selection.value?(selection.value.kind==='load'?'Carga ':'Pedido ')+selection.value.id:'')
 const orderColumns=['identificacao','cliente','cidade','uf','quantidade_aberta','quantidade_alocada','quantidade_sem_carga','cubagem_em_carga','cubagem_sem_carga','valor_aberto','cargas','previsao','situacao','empresa']
 const loadColumns=['identificacao','descricao','pedidos','quantidade_alocada','peso_em_carga','cubagem_em_carga','valor_em_carga','previsao','etapa','empresa']
@@ -53,11 +54,11 @@ onMounted(()=>void store.load());onBeforeUnmount(()=>store.cancel())
    <div class="logistics-workspace-grid">
     <aside class="logistics-destinations" aria-label="Destinos do recorte selecionado">
      <AnalyticChart class="logistics-map-panel" :series="mapSeries" :loading="store.loading" @drilldown="geography"/>
-     <div class="logistics-map-footer"><span class="logistics-coordinate-coverage" title="Pedidos com coordenadas válidas cadastradas no ERP. Os demais permanecem na consulta de cidades."><AppIcon name="pin"/>{{formatValue(mappedCount,'integer')}} / {{formatValue(mappedOrders.length,'integer')}} no mapa</span><button v-if="destinationUf" class="logistics-destination-filter" @click="destinationUf=''">{{destinationUf}} <AppIcon name="close"/></button><div class="logistics-tools">
+     <div class="logistics-map-footer"><span class="logistics-coordinate-coverage" :title="`${mappedCount-cepCount} ERP (círculos verdes) · ${cepCount} CEP aproximado (losangos azuis). Sem ponto: ${mappedOrders.length-mappedCount}; permanecem na consulta de cidades.`"><AppIcon name="pin"/>{{formatValue(mappedCount,'integer')}} / {{formatValue(mappedOrders.length,'integer')}} no mapa · {{formatValue(cepCount,'integer')}} CEP aprox.</span><button v-if="destinationUf" class="logistics-destination-filter" @click="destinationUf=''">{{destinationUf}} <AppIcon name="close"/></button><div class="logistics-tools">
    <details class="logistics-help"><summary aria-label="Ajuda da formação de cargas" title="Ajuda"><AppIcon name="help"/></summary><div class="logistics-help-content">
     <strong>Como explorar</strong><p>Selecione uma carga para conferir seus pedidos e itens. Selecione um pedido para localizar suas cargas. Clique novamente para limpar a seleção.</p>
     <strong>Recorte dos dados</strong><p>Os indicadores representam os filtros aplicados. As tabelas e o mapa acompanham a seleção. Alocação em carga não comprova faturamento, estoque disponível ou saída física.</p>
-    <strong>Mapa e previsões</strong><p>Os pontos usam coordenadas válidas cadastradas no ERP. Pedidos sem coordenadas continuam na consulta por cidade e nos totais de estado quando têm UF válida.</p><p>As previsões são de faturamento. Para saldo em carga, usamos a previsão do vínculo, da carga ou do pedido, nessa ordem. Saldos sem data ficam fora dos gráficos.</p>
+    <strong>Mapa e previsões</strong><p>Círculos verdes: coordenadas cadastradas no ERP. Losangos azuis: localização aproximada obtida pelo CEP de entrega, podendo representar o centro do município. Não indica o imóvel nem calcula rotas. A origem aparece ao passar o mouse sobre o ponto. Pedidos sem localização continuam na consulta por cidade e nos totais de estado quando têm UF válida.</p><p v-if="store.dashboard?.meta.geoWarning">{{store.dashboard.meta.geoWarning}}</p><p>As previsões são de faturamento. Para saldo em carga, usamos a previsão do vínculo, da carga ou do pedido, nessa ordem. Saldos sem data ficam fora dos gráficos.</p>
     <span v-if="store.dashboard">Referência: {{formatValue(store.dashboard.referenceDate,'date')}} · Emissão desde {{formatValue(store.dashboard.meta.startDate,'date')}}</span>
    </div></details>
   </div></div>

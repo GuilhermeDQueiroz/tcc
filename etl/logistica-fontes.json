@@ -126,6 +126,7 @@
     "columns": {
       "AUTOINC_PESSOA_END": "integer",
       "CIDADE_PESSOA_END": "integer",
+      "CEP_PESSOA_END": "text",
       "LATITUDE_PESSOA_END": "numeric(18,7)",
       "LONGITUDE_PESSOA_END": "numeric(18,7)"
     }

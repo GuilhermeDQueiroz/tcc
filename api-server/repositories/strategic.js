@@ -8,7 +8,7 @@ export class StrategicRepository {
   const dimensions=filters.dimensions||{};
   const balance=await this.logisticsRepository.snapshot();
   const snapshot=await this.repository.snapshot(balance.execution.data_referencia,'faturados');
-  return this.payloads.get(stableKey([balance.execution.id,snapshot.version,balance.execution.data_referencia,filters,granularity]),()=>{
+  return this.payloads.get(stableKey([balance.execution.id,balance.geoVersion,snapshot.version,balance.execution.data_referencia,filters,granularity]),()=>{
    const deliveryValues=[...new Set(balance.items.map(item=>item.tipo_entrega))];
    const selected=new Set((dimensions.TIPO_ENTREGA||[]).map(canonicalDelivery));
    const logisticsFilters={uf:dimensions.UF,city:dimensions.CIDADE,emissionStart:filters.emissionRange?.[0],emissionEnd:filters.emissionRange?.[1]};

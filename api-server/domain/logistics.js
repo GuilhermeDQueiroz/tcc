@@ -22,7 +22,7 @@ const columns = () => [
   {key:'idade',label:'Atendimento em curso (dias)',format:'integer'},
 ];
 
-export function buildLogisticsDashboard({execution,items,allocations,filters={}}) {
+export function buildLogisticsDashboard({execution,items,allocations,filters={},geoVersion='',geoWarning=null}) {
   const referenceDate=execution.data_referencia;
   const grouped=new Map();
   for(const source of items){
@@ -33,7 +33,7 @@ export function buildLogisticsDashboard({execution,items,allocations,filters={}}
     if(!grouped.has(key))grouped.set(key,{id:'pedido-'+key,pedido_id:key,identificacao:'Pedido '+key,empresa:String(item.empresa_id),emissao:item.emissao,previsao:item.previsao_faturamento,
       quantidade_aberta:0,quantidade_alocada:0,quantidade_sem_carga:0,valor_aberto:0,valor_incompleto:false,children:[],loadIds:new Set()});
     const order=grouped.get(key);
-    Object.assign(order,{cliente:item.cliente||'Não informado',uf:item.uf?.trim()||'Não informado',cidade:item.cidade||'Não informado',latitude:item.latitude==null?null:number(item.latitude),longitude:item.longitude==null?null:number(item.longitude),status_erp:item.status_erp||'Não informado',tipo_entrega:item.tipo_entrega||'Não informado'});
+    Object.assign(order,{cliente:item.cliente||'Não informado',uf:item.uf?.trim()||'Não informado',cidade:item.cidade||'Não informado',cep:item.cep||null,geo_origin:item.geo_origin||null,latitude:item.latitude==null?null:number(item.latitude),longitude:item.longitude==null?null:number(item.longitude),status_erp:item.status_erp||'Não informado',tipo_entrega:item.tipo_entrega||'Não informado'});
     for(const field of ['quantidade_aberta','quantidade_alocada','quantidade_sem_carga'])order[field]+=item[field];
     if(item.valor_aberto==null)order.valor_incompleto=true;else order.valor_aberto+=item.valor_aberto;
     order.children.push({id:'item-'+item.item_id,item_id:String(item.item_id),pedido_id:key,produto_id:String(item.produto_id),identificacao:'Item '+item.item_id+' · Produto '+item.produto_id,
@@ -105,7 +105,7 @@ export function buildLogisticsDashboard({execution,items,allocations,filters={}}
   totals.valor_aberto=unpriced?'Não disponível':sum('valor_aberto');
   // Sets are internal. Never serialize them as table cells or API state.
   const cleanOrders=orders.map(({loadIds,valor_incompleto,...order})=>({...order,children:order.children.map(({valor_unitario,...item})=>item)}));
-  const dashboard={dataVersion:String(execution.id),referenceDate,metrics:[
+  const dashboard={dataVersion:String(execution.id)+(geoVersion?':'+geoVersion:''),referenceDate,metrics:[
     {id:'logistica.orders',label:'Pedidos em aberto',value:orders.length,format:'integer',help:'Pedidos distintos com saldo aberto no recorte publicado. Cada pedido pertence a uma única situação de alocação.'},
     {id:'logistica.none',label:'Pedidos sem carga',value:counts.none,format:'integer',help:'Nenhuma quantidade em aberto do pedido está vinculada a uma carga ativa.'},
     {id:'logistica.partial',label:'Parcialmente alocados',value:counts.partial,format:'integer',help:'Uma parte do saldo do pedido está em carga e outra parte continua sem carga. Inclui pedidos com itens em situações diferentes.'},
@@ -120,7 +120,7 @@ export function buildLogisticsDashboard({execution,items,allocations,filters={}}
       {key:'inicio_conferencia',label:'Início de conferência',format:'date'},{key:'fim_conferencia',label:'Fim de conferência',format:'date'},
       {key:'fechamento',label:'Fechamento',format:'date'},{key:'liberacao_saida',label:'Liberação de saída',format:'date'}],rows:loadRows,tree:loadRows,total:{identificacao:'Total do recorte',quantidade_alocada:totals.quantidade_alocada}},
   ],companies:[...new Set(allOrders.map(order=>order.empresa))].sort((a,b)=>Number(a)-Number(b)),
-    meta:{publishedAt:execution.fim,startDate:execution.data_inicio,source:execution.origem,counts:execution.contagens,selectedItems:chosenItems.length,unpricedItems:unpriced,
+    meta:{publishedAt:execution.fim,startDate:execution.data_inicio,source:execution.origem,counts:execution.contagens,selectedItems:chosenItems.length,unpricedItems:unpriced,geoWarning,
       allocationQuantity:totals.quantidade_alocada,openQuantity:totals.quantidade_aberta,freeQuantity:totals.quantidade_sem_carga,ordersMultipleLoads:orders.filter(order=>order.loadIds.size>1).length}};
   addOperations(dashboard,{items:chosenItems,links,allOrders,orders:cleanOrders});
   dashboard.options.clients=[...new Set(allOrders.map(order=>order.cliente))].sort((a,b)=>a.localeCompare(b,'pt-BR'));

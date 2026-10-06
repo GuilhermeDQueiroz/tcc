@@ -73,9 +73,10 @@ ALTER TABLE logistica_stage.item_detalhe ADD COLUMN IF NOT EXISTS volumem3_item_
 CREATE TABLE IF NOT EXISTS logistica_stage.pessoa (codigo_pessoa integer, razaosocial_pessoa text, PRIMARY KEY (codigo_pessoa));
 ALTER TABLE logistica_stage.pessoa ADD COLUMN IF NOT EXISTS codigo_pessoa integer;
 ALTER TABLE logistica_stage.pessoa ADD COLUMN IF NOT EXISTS razaosocial_pessoa text;
-CREATE TABLE IF NOT EXISTS logistica_stage.pessoa_endereco (autoinc_pessoa_end integer, cidade_pessoa_end integer, latitude_pessoa_end numeric(18,7), longitude_pessoa_end numeric(18,7), PRIMARY KEY (autoinc_pessoa_end));
+CREATE TABLE IF NOT EXISTS logistica_stage.pessoa_endereco (autoinc_pessoa_end integer, cidade_pessoa_end integer, cep_pessoa_end text, latitude_pessoa_end numeric(18,7), longitude_pessoa_end numeric(18,7), PRIMARY KEY (autoinc_pessoa_end));
 ALTER TABLE logistica_stage.pessoa_endereco ADD COLUMN IF NOT EXISTS autoinc_pessoa_end integer;
 ALTER TABLE logistica_stage.pessoa_endereco ADD COLUMN IF NOT EXISTS cidade_pessoa_end integer;
+ALTER TABLE logistica_stage.pessoa_endereco ADD COLUMN IF NOT EXISTS cep_pessoa_end text;
 ALTER TABLE logistica_stage.pessoa_endereco ADD COLUMN IF NOT EXISTS latitude_pessoa_end numeric(18,7);
 ALTER TABLE logistica_stage.pessoa_endereco ADD COLUMN IF NOT EXISTS longitude_pessoa_end numeric(18,7);
 CREATE TABLE IF NOT EXISTS logistica_stage.cidade (codigo_cidade integer, descricao_cidade text, uf_cidade integer, PRIMARY KEY (codigo_cidade));

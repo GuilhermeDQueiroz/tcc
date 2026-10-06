@@ -26,6 +26,7 @@ ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cliente text;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS produto text;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS uf text;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cidade text;
+ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cep text;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS latitude numeric;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS longitude numeric;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS status_erp text;
@@ -58,7 +59,7 @@ UPDATE logistica.item_pedido ip SET
  peso_unitario=CASE WHEN v.pesobruto_item_detalhe>0 THEN v.pesobruto_item_detalhe WHEN m.pesobruto_item>0 THEN m.pesobruto_item ELSE NULL END,
  cubagem_unitaria=CASE WHEN v.volumem3_item_detalhe>0 THEN v.volumem3_item_detalhe WHEN m.volumem3_item>0 AND m.volumem3_item<10 THEN m.volumem3_item ELSE NULL END,
  cliente_id=d.cliente_docfat,cliente=COALESCE(p.razaosocial_pessoa,'Cliente '||d.cliente_docfat),produto=m.descricao_item,
- uf=uf.sigla_uf,cidade=city.descricao_cidade,status_erp=s.descricao_status,
+ uf=uf.sigla_uf,cidade=city.descricao_cidade,cep=NULLIF(TRIM(address.cep_pessoa_end),''),status_erp=s.descricao_status,
  latitude=CASE WHEN address.latitude_pessoa_end BETWEEN -34 AND 6 AND address.latitude_pessoa_end<>0 AND address.longitude_pessoa_end BETWEEN -74 AND -34 THEN address.latitude_pessoa_end END,
  longitude=CASE WHEN address.latitude_pessoa_end BETWEEN -34 AND 6 AND address.latitude_pessoa_end<>0 AND address.longitude_pessoa_end BETWEEN -74 AND -34 THEN address.longitude_pessoa_end END,
  tipo_entrega=CASE TRIM(d.entregarmercadoria_docfat) WHEN 'S' THEN 'Entrega' WHEN 'N' THEN 'Retirada' ELSE 'Não informado' END

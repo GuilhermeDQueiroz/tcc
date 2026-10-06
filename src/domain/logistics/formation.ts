@@ -48,7 +48,7 @@ export function destinationSeries(orders:Row[]):Series{
   }
   if(typeof order.latitude==='number'&&order.latitude>=-34&&order.latitude<=6&&order.latitude!==0&&typeof order.longitude==='number'&&order.longitude>=-74&&order.longitude<=-34){
    const sums=total(children(order),['valor_aberto','peso_aberto','cubagem_em_carga','cubagem_sem_carga','quantidade_aberta'])
-   points.push({pedido_id:order.pedido_id,name:'Pedido '+order.pedido_id,cliente:order.cliente,cidade:order.cidade,uf,longitude:order.longitude,latitude:order.latitude,...sums})
+   points.push({pedido_id:order.pedido_id,name:'Pedido '+order.pedido_id,cliente:order.cliente,cidade:order.cidade,uf,cep:order.cep,geo_origin:order.geo_origin||'ERP',longitude:order.longitude,latitude:order.latitude,...sums})
   }
  }
  return {id:'logistica.destinos',title:'Destinos dos pedidos',type:'map',x:'UF',y:['volumeM3'],format:'volume',dimension:'UF',metricOptions:{volumeM3:'volumeM3',weightKg:'weightKg',value:'value',orders:'orders'},detailedMap:true,points,rows:[...states.values()].map(row=>({...row,cities:(row.cities as Set<string>).size}))}

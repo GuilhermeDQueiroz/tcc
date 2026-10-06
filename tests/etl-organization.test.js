@@ -27,3 +27,12 @@ test('configuração aponta para a instância física do projeto', () => {
     assert.ok(existsSync(`banco/scripts/${name}`), name);
   assert.match(readFileSync('.gitignore','utf8'), /banco\/data\//);
 });
+
+test('native logistics extraction carries delivery CEP into its published fact',()=>{
+ const pipeline=readFileSync('etl/pipelines/logistica/ext_logistica_pessoa_endereco.hpl','utf8');
+ assert.match(pipeline,/<sql>SELECT[^<]*CEP_PESSOA_END[^<]*FROM PESSOA_ENDERECO/);
+ assert.match(pipeline,/<column_name>cep_pessoa_end<\/column_name>\s*<stream_name>CEP_PESSOA_END<\/stream_name>/);
+ const publication=readFileSync('etl/sql/logistica/002_publicar.sql','utf8');
+ assert.match(publication,/ADD COLUMN IF NOT EXISTS cep text/);
+ assert.match(publication,/cep\s*=\s*NULLIF\(TRIM\(address\.cep_pessoa_end\)/);
+});

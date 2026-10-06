@@ -93,7 +93,7 @@ A [CI](.github/workflows/ci.yml) executa a verificação pública em pushes e pu
 - **Pedidos antigos:** idade da carteira, distinta de previsão vencida.
 - **Backlog estratégico:** valor aberto dividido pela média diária de faturamento dos 90 dias corridos da referência; difere do recorte de status do backlog comercial.
 - **R$/kg:** valor dos produtos faturados por massa; não é custo de frete.
-- **Mapa:** distribuição geográfica; não há otimização de rotas.
+- **Mapa:** distribuição por UF/cidade e pontos de pedidos. Coordenadas do ERP têm prioridade; destinos sem coordenadas podem usar localização **aproximada pelo CEP de entrega**, inclusive centro municipal. A origem aparece no mapa. Não há otimização de rotas.
 
 Frete sobre faturamento, assistência/recolhimento como processos próprios, duração por etapa e histórico real do saldo permanecem no plano de evolução. O experimento manual × painel e a avaliação com gestores ainda precisam ser aplicados. Testes técnicos não demonstram, isoladamente, ganho de produtividade gerencial.
 
@@ -106,6 +106,7 @@ Frete sobre faturamento, assistência/recolhimento como processos próprios, dur
 - [Fontes, telas, testes e capítulos do TCC](docs/mapeamento-fontes-logisticas.md)
 - [Visão Estratégica](docs/visao-estrategica-logistica.md) e [Formação de Cargas](docs/formacao-cargas-analise-operacional.md)
 - [Plano de implementação e pendências](docs/plano-implementacao-logistica-tcc.md)
+- [Localização aproximada por CEP](docs/geolocalizacao-cep.md): consulta em lote, cache local e limites de precisão.
 - [Validação de equivalência com o legacy](docs/validacao-equivalencia.md)
 
 ## Organização

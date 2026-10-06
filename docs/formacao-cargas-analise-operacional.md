@@ -14,7 +14,7 @@ As tabelas detalhadas incluem cliente, destino, entrega/retirada, descrição do
 
 A extração nativa Apache Hop passou de sete para **quatorze fontes** neste módulo: as sete anteriores mais `ITEM`, `ITEM_DETALHE`, `PESSOA`, `PESSOA_ENDERECO`, `CIDADE`, `UF` e `STATUS`. As tabelas de pedidos e itens são restritas ao recorte; os pequenos catálogos de cidade, UF e status são lidos integralmente. Campos adicionais do pedido e da carga identificam destino, modalidade, descrição e previsão.
 
-O endereço utilizado para o destino é `LOCALENTREGA_DOCFAT`, ligado a `PESSOA_ENDERECO`, `CIDADE` e `UF`, seguindo o relacionamento da consulta original de Abertos. O mapa é por estado; não exibe pontos de clientes nem representa roteirização ou otimização de percursos. Não foram acrescentadas capacidades presumidas de veículos ou custos de frete.
+O endereço utilizado para o destino é `LOCALENTREGA_DOCFAT`, ligado a `PESSOA_ENDERECO`, `CIDADE` e `UF`, seguindo o relacionamento da consulta original de Abertos. A primeira versão do mapa agregava por estado; a versão atual também mostra pontos de pedidos, preservando coordenadas ERP e complementando destinos por [CEP aproximado](geolocalizacao-cep.md). Não representa roteirização ou otimização de percursos. Não foram acrescentadas capacidades presumidas de veículos ou custos de frete.
 
 O runner criou backup da publicação anterior antes da extração. As migrações são aditivas. Os novos campos dos fatos foram calculados e publicados na mesma transação que valida vínculos e saldos. A versão anterior dos fatos permanece preservada; os painéis anteriores em `dw` continuam com sua publicação própria.
 
@@ -91,9 +91,9 @@ O mapa acompanha a seleção. Os indicadores superiores continuam representando 
 
 ### Coordenadas e cobertura
 
-A extração nativa do Hop foi ampliada com `LATITUDE_PESSOA_END` e `LONGITUDE_PESSOA_END`, de `PESSOA_ENDERECO`, associadas pelo endereço de entrega do documento. Continuam sendo 14 fontes; a API consulta exclusivamente a publicação logística no PostgreSQL. Nenhuma geocodificação externa foi usada.
+A extração nativa do Hop foi inicialmente ampliada com `LATITUDE_PESSOA_END` e `LONGITUDE_PESSOA_END`, de `PESSOA_ENDERECO`, associadas pelo endereço de entrega do documento. Naquela entrega, a API usava somente a publicação PostgreSQL, sem geocodificação externa. A atualização de 06/10/2026 acrescentou o CEP à mesma fonte e um [cache local de localização aproximada](geolocalizacao-cep.md), mantendo as 14 fontes Hop.
 
-A publicação aceita o par numérico com latitude entre -34 e 6, longitude entre -74 e -34, e latitude diferente de zero. Pares inválidos ou ausentes são publicados como nulos. Esse limite é uma checagem geográfica básica para a operação brasileira, sem certificar a precisão de cada cadastro. O texto junto ao mapa descreve a origem como coordenadas cadastradas no ERP; os pontos não comprovam entrega realizada.
+A publicação aceita o par numérico com latitude entre -34 e 6, longitude entre -74 e -34, e latitude diferente de zero. Pares inválidos ou ausentes são publicados como nulos. Esse limite é uma checagem geográfica básica para a operação brasileira, sem certificar a precisão de cada cadastro. O mapa informa a origem ERP ou CEP aproximado; os pontos não comprovam entrega realizada.
 
 Na execução `061684fb-7343-43dc-b01a-f338b3e66d9c`, 95 dos 1.335 pedidos têm coordenadas válidas. Pedidos sem coordenadas continuam na lista de cidades e nos agregados de estado quando têm UF válida. A cobertura da seleção é exibida junto ao mapa, sem inventar pontos para os pedidos restantes.
 
