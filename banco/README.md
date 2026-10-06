@@ -5,7 +5,7 @@ Arquivos físicos: `banco/data`. PostgreSQL 18 instalado é o runtime; os binár
 não foram copiados para o projeto. A instância pertence ao usuário Windows que
 a inicializou e escuta somente em loopback, com autenticação SCRAM.
 
-Na raiz de `legacy-refatorado`:
+Na raiz de `business-intelligence-logistica`:
 
 ```powershell
 .\banco\scripts\iniciar.ps1

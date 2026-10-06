@@ -26,7 +26,7 @@ Ponto de retomada: Formação de Cargas ampliada e Visão Estratégica implement
 
 ## Planejamento original e critérios de evolução
 
-Planejamento elaborado em 2 de outubro de 2026 a partir da parte escrita do TCC, da implementação em `legacy-refatorado`, dos documentos de validação e das referências visuais da pasta `NOTION`.
+Planejamento elaborado em 2 de outubro de 2026 a partir da parte escrita do TCC, da implementação em `business-intelligence-logistica`, dos documentos de validação e das referências visuais da pasta `NOTION`.
 
 Este plano coordena a evolução dos dados, dos indicadores, das telas e da monografia. A arquitetura existente será mantida e ampliada. A prioridade é estabelecer regras verificáveis, acompanhar pedidos e cargas até o faturamento e a expedição e reunir evidências para responder à questão de pesquisa. Este documento é um plano; não declara que as funcionalidades propostas, a homologação ou os resultados acadêmicos já foram executados.
 
@@ -81,7 +81,7 @@ O fluxo atual é Firebird → extração nativa Apache Hop → staging PostgreSQ
 | Validação | Equivalência com o legacy e evidências técnicas documentadas | Acrescentar conferência de regras logísticas, novos relacionamentos e avaliação com usuários |
 | Parte escrita | Tecnologias alinhadas; diferenças de indicadores e ETL; resultados em aberto | Atualizar descrição da prática e inserir resultados realmente obtidos |
 
-Os projetos `legacy` e `Portal-Corporativo` serão mantidos como referência. Alterações deste plano serão concentradas em `legacy-refatorado`. Metas e presets locais serão preservados durante migrações.
+Os projetos `legacy` e `Portal-Corporativo` serão mantidos como referência. Alterações deste plano serão concentradas em `business-intelligence-logistica`. Metas e presets locais serão preservados durante migrações.
 
 ## Sequência de execução
 

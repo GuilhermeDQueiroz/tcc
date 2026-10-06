@@ -1,6 +1,6 @@
 # Evidências da aplicação e da carga real — 01/10/2026
 
-Destino: PostgreSQL 18, localhost:5434, banco dados, proprietário API, arquivos físicos em legacy-refatorado/banco/data. A aplicação produtiva usa somente o DW. Não há dados sintéticos, fallback ou nova extração Python.
+Destino: PostgreSQL 18, localhost:5434, banco dados, proprietário API, arquivos físicos em business-intelligence-logistica/banco/data. A aplicação produtiva usa somente o DW. Não há dados sintéticos, fallback ou nova extração Python.
 
 ## Publicação usada
 

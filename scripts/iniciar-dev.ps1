@@ -4,7 +4,7 @@ $RaizProjeto = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $RuntimeProjeto = Join-Path $RaizProjeto '.local/runtime'
 $NodeProjeto = (Get-Command node -ErrorAction Stop).Source
 if (-not (Test-Path -LiteralPath (Join-Path $RaizProjeto 'node_modules/vite/bin/vite.js'))) {
-    throw 'Execute npm ci na pasta legacy-refatorado antes de iniciar.'
+    throw 'Execute npm ci na pasta business-intelligence-logistica antes de iniciar.'
 }
 if (-not (Test-Path -LiteralPath (Join-Path $RaizProjeto 'dist/index.html'))) {
     throw 'Execute npm run build antes de iniciar.'

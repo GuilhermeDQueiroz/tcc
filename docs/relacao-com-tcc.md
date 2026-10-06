@@ -6,7 +6,7 @@ Conciliação atualizada em 04/10/2026, incorporando Formação de Cargas e Vis�
 
 ## Correspondência da arquitetura
 
-| Etapa descrita | Implementação em legacy-refatorado |
+| Etapa descrita | Implementação em business-intelligence-logistica |
 |---|---|
 | Mapeamento de regras | Consultas originais em etl/sql/fontes, 32 fontes comerciais, quatorze projeções logísticas e dicionário dos indicadores entregues |
 | Integração Apache Hop | Pipelines .hpl de extração e transformação; workflows .hwf de dependências, carga e publicação |

@@ -7,8 +7,8 @@ Este guia parte de um clone independente de `GuilhermeDQueiroz/tcc`. O código p
 Instale Git e Node.js 24.16.0, versão registrada em `.nvmrc`.
 
 ```powershell
-git clone https://github.com/GuilhermeDQueiroz/tcc.git
-cd tcc
+git clone https://github.com/GuilhermeDQueiroz/tcc.git business-intelligence-logistica
+cd business-intelligence-logistica
 npm ci
 npm test
 npm run build

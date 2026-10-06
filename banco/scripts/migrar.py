@@ -101,7 +101,7 @@ def main():
         if not initialized:
             init_cluster(admin_password,collate)
         with (DATA/'postgresql.conf').open('a',encoding='utf-8') as config:
-            config.write("\n# Instância exclusiva do legacy-refatorado\nlisten_addresses = 'localhost'\nport = 5434\ntimezone = 'America/Sao_Paulo'\nlog_timezone = 'America/Sao_Paulo'\npassword_encryption = 'scram-sha-256'\n")
+            config.write("\n# Instância exclusiva do business-intelligence-logistica\nlisten_addresses = 'localhost'\nport = 5434\ntimezone = 'America/Sao_Paulo'\nlog_timezone = 'America/Sao_Paulo'\npassword_encryption = 'scram-sha-256'\n")
         (BANK/'logs').mkdir(exist_ok=True)
         run([BIN/'pg_ctl.exe','start','-D',DATA,'-l',BANK/'logs/postgresql.log','-w','-t','30'])
         started = True

@@ -1,6 +1,6 @@
 # Revisão de arquitetura, organização e desempenho
 
-Revisão de 02/10/2026 do projeto ativo `legacy-refatorado`: interface, stores, componentes analíticos, API, repositórios, cache, configuração de build, testes e fluxo de publicação do ETL. `legacy` e `Portal-Corporativo` continuam como referências; banco físico, credenciais, documentos do TCC e fontes Firebird foram preservados.
+Revisão de 02/10/2026 do projeto ativo `business-intelligence-logistica`: interface, stores, componentes analíticos, API, repositórios, cache, configuração de build, testes e fluxo de publicação do ETL. `legacy` e `Portal-Corporativo` continuam como referências; banco físico, credenciais, documentos do TCC e fontes Firebird foram preservados.
 
 ## Diagnóstico
 

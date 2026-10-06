@@ -13,8 +13,8 @@ def prepare_runtime(env=None):
     config_dir = local/'hop-config'
     config_dir.mkdir(parents=True,exist_ok=True)
     config = {'projectsConfig':{'enabled':True,'projectMandatory':True,
-        'defaultProject':'legacy-refatorado','projectConfigurations':[
-            {'projectName':'legacy-refatorado','projectHome':str(ROOT/'etl'),
+        'defaultProject':'business-intelligence-logistica','projectConfigurations':[
+            {'projectName':'business-intelligence-logistica','projectHome':str(ROOT/'etl'),
              'configFilename':'project-config.json'}]}}
     (config_dir/'hop-config.json').write_text(json.dumps(config,indent=2),encoding='utf-8')
     hop_home = Path(env.get('HOP_HOME',str(Path.home()/'Downloads/apache-hop-client-2.19.0/hop')))

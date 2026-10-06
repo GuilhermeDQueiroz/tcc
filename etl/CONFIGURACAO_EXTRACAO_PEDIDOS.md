@@ -85,7 +85,7 @@ como `etl.referencia_*`. Elas não alimentam os pipelines novos.
 
 ## Abrir no Hop GUI
 
-Na raiz de `legacy-refatorado`, execute no PowerShell:
+Na raiz de `business-intelligence-logistica`, execute no PowerShell:
 
 ```powershell
 .\etl\scripts\abrir-hop.ps1
@@ -105,11 +105,11 @@ Para habilitar conexões reais na sessão, inicie assim:
 
 As senhas são solicitadas em memória e passadas ao processo Java. Não salve
 as senhas nos metadados de conexão. Na barra do Hop, selecione o projeto
-`legacy-refatorado`; no explorador, abra um `.hpl` ou `.hwf`. Duplo clique em
+`business-intelligence-logistica`; no explorador, abra um `.hpl` ou `.hwf`. Duplo clique em
 um transform permite inspecionar seu SQL, conexão e tabela de destino.
 
 Se já tiver o Hop aberto por outro atalho, crie um projeto com nome
-`legacy-refatorado`, Home igual à pasta `legacy-refatorado/etl` e configuração
+`business-intelligence-logistica`, Home igual à pasta `business-intelligence-logistica/etl` e configuração
 `project-config.json`. A pasta de metadados é `${PROJECT_HOME}/metadata`.
 Para executar com variáveis de conexão em memória, prefira o launcher acima.
 

@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "Ao citar a parte prática deste TCC, identifique também o commit ou a tag avaliada."
 type: software
-title: "Business Intelligence aplicado à logística: painel analítico com dados de um ERP"
+title: "Business Intelligence aplicado à logística: desenvolvimento de um painel analítico para apoio à tomada de decisão com dados de um ERP"
 authors:
   - family-names: "Queiroz"
     given-names: "Guilherme Diniz"

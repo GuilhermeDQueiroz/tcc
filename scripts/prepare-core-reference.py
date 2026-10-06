@@ -1,6 +1,6 @@
 """Reproduce the core oracle from the exported real, processed open-order rows.
 
-Run from legacy-refatorado, after the published DW oracle has completed:
+Run from business-intelligence-logistica, after the published DW oracle has completed:
   python scripts/reference_full.py --legacy-root ../legacy --output .local/domain-reference.json
   python scripts/reference_full.py --legacy-root ../legacy --output .local/domain-reference.json --compact-existing
   python scripts/prepare-core-reference.py --legacy-root ../legacy

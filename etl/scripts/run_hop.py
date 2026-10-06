@@ -53,7 +53,7 @@ try:
         subprocess.run([r'C:\Program Files\PostgreSQL\18\bin\pg_dump.exe','-h',env['PG_HOST'],'-p',env['PG_PORT'],'-U',env['PG_USER'],'-d',dbname,'-Fc','-n','dw','-n','etl','-f',str(backup)],env=backup_env,check=True,creationflags=subprocess.CREATE_NO_WINDOW)
         print('Backup DW/ETL criado: '+str(backup),flush=True)
     workflow='reprocessar_dw' if options.somente_dw else 'main'
-    command += ['-j','legacy-refatorado','-r','local','-f',str(root/f'etl/workflows/{workflow}.hwf'),'-l','Basic']
+    command += ['-j','business-intelligence-logistica','-r','local','-f',str(root/f'etl/workflows/{workflow}.hwf'),'-l','Basic']
     with logfile.open('w',encoding='utf-8') as log:
         process=subprocess.Popen(command,env=env,cwd=hop_home,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',errors='replace')
         for line in process.stdout:

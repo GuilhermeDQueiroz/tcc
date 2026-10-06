@@ -115,7 +115,7 @@ documentadas acima.
 - `.local/sample-2026-08/`: amostras privadas para repetir a comparação
   sem novas consultas. Diretório ignorado pelo Git.
 
-Com as credenciais em variáveis de ambiente, na raiz de legacy-refatorado:
+Com as credenciais em variáveis de ambiente, na raiz de business-intelligence-logistica:
 
 ```powershell
 ..\legacy\.venv\Scripts\python.exe etl\scripts\compare_sample.py --year 2026 --month 8

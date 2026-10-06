@@ -44,7 +44,7 @@ def main():
                 backup=ROOT/'banco/backups'/('logistica-'+run_id+'.dump'); backup.parent.mkdir(parents=True,exist_ok=True)
                 backup_env=env.copy();backup_env['PGPASSWORD']=env['PG_PASSWORD']
                 subprocess.run([r'C:\Program Files\PostgreSQL\18\bin\pg_dump.exe','-h',env['PG_HOST'],'-p',env['PG_PORT'],'-U',env['PG_USER'],'-d','dados','-Fc','-n','logistica','-f',str(backup)],env=backup_env,check=True,creationflags=subprocess.CREATE_NO_WINDOW)
-        command += ['-j','legacy-refatorado','-r','local','-f',str(ROOT/'etl/workflows/logistica_local.hwf'),'-l','Basic']
+        command += ['-j','business-intelligence-logistica','-r','local','-f',str(ROOT/'etl/workflows/logistica_local.hwf'),'-l','Basic']
         secrets=[env['FIREBIRD_PASSWORD'],env['PG_PASSWORD']]
         with log_path.open('w',encoding='utf-8') as log:
             process=subprocess.Popen(command,env=env,cwd=hop_home,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',errors='replace',creationflags=subprocess.CREATE_NO_WINDOW)

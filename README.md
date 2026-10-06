@@ -1,4 +1,4 @@
-# Business Intelligence aplicado à logística
+# Business Intelligence aplicado à logística: desenvolvimento de um painel analítico para apoio à tomada de decisão com dados de um ERP
 
 Parte prática do Trabalho de Conclusão de Curso: **desenvolvimento de um painel analítico para apoio à tomada de decisão com dados de um ERP**.
 
@@ -41,8 +41,8 @@ Há 32 projeções de fontes no fluxo comercial e quatorze no fluxo logístico. 
 ## Começar após clonar
 
 ```powershell
-git clone https://github.com/GuilhermeDQueiroz/tcc.git
-cd tcc
+git clone https://github.com/GuilhermeDQueiroz/tcc.git business-intelligence-logistica
+cd business-intelligence-logistica
 npm ci
 npm test
 npm run build

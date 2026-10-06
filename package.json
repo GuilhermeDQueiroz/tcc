@@ -1,8 +1,8 @@
 {
-  "name": "legacy-refatorado-tcc",
+  "name": "business-intelligence-logistica",
   "version": "1.0.0",
   "private": true,
-  "description": "Painel analítico de logística para o TCC, com ETL Apache Hop, PostgreSQL, API Node.js e Vue.",
+  "description": "Business Intelligence aplicado à logística: desenvolvimento de um painel analítico para apoio à tomada de decisão com dados de um ERP",
   "engines": {"node": ">=24 <25"},
   "packageManager": "npm@11.13.0",
   "type": "module",
