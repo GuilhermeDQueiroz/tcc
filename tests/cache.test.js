@@ -45,3 +45,13 @@ test('cache coalesces work, isolates versions, does not cache rejected load',asy
   await assert.rejects(cache.get('error',async()=>{throw new Error('source unavailable');}));
   assert.equal(await cache.get('error',async()=>true),true);
 });
+test('bulk cache releases its oldest completed entry before loading another large snapshot',async()=>{
+ const cache=new AsyncCache({maxEntries:2,evictBeforeLoad:true});
+ await cache.get('old',()=>({dataset:'old'}));await cache.get('recent',()=>({dataset:'recent'}));
+ await cache.get('new',()=>{
+  assert.equal(cache.items.has('old'),false,'eviction after loading would retain all large sources during allocation');
+  assert.equal(cache.items.has('recent'),true);
+  return {dataset:'new'};
+ });
+ assert.deepEqual([...cache.items.keys()],['recent','new']);
+});

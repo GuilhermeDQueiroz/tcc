@@ -125,6 +125,27 @@ Playwright requer o Chrome instalado e a API real em 3002; a interface Vite em 5
 
 Regenerar as referências do legacy exige obter esse código de comparação e seu ambiente próprio com pandas/NumPy/Plotly, conferir a publicação e executar as ferramentas `reference_full.py`, `prepare-core-reference.py` e as verificações documentadas em [validação de equivalência](validacao-equivalencia.md). Os oracles não fornecem dados à aplicação. A ausência dessas evidências não impede os testes públicos, o build nem a execução do painel com as publicações válidas.
 
+## 8. Publicar pós-venda
+
+Com o ambiente Python/Hop e as variáveis de conexão configurados, execute a carga própria. O exemplo usa o recorte da validação; substitua o caminho pela cópia anonimizada obtida com o autor:
+
+```powershell
+node --env-file=.env scripts/run-python.mjs etl/scripts/run_posvenda.py --database C:\DadosAnonimizados\DADOS.FDB --start-date 2025-01-01 --reference-date 2026-09-30
+```
+
+O launcher publica a base e, depois de liberar seu bloqueio, executa o workflow dimensional sobre os espelhos reais já disponíveis. Para atualizar apenas esses atributos após a carga comercial, use `npm run etl:aftersales:dimensions`. A publicação dimensional é atômica e não altera os fatos financeiros. Se a etapa complementar falhar, a base pode já ter sido publicada; confira o erro e execute novamente o complemento, sem presumir que todas as etapas foram revertidas. Consulte [pós-venda](paineis-posvenda.md) e [dimensões](dimensoes-posvenda.md).
+
+## 9. Encerrar o ambiente
+
+```powershell
+.\scripts\parar-dev.ps1
+.\banco\scripts\parar.ps1
+```
+
+O primeiro comando encerra API e interface registradas pelo launcher; o segundo para somente o cluster `banco/data` do projeto. Instâncias iniciadas separadamente, inclusive preview e ETL, exigem identificação pelo caminho do projeto e identidade do processo. Não use encerramento global por nome de executável. Serviços Firebird 3050 e PostgreSQL 5432 podem ser compartilhados com outras aplicações.
+
+Confira que 3002, 5173 e eventuais portas alternativas estão livres e use `banco/scripts/status.ps1` para conferir o banco exclusivo 5434. Um registro `processos.json` antigo não prova que um PID ainda pertence ao projeto: confira executável e horário de início antes de encerrá-lo. O estado registrado na revisão mais recente está em [continuidade](estado-projeto.md).
+
 ## Falhas comuns
 
 | Situação | Conferência |

@@ -1,6 +1,6 @@
 # Alterações no projeto
 
-Use Node.js conforme `.nvmrc`, instale com `npm ci` e preserve `package-lock.json`. Separe mudanças de fórmula de mudanças visuais; as regras publicadas estão em `docs/dicionario-indicadores-logisticos.md`.
+Use Node.js conforme `.nvmrc`, instale com `npm ci` e preserve `package-lock.json`. Separe mudanças de fórmula de mudanças visuais; as regras publicadas estão em `docs/dicionario-indicadores-logisticos.md`. Agentes devem consultar também [AGENTS.md](AGENTS.md) e [o estado de continuidade](docs/estado-projeto.md).
 
 Antes de preparar um commit:
 
@@ -12,7 +12,7 @@ npm run check:repository
 git diff --cached --stat
 ```
 
-Confira a seleção de arquivos antes de enviar. Bancos, dumps, credenciais, metas reais e referências privadas permanecem locais. A verificação do índice também inspeciona arquivos adicionados à força; ela não substitui a revisão do material.
+Confira a seleção de arquivos antes de enviar. Bancos, dumps, credenciais, metas reais e referências privadas permanecem locais. A verificação do índice também inspeciona arquivos adicionados à força; ela não substitui a revisão do material. O `.gitignore` exclui runtimes, caches, relatórios e artefatos de compilação. Preserve `AGENTS.md`, o catálogo `shared/`, SQL e workflows no versionamento; as memórias locais em `.agents/` ficam privadas. Não use a aprovação da CI de um commit anterior como validação da árvore de trabalho atual.
 
 Uma alteração de indicadores exige testes de limites/ausências/filtros, definição atualizada e, quando depender da população real, reconciliação independente. Novos testes devem ser classificados em `scripts/test-suites.mjs`. O perfil público precisa funcionar sem `.local` ou diretórios irmãos. Testes controlados de regra não são resultados observados da empresa.
 

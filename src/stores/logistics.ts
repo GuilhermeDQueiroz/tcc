@@ -20,7 +20,13 @@ export const useLogisticsStore=defineStore('logistics',()=>{
   const current=++sequence;controller?.abort();controller=new AbortController();loading.value=true;error.value=''
   const params=new URLSearchParams()
   for(const [key,value] of Object.entries(filters.value))for(const entry of Array.isArray(value)?value:[value.trim()])if(entry)params.append(key,entry)
-  try{const data=await request<LogisticsDashboard>('/logistica/formacao?'+params,{signal:controller.signal});if(current===sequence)dashboard.value=data}
+  try{
+   const data=await request<LogisticsDashboard>('/logistica/formacao?'+params,{signal:controller.signal})
+   if(current===sequence){
+    for(const table of data.tables)if(table.treeFromRows)table.tree=table.rows
+    dashboard.value=data
+   }
+  }
   catch(cause){if(current===sequence&&!(cause instanceof DOMException&&cause.name==='AbortError'))error.value=cause instanceof Error?cause.message:'Não foi possível carregar a formação de cargas.'}
   finally{if(current===sequence)loading.value=false}
  }

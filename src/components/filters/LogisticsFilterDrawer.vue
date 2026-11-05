@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import {computed,ref,watch,nextTick,onBeforeUnmount} from 'vue'
+import {computed,ref,watch} from 'vue'
 import {useLogisticsStore} from '../../stores/logistics'
 import {useFilterDraft,type FilterPeriod} from '../../composables/useFilterDraft'
 import {emptyLogisticsFilters,cloneLogisticsFilters,categoryValues,logisticsCategories,logisticsFilterLabels,logisticsForecastLabels,type LogisticsCategory,type LogisticsFilters} from '../../domain/logistics/filters'
 import AppIcon from '../ui/AppIcon.vue'
 import MultiSelect from './MultiSelect.vue'
+import FilterDialog from './FilterDialog.vue'
+import FilterTabs from './FilterTabs.vue'
 
-const store=useLogisticsStore(),panel=ref<HTMLElement>(),feedback=ref(''),feedbackKind=ref<'success'|'error'>('success')
+const store=useLogisticsStore(),feedback=ref(''),feedbackKind=ref<'success'|'error'>('success')
 const draft=ref(emptyLogisticsFilters()),selectedTab=ref('period'),shortcutTarget=ref<'emission'|'forecast'>('forecast')
 const {emission,billing,quickPeriod:periodShortcut,currentYear}=useFilterDraft()
 const presetName=ref(''),presetId=ref(''),presets=ref<{id:string;name:string;filters:LogisticsFilters}[]>([])
 const presetKey='tcc.logistics.filter-presets.v1'
-let previousFocus:HTMLElement|null=null,previousOverflow=''
 const active=(keys:(keyof LogisticsFilters)[])=>keys.filter(key=>{const value=draft.value[key];return Array.isArray(value)?value.length:!!value.trim()}).length
 const tabs=computed(()=>[
  {id:'period',label:'Período',icon:'calendar',count:Number(!!(draft.value.emissionStart||draft.value.emissionEnd))+Number(!!(draft.value.forecastStart||draft.value.forecastEnd))+active(['forecastStatus','ageMin'])},
@@ -20,24 +21,13 @@ const tabs=computed(()=>[
  {id:'loads',label:'Cargas',icon:'truck',count:active(['status','delivery','loadStage'])},
  {id:'numeric',label:'Valores',icon:'currency',count:active(['freeQuantityMin','freeVolumeMin','freeWeightMin','orderValueMin'])}
 ])
-watch(selectedTab,()=>nextTick(()=>panel.value?.querySelector('.filter-modal-body')?.scrollTo({top:0})))
 function message(text:string,kind:'success'|'error'='success'){feedback.value=text;feedbackKind.value=kind}
-function visible(element:HTMLElement|null|undefined){if(!element?.isConnected)return false;const box=element.getBoundingClientRect();return box.width>0&&box.height>0&&box.right>0&&box.left<innerWidth&&box.bottom>0&&box.top<innerHeight}
-watch(()=>store.filtersOpen,async open=>{
- if(open){
-  draft.value=cloneLogisticsFilters(store.filters);feedback.value='';selectedTab.value='period';shortcutTarget.value='forecast';presetId.value='';presetName.value=''
-  try{const saved:unknown=JSON.parse(localStorage.getItem(presetKey)||'[]');presets.value=Array.isArray(saved)?saved.filter(entry=>entry&&typeof entry.id==='string'&&typeof entry.name==='string'&&entry.filters&&typeof entry.filters==='object').map(entry=>({...entry,filters:cloneLogisticsFilters(entry.filters)})):[]}
-  catch{presets.value=[];message('Não foi possível carregar os presets deste navegador.','error')}
-  previousFocus=document.activeElement instanceof HTMLElement?document.activeElement:null
-  previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden'
-  await nextTick();if(store.filtersOpen)panel.value?.focus()
- }else{
-  document.body.style.overflow=previousOverflow;await nextTick()
-  const target=visible(previousFocus)?previousFocus:document.querySelector<HTMLElement>('.header-filter-btn')
-  if(visible(target))target?.focus({preventScroll:true})
- }
+watch(()=>store.filtersOpen,open=>{
+ if(!open)return
+ draft.value=cloneLogisticsFilters(store.filters);feedback.value='';selectedTab.value='period';shortcutTarget.value='forecast';presetId.value='';presetName.value=''
+ try{const saved:unknown=JSON.parse(localStorage.getItem(presetKey)||'[]');presets.value=Array.isArray(saved)?saved.filter(entry=>entry&&typeof entry.id==='string'&&typeof entry.name==='string'&&entry.filters&&typeof entry.filters==='object').map(entry=>({...entry,filters:cloneLogisticsFilters(entry.filters)})):[]}
+ catch{presets.value=[];message('Não foi possível carregar os presets deste navegador.','error')}
 })
-onBeforeUnmount(()=>{if(store.filtersOpen)document.body.style.overflow=previousOverflow;store.filtersOpen=false})
 function close(){store.filtersOpen=false}
 function compiled(){
  feedback.value=''
@@ -58,29 +48,18 @@ function setCategory(key:LogisticsCategory,values:string[]){draft.value[key]=val
 function usePreset(){const preset=presets.value.find(entry=>entry.id===presetId.value);if(preset){draft.value=cloneLogisticsFilters(preset.filters);message("Preset '"+preset.name+"' carregado. Clique em Aplicar filtros para usá-lo.")}}
 function savePreset(){const value=compiled(),name=presetName.value.trim();if(!value||!name)return;const entries=[...presets.value,{id:crypto.randomUUID(),name,filters:value}];try{localStorage.setItem(presetKey,JSON.stringify(entries));presets.value=entries;presetName.value='';message('Preset salvo neste navegador.')}catch{message('Não foi possível salvar o preset neste navegador.','error')}}
 function deletePreset(){const entries=presets.value.filter(entry=>entry.id!==presetId.value);try{localStorage.setItem(presetKey,JSON.stringify(entries));presets.value=entries;presetId.value='';message('Preset excluído.')}catch{message('Não foi possível excluir o preset neste navegador.','error')}}
-function trap(event:KeyboardEvent){
- if(event.key!=='Tab')return
- const items=[...(panel.value?.querySelectorAll<HTMLElement>('button,input,select,[tabindex="0"]')||[])].filter(el=>!el.hasAttribute('disabled')&&el.tabIndex>=0&&el.getClientRects().length)
- const first=items[0],last=items.at(-1)
- if(event.shiftKey&&(document.activeElement===first||document.activeElement===panel.value)){event.preventDefault();last?.focus()}
- else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus()}
-}
-function tabKey(event:KeyboardEvent,index:number){if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const target=event.key==='Home'?0:event.key==='End'?tabs.value.length-1:(index+(event.key==='ArrowRight'?1:-1)+tabs.value.length)%tabs.value.length;selectedTab.value=tabs.value[target]!.id;nextTick(()=>panel.value?.querySelector<HTMLElement>('#logistics-filter-tab-'+selectedTab.value)?.focus())}
 </script>
 <template>
- <Teleport to="body"><div v-if="store.filtersOpen" class="filter-modal-overlay" @click.self="close" @keydown.esc="close">
-  <form ref="panel" class="filter-modal-dialog" role="dialog" aria-modal="true" aria-label="Filtros de formação de cargas" tabindex="-1" @keydown="trap" @submit.prevent="apply" novalidate>
-   <header class="filter-modal-header"><div class="filter-modal-heading"><span class="filter-modal-heading-icon"><AppIcon name="filter"/></span><div><h2 class="filter-modal-title">Configuração de Filtros Avançados</h2><p class="filter-modal-subtitle">Formação de cargas · selecione os filtros nas abas ou utilize um preset deste navegador.</p></div></div><button type="button" class="filter-modal-close" aria-label="Fechar filtros" title="Fechar filtros" @click="close"><AppIcon name="close"/></button></header>
-   <div class="filter-modal-presets">
+ <FilterDialog :open="store.filtersOpen" label="Filtros de formação de cargas" subtitle="Formação de cargas · combine as categorias ou carregue um preset salvo." :section="selectedTab" @close="close" @apply="apply">
+  <template #presets><div class="filter-modal-presets">
     <div><label class="sr-only" for="logistics-preset">Presets</label><select id="logistics-preset" v-model="presetId" class="filter-control-select" @change="usePreset"><option value="">-- Presets Salvos --</option><option v-for="preset in presets" :key="preset.id" :value="preset.id">{{preset.name}}</option></select></div>
-    <div><label class="sr-only" for="logistics-preset-name">Novo preset</label><input id="logistics-preset-name" v-model="presetName" class="filter-control-input" maxlength="80" placeholder="Nome do preset..."></div>
+    <div><label class="sr-only" for="logistics-preset-name">Novo preset</label><input id="logistics-preset-name" v-model="presetName" class="filter-control-input" maxlength="80" placeholder="Nome do preset..." @keydown.enter.prevent.stop="savePreset"></div>
     <div><button type="button" class="filter-preset-action filter-preset-save" aria-label="Salvar preset" :disabled="!presetName.trim()" @click="savePreset"><AppIcon name="bookmark"/>Salvar</button></div>
     <div v-if="presetId"><button type="button" class="filter-preset-action filter-preset-delete" aria-label="Excluir preset" @click="deletePreset"><AppIcon name="trash"/>Excluir</button></div>
    </div>
-   <hr class="filter-modal-divider">
-   <nav class="filter-modal-tabs" role="tablist" aria-label="Categorias de filtros"><button v-for="(tab,index) in tabs" :id="'logistics-filter-tab-'+tab.id" :key="tab.id" type="button" class="filter-tab-button" :class="{'is-active':selectedTab===tab.id}" role="tab" :aria-label="tab.label" :aria-selected="selectedTab===tab.id" aria-controls="logistics-filter-panel" :tabindex="selectedTab===tab.id?0:-1" @keydown="tabKey($event,index)" @click="selectedTab=tab.id"><AppIcon :name="tab.icon"/><span>{{tab.label}}</span><span v-if="tab.count" class="filter-tab-badge">({{tab.count}})</span></button></nav>
-   <div class="filter-modal-body">
-    <div id="logistics-filter-panel" :key="selectedTab" class="filter-tab-panel" role="tabpanel" :aria-labelledby="'logistics-filter-tab-'+selectedTab">
+   <hr class="filter-modal-divider"></template>
+  <template #tabs><FilterTabs v-model="selectedTab" :tabs="tabs" prefix="logistics-filter-tab" panel-id="logistics-filter-panel"/></template>
+  <div id="logistics-filter-panel" :key="selectedTab" class="filter-tab-panel" role="tabpanel" :aria-labelledby="'logistics-filter-tab-'+selectedTab">
      <div v-if="selectedTab==='period'" class="period-tab-content">
       <div><div class="period-shortcuts-heading"><p class="period-shortcuts-title">Atalhos de {{shortcutTarget==='forecast'?'previsão de faturamento':'emissão do pedido'}}</p><label class="period-shortcut-target">Aplicar atalhos em<select v-model="shortcutTarget" class="filter-control-select" aria-label="Aplicar atalhos em"><option value="forecast">Previsão de faturamento</option><option value="emission">Emissão do pedido</option></select></label></div><div class="period-shortcuts-grid"><button type="button" class="period-shortcut-btn" @click="quickPeriod('today')">Hoje</button><button type="button" class="period-shortcut-btn" @click="quickPeriod('month')">Este Mês</button><button type="button" class="period-shortcut-btn" @click="quickPeriod('previous')">Mês Passado</button><button type="button" class="period-shortcut-btn" @click="quickPeriod('year')">Ano {{currentYear}}</button><button type="button" class="period-shortcut-btn" @click="clearPeriod">Limpar Período</button></div></div>
       <hr class="filter-modal-divider">
@@ -107,13 +86,7 @@ function tabKey(event:KeyboardEvent,index:number){if(!['ArrowLeft','ArrowRight',
       </div><p class="logistics-filter-hint">Os mínimos são comparados ao saldo do pedido. Pedidos com medidas indisponíveis ficam fora da comparação correspondente. Saldo sem carga não representa estoque disponível.</p></div>
     </div>
     <p v-if="feedback" class="filter-feedback" :class="{'is-error':feedbackKind==='error'}" :role="feedbackKind==='error'?'alert':'status'">{{feedback}}</p>
-   </div>
-   <footer class="filter-modal-footer"><button type="button" class="modal-footer-btn btn-cancel" @click="close">Cancelar</button><button type="button" class="modal-footer-btn btn-clear-all" aria-label="Limpar filtros" :disabled="store.loading" @click="clear"><AppIcon name="trash"/>Limpar Todos</button><button type="submit" class="modal-footer-btn btn-apply-filters" aria-label="Aplicar filtros" :disabled="store.loading"><AppIcon name="check"/>Aplicar Filtros</button></footer>
-  </form>
- </div></Teleport>
+  <template #footer><button type="button" class="modal-footer-btn btn-cancel" @click="close">Cancelar</button><button type="button" class="modal-footer-btn btn-clear-all" aria-label="Limpar filtros" :disabled="store.loading" @click="clear"><AppIcon name="trash"/>Limpar filtros</button><button type="button" class="modal-footer-btn btn-apply-filters" aria-label="Aplicar filtros" :disabled="store.loading" @click="apply"><AppIcon name="check"/>Aplicar filtros</button></template>
+ </FilterDialog>
 </template>
-<style scoped>
-.logistics-filter-hint{margin:0;color:var(--filter-muted);font-size:12px;line-height:1.6}
-</style>
-
-
+<style scoped>.logistics-filter-hint{font-size:12px;line-height:1.6;color:#64748b;margin:0}</style>

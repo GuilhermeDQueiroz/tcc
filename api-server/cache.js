@@ -1,7 +1,8 @@
 export class AsyncCache {
-  constructor({ttl=300000,maxEntries=30}={}){
+  constructor({ttl=300000,maxEntries=30,evictBeforeLoad=false}={}){
     this.ttl=ttl;
     this.maxEntries=maxEntries;
+    this.evictBeforeLoad=evictBeforeLoad;
     this.items=new Map();
     this.pending=new Map();
     this.generation=0;
@@ -15,6 +16,7 @@ export class AsyncCache {
       return found.value;
     }
     this.items.delete(key);
+    if(this.evictBeforeLoad)while(this.items.size>=this.maxEntries&&this.items.size)this.items.delete(this.items.keys().next().value);
     const generation=this.generation;
     const promise=Promise.resolve().then(load).then(value=>{
       if(generation===this.generation){

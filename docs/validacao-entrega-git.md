@@ -33,3 +33,11 @@ Logs completos e relatório de conferência permanecem em `.local`, fora do Git.
 As verificações em dados reais já registradas em [Visão Estratégica](visao-estrategica-logistica.md) e [Formação de Cargas](formacao-cargas-analise-operacional.md) pertencem às publicações ali identificadas. Nesta preparação não será alegada nova carga integral do Firebird nem nova avaliação gerencial.
 
 O workflow da CI estará disponível após envio ao GitHub. A execução local de seus comandos não é uma execução do serviço GitHub Actions.
+
+## Atualização da conferência — 05/11/2026
+
+O workflow já está publicado: a [última execução consultada](https://github.com/GuilhermeDQueiroz/tcc/actions/runs/37459987278) passou para o commit `eac9986`. Após atualização das referências, `main` e `origin/main` estavam nesse commit, sem divergência. Não havia PRs ou issues abertos. As mudanças recentes continuam locais, sem commit/push; essa CI não valida a árvore de trabalho atual.
+
+Nesta revisão, passaram 106 testes públicos, TypeScript/Vue e build. O scanner não encontrou ocorrências no índice (349 arquivos) nem na inspeção adicional dos arquivos atuais rastreados e novos não ignorados (411 arquivos). Foram conferidos 36 casos de `.gitignore`, mantendo públicos o `AGENTS.md`, o catálogo compartilhado e os artefatos SQL/Hop, e privados os bancos, ambientes, runtimes e evidências. O scanner e suas regressões agora cobrem também caches, classes Java, arquivos de processo e bases SQLite locais.
+
+O ambiente foi deixado parado, sem nova execução de testes de navegador ou consultas gerenciais. O aviso conhecido de tamanho do chunk de gráficos permanece. Consulte [estado e continuidade](estado-projeto.md) para a distinção entre validação atual, evidências anteriores e pendências.

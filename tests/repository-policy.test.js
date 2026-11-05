@@ -14,6 +14,19 @@ test('repository excludes runtime credentials, database copies and private evide
  assert.deepEqual(inspect('data/metas-inicial.example.json','{"default":{}}'),[]);
 });
 
+test('repository rejects generated runtimes and local database artifacts while preserving source contracts',()=>{
+ for(const file of ['.venv/pyvenv.cfg','tools/venv/lib/runtime.py','etl/scripts/__pycache__/runtime.pyc',
+  '.pytest_cache/state','.mypy_cache/state','.ruff_cache/state','.cache/runtime.json',
+  'coverage/report.json','htmlcov/index.html','blob-report/report.zip','.coverage','.coverage.machine',
+  'etl/HopLauncher.class','src/tsconfig.tsbuildinfo','runtime/api.pid','runtime/api.pid.lock',
+  'cache.sqlite','cache.sqlite-wal','cache.sqlite3','cache.sqlite3-shm','database.dmp',
+  '.envrc','nested/.pgpass','pgpass.conf'])
+  assert.ok(inspect(file,'local').length>0,file);
+ for(const file of ['AGENTS.md','shared/analysis-dimensions.json','etl/sql/posvenda/003_dimensoes.sql',
+  'etl/workflows/posvenda_dimensoes_local.hwf','docs/dimensoes-posvenda.md'])
+  assert.deepEqual(inspect(file,'public source'),[],file);
+});
+
 test('repository rejects credential literals but permits environment variables and controlled test inputs',()=>{
  const secret=['not','a','real','credential'].join('-');
  assert.ok(inspect('etl/metadata/rdbms/DW.json',JSON.stringify({password:secret})).length>0);

@@ -4,6 +4,7 @@ import {useRouter} from 'vue-router'
 import {useStrategicStore} from '../stores/strategic'
 import {useLogisticsStore} from '../stores/logistics'
 import MetricCard from '../components/analytics/MetricCard.vue'
+import CohortPanel from '../components/analytics/CohortPanel.vue'
 import {AnalyticChart} from '../components/analytics/asyncChart'
 import LoadingState from '../components/ui/LoadingState.vue'
 import AppIcon from '../components/ui/AppIcon.vue'
@@ -25,7 +26,7 @@ const activeFilters=computed(()=>[
  ...(['billingRange','emissionRange'] as const).filter(key=>store.filters[key]).map(key=>({key,label:(key==='billingRange'?'Faturamento':'Emissão')+': '+store.filters[key]!.map(date=>formatValue(date,'date')).join(' – ')})),
 ])
 function removeFilter(key:string){const filters=JSON.parse(JSON.stringify(store.filters));if(key==='billingRange'||key==='emissionRange')delete filters[key];else delete filters.dimensions?.[key];store.applyFilters(filters)}
-const placeholders=['Cargas em aberto','Valor em carga','Peso em aberto','Backlog','Pedidos > 30 dias','Nível de serviço','OTIF']
+const placeholders=['Cargas em aberto','Valor em carga','Peso em aberto','Backlog','Pedidos > 30 dias','Nível de serviço','OTIF','Conversão no mês','Escoamento']
 onMounted(()=>void store.load())
 onBeforeUnmount(()=>store.cancel())
 </script>
@@ -54,6 +55,7 @@ onBeforeUnmount(()=>store.cancel())
     </div>
    </div>
   </section>
+  <CohortPanel v-if="store.dashboard" :data="store.dashboard.cohorts" :loading="store.loading"/>
   <div v-if="store.dashboard" class="strategic-definitions" aria-label="Definição dos indicadores">
    <p><strong>OTIF · faturamento no prazo.</strong> Percentual por registro faturado, segundo a previsão de faturamento. Não comprova entrega ao cliente nem atendimento integral. Sem previsão é contado como fora do prazo na regra atual.</p>
    <p><strong>Previsão informada:</strong> {{store.dashboard.meta.history.forecastCoverage==null?'indisponível':formatValue(store.dashboard.meta.history.forecastCoverage,'percent')}} dos registros do histórico. <strong>Nível de serviço (Lead Time):</strong> tempo médio entre emissão e faturamento. <strong>R$/kg:</strong> valor faturado por massa dos produtos.</p>
@@ -63,7 +65,10 @@ onBeforeUnmount(()=>store.cancel())
 </template>
 <style scoped>
 .strategic-dashboard{container-type:inline-size;display:block;padding:12px 18px 24px;min-width:0;background:transparent}
-.strategic-metrics{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px}
+.strategic-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.strategic-metrics :deep([data-metric-id="strategic.outflow"]){grid-column:span 2}
+.strategic-metrics :deep(.metric-details){margin-top:8px;font-size:11px}
+.strategic-metrics :deep(.metric-subtitle){font-size:10px}
 .strategic-metrics :deep(.metric-card){min-height:118px;padding:16px 14px;border-radius:14px;min-width:0}
 .strategic-metrics :deep(.metric-label){font-size:11px;letter-spacing:.025em;min-height:30px;align-items:flex-start}
 .strategic-metrics :deep(.metric-card>strong){margin:8px 0 0;font-size:min(25px,calc(100cqi * 1.65 / var(--metric-characters,16)));white-space:nowrap}
@@ -94,7 +99,8 @@ onBeforeUnmount(()=>store.cancel())
 .strategic-definitions{font-size:11px;line-height:1.7;color:#6d8173;border-top:1px solid #dfe7df;margin-top:20px;padding:12px 0 0}.strategic-definitions p{margin:0 0 5px}.strategic-definitions strong{color:#526b5d}
 @container(max-width:950px){.strategic-priority-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @container(max-width:380px){.strategic-priority-grid{grid-template-columns:1fr}}
-@container(max-width:950px){.strategic-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.strategic-chart-slot.service,.strategic-chart-slot.revenueKg,.strategic-chart-slot.delivery,.strategic-chart-slot.otif{grid-column:span 6;grid-row:auto}.strategic-chart-slot.tonnage{grid-column:span 12}.strategic-chart-slot.delivery{order:5}.strategic-chart-slot.otif{padding-top:8px;order:4}.strategic-chart-slot.tonnage{order:3}}
+@container(max-width:950px){.strategic-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.strategic-metrics :deep([data-metric-id="strategic.outflow"]){grid-column:auto}.strategic-chart-slot.service,.strategic-chart-slot.revenueKg,.strategic-chart-slot.delivery,.strategic-chart-slot.otif{grid-column:span 6;grid-row:auto}.strategic-chart-slot.tonnage{grid-column:span 12}.strategic-chart-slot.delivery{order:5}.strategic-chart-slot.otif{padding-top:8px;order:4}.strategic-chart-slot.tonnage{order:3}}
 @container(max-width:620px){.strategic-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.strategic-metrics :deep(.metric-card){min-height:104px;padding:12px}.strategic-chart-slot.service,.strategic-chart-slot.revenueKg,.strategic-chart-slot.delivery,.strategic-chart-slot.otif{grid-column:span 12}.strategic-chart-slot :deep(.analytic-chart){--analysis-height:240px}.strategic-context{font-size:10px}.strategic-source{display:none!important}}
 @media(max-width:767px){.strategic-dashboard{padding:10px 10px 20px}.strategic-charts{gap:14px}}
+@container(max-width:620px){.strategic-metrics :deep([data-metric-id="strategic.outflow"]){grid-column:span 2}}
 </style>

@@ -76,7 +76,7 @@ test('atalhos respeitam o legacy, edição é local e validação bloqueia envio
  await expect(dialog.getByLabel('Emissão de',{exact:true})).toHaveValue(current)
  await expect(dialog.getByLabel('Emissão até',{exact:true})).toHaveValue(current)
  await expect(dialog.getByLabel('Faturamento de',{exact:true})).toHaveValue(`${current.slice(0,4)}-01-01`)
- let sent=0;page.on('request',request=>{if(request.url().includes('/bi/faturados/semanal?'))sent++})
+ let sent=0;page.on('request',request=>{if(request.url().includes('/bi/faturados/mensal?'))sent++})
  await dialog.getByLabel('Emissão até',{exact:true}).fill('')
  await dialog.getByRole('button',{name:'Aplicar filtros',exact:true}).click()
  await expect(dialog.getByRole('alert')).toContainText('duas datas')
@@ -88,7 +88,7 @@ test('atalhos respeitam o legacy, edição é local e validação bloqueia envio
  await expect(dialog.getByRole('alert')).toContainText('número válido')
  expect(sent).toBe(0)
  await dialog.getByLabel('Valor do pedido',{exact:true}).fill('0')
- const waiting=page.waitForResponse(response=>response.url().includes('/bi/faturados/semanal?') && response.status()===200)
+ const waiting=page.waitForResponse(response=>response.url().includes('/bi/faturados/mensal?') && response.status()===200)
  await dialog.getByRole('button',{name:'Aplicar filtros',exact:true}).click()
  const response=await waiting
  const filters=JSON.parse(new URL(response.url()).searchParams.get('filters')!)

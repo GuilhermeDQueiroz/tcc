@@ -10,6 +10,7 @@ const close=(actual,expected,label)=>assert.ok(typeof actual==='number'&&Math.ab
 const frames=Object.fromEntries(['emitidos','faturados'].map(area=>[area,read(`normalized-${area}`)]));
 async function dashboard(area,tab){
   const repository=new PostgresRepository(null);
+  repository.getVersion=async()=> '2647add2-e8fe-4c70-a6b5-96d2b0d67d6d';
   repository.snapshot=async()=>({version:'2647add2-e8fe-4c70-a6b5-96d2b0d67d6d',source:'firebird/apache-hop',frames:{[area]:frames[area],carteira:[],metas:[]}});
   return repository.getDashboard({area,filters:{},referenceDate},tab);
 }
@@ -35,11 +36,29 @@ for(const area of ['emitidos','faturados']){
     const payload=await dashboard(area,'carteira');
     for(const table of payload.tables.filter(t=>t.treeSpec))rootSummaries(table);
   });
-  test(`${area}: evolution derives calendar roots and matches original child math and limits`,async()=>{
+  test(`${area}: evolution preserves calendar totals and the appropriate drilldown hierarchy`,async()=>{
     const table=(await dashboard(area,'evolucao')).tables[0];
     rootSummaries(table);
     assert.equal(table.tree[0].Mes_Ano,'2026-08');
     const expected=oracle.captures[`${area}.agosto.evolucao.hier_tree`];
+    if(area==='faturados'){
+      assert.deepEqual(table.treeSpec.columns,['Mes_Ano','UF','CIDADE','CLIENTE','CODIGO_PEDIDO']);
+      for(const key of ['Valor','Peso','Volume_M3','OTIF','Qtde'])close(table.tree[0][key],expected[0][key],`August total ${key}`);
+      const columns=table.treeSpec.columns;
+      function verify(nodes,source,depth){
+        assert.ok(nodes.length<=(depth===columns.length-1?20:depth===0?60:Math.min(12,[Infinity,8,6,5,4][depth])));
+        for(const node of nodes){
+          assert.equal(node.col_name,columns[depth]);
+          const input=source.filter(row=>String(depth===0?row.DT_FATURA_DATE.slice(0,7):row[columns[depth]])===String(node[columns[depth]]));
+          assert.ok(input.length>0);
+          close(node.Valor,input.reduce((sum,row)=>sum+row.VALOR_FATURADO_CLEAN,0),`${node.name} billing value`);
+          assert.equal(node.Qtd_Pedidos,new Set(input.map(row=>row.CODIGO_PEDIDO)).size);
+          if(node.children.length)verify(node.children,input,depth+1);
+        }
+      }
+      verify(table.tree,frames.faturados,0);
+      return;
+    }
     function compare(actual,want){
       assert.equal(actual.length,want.length,'original visible child count');
       want.forEach(row=>{

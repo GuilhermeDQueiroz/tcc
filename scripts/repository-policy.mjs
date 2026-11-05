@@ -1,12 +1,14 @@
-const privatePaths=/^(?:\.local|\.superpowers|\.agents|\.codex|node_modules|dist|test-results|playwright-report|banco\/(?:data|backups|logs)|data\/local|tests\/ui\/(?:results|screenshots)|\$ProjetoCache)(?:\/|$)/i;
-const privateExtensions=/\.(?:fdb|gdb|fbk|dump|backup|bak|jar|pyc|pyo|log|pem|pfx|p12|key)$/i;
+const privatePaths=/^(?:\.local|\.superpowers|\.agents|\.codex|node_modules|dist|coverage|htmlcov|test-results|playwright-report|blob-report|banco\/(?:data|backups|logs)|data\/local|tests\/ui\/(?:results|screenshots)|\$ProjetoCache)(?:\/|$)/i;
+const privateDirectories=/(?:^|\/)(?:\.venv|venv|__pycache__|\.pytest_cache|\.mypy_cache|\.ruff_cache|\.cache)(?:\/|$)/i;
+const privateExtensions=/\.(?:fdb|gdb|fbk|dump|backup|bak|dmp|sqlite3?(?:-wal|-shm)?|jar|class|pyc|pyo|log|pid(?:\.lock)?|tsbuildinfo|pem|pfx|p12|key)$/i;
+const privateConfiguration=/(?:^|\/)(?:\.envrc|\.pgpass|pgpass\.conf|\.coverage(?:\.[^/]*)?)$/i;
 const sensitiveAssignment=/\b(?:PG_PASSWORD|FIREBIRD_PASSWORD|DB_POSTGRES_PASSWORD|DB_FIREBIRD_PASSWORD|password|senha|api[_-]?key|access[_-]?token)\b["']?[ \t]*[:=][ \t]*(["'])([^"'\r\n]*)\1/gi;
 const controlledTestValues=new Set(['runtime-environment','x']);
 
 export function inspectRepositoryFile(filename,buffer){
  const file=filename.replaceAll('\\','/');
  const reasons=[];
- if(privatePaths.test(file)||privateExtensions.test(file)||file==='data/metas-inicial.json'||(/(?:^|\/)\.env(?:\.|$)/i.test(file)&&file!=='.env.example'))
+ if(privatePaths.test(file)||privateDirectories.test(file)||privateExtensions.test(file)||privateConfiguration.test(file)||file==='data/metas-inicial.json'||(/(?:^|\/)\.env(?:\.|$)/i.test(file)&&file!=='.env.example'))
   reasons.push('arquivo de execução, banco ou configuração privada');
  if(buffer.length>5*1024*1024)reasons.push('arquivo acima do limite de 5 MiB do código versionado');
  if(buffer.includes(0)){

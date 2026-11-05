@@ -7,15 +7,18 @@ import {isoDate,addDays} from '../domain/dates.js';
 import {buildOpenDashboard} from '../domain/open.js';
 import {buildDimensionDashboard,buildHierarchy} from '../domain/dimensions.js';
 import {buildCommercialDashboard} from '../domain/commercial.js';
+import {buildBillingLogisticsDashboard,billingHierarchy} from '../domain/billing-logistics.js';
 import {prepareOpenRows} from '../domain/forecast.js';
 import {groupOpenOrders,openOrderColumns} from '../domain/open-orders.js';
 const contract=JSON.parse(fs.readFileSync(new URL('../../etl/contrato-colunas-dw.json',import.meta.url),'utf8'));
 const views={abertos:'pedidos_abertos',emitidos:'pedidos_emitidos',faturados:'pedidos_faturados',carteira:'carteira_clientes',metas:'metas_consultores'};
 const q=name=>'"'+name+'"';
 const logicalColumns=area=>contract.areas[area].columns;
-export function buildProjection(area,{compact=false}={}){
+const strategicColumns=new Set(['CODIGO_PEDIDO','CODIGO_ITEM','COR','DATA_EMISSAO_PEDIDO_DATE','DT_FATURA_DATE','DT_PREVISAO_FATURAMENTO_DATE','UF','CIDADE','TIPO_ENTREGA','CONSULTOR','SUPERVISOR','GRUPO_CLIENTE',
+ 'VALOR_EMITIDO_CLEAN','PESO_EMITIDO_CLEAN','VOLUME_M3_EMITIDO_CLEAN','QUANTIDADE_EMITIDA_CLEAN','VALOR_FATURADO_CLEAN','PESO_FATURADO_CLEAN','VOLUME_M3_FATURADO_CLEAN','QUANTIDADE_FATURADA_CLEAN','NIVEL_DE_SERVICO_CLEAN','ON_TIME_CLEAN']);
+export function buildProjection(area,{compact=false,only}={}){
   const columns=logicalColumns(area),names=Object.fromEntries(columns.map(c=>[c.legacy,c.name]));
-  const projection=columns.filter(c=>!compact||!['abertos','emitidos','faturados'].includes(area)||c.legacy.endsWith('_CLEAN')||c.legacy.endsWith('_DATE')||['CODIGO_PEDIDO','CODIGO_CLIENTE','RAZAO_SOCIAL','CODIGO_CONSULTOR','CODIGO_ITEM','NOTAFISCAL','ENTREGA','CARGA','DESCRICAO_ITEM','DESCRICAO_CARGA',...DIMENSIONS,'ORIGEM','ORGAO','COR','FAMILIA'].includes(c.legacy)).map(c=>{
+  const projection=columns.filter(c=>only?only.has(c.legacy):!compact||!['abertos','emitidos','faturados'].includes(area)||c.legacy.endsWith('_CLEAN')||c.legacy.endsWith('_DATE')||['CODIGO_PEDIDO','CODIGO_CLIENTE','RAZAO_SOCIAL','CODIGO_CONSULTOR','CODIGO_ITEM','NOTAFISCAL','ENTREGA','CARGA','DESCRICAO_ITEM','DESCRICAO_CARGA',...DIMENSIONS,'ORIGEM','ORGAO','COR','FAMILIA'].includes(c.legacy)).map(c=>{
     let name=c.name;if(c.legacy.startsWith('VOLUME_M3')&&!c.legacy.endsWith('_CLEAN'))name=names[c.legacy+'_CLEAN']||name;
     const expression=c.legacy.endsWith('_DATE')?q(name)+'::date::text':q(name);
     return expression+' AS '+q(c.legacy);
@@ -79,7 +82,7 @@ export function normalizeRows(rows,area,referenceDate){
 }
 const latestSQL="SELECT id::text, fim::text, origem FROM etl.execucao_carga WHERE status='publicado' ORDER BY fim DESC LIMIT 1";
 export class PostgresRepository {
-  constructor(pool){this.pool=pool;this.snapshots=new AsyncCache({maxEntries:3,ttl:1800000});this.dimensionOptions=new AsyncCache({maxEntries:3,ttl:1800000});this.payloads=new AsyncCache({maxEntries:24,ttl:300000});}
+  constructor(pool){this.pool=pool;this.snapshots=new AsyncCache({maxEntries:1,ttl:1800000,evictBeforeLoad:true});this.dimensionOptions=new AsyncCache({maxEntries:3,ttl:1800000});this.payloads=new AsyncCache({maxEntries:24,ttl:300000});}
   async getVersion(){const {rows}=await this.pool.query(latestSQL);if(!rows.length)throw new Error('Nenhuma carga Hop publicada.');return rows[0].id;}
   async snapshot(referenceDate,requestedArea){
     const version=await this.getVersion();
@@ -88,8 +91,9 @@ export class PostgresRepository {
       try{await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
         const meta=(await client.query(latestSQL)).rows[0];if(!meta)throw new Error('Nenhuma carga Hop publicada.');
         const snapshot={version:meta.id,publishedAt:meta.fim,source:'firebird/apache-hop',frames:{}};
-        for(const area of requestedArea==='abertos'?['abertos']:[requestedArea,'carteira','metas']){
-          const projection=buildProjection(area,{compact:true}),where=buildWhere(area,{},referenceDate);
+        const areas=requestedArea==='strategic'?['emitidos','faturados']:requestedArea==='abertos'?['abertos']:[requestedArea,'carteira','metas'];
+        for(const area of areas){
+          const projection=buildProjection(area,{compact:true,only:requestedArea==='strategic'?strategicColumns:undefined}),where=buildWhere(area,{},referenceDate);
           const order=['abertos','emitidos','faturados'].includes(area)?' ORDER BY registro_id':'';
           const result=await client.query(`SELECT * FROM (SELECT ${projection}${order?', registro_id':''} FROM dw.${views[area]}) base${where.text}${order}`,where.values);
           for(const row of result.rows)delete row.registro_id;
@@ -109,13 +113,18 @@ export class PostgresRepository {
     });
   }
   async getDashboard(context,tab){
-    validateAreaTab(context.area,tab);const snapshot=await this.snapshot(context.referenceDate,context.area);
-    return this.payloads.get(stableKey([snapshot.version,context,tab]),async()=>{
+    validateAreaTab(context.area,tab);
+    // Check publication availability before using a derived response. Loading the
+    // large source first would defeat this cache after another area evicted it.
+    const version=await this.getVersion();
+    return this.payloads.get(stableKey([version,context,tab]),async()=>{
+      const snapshot=await this.snapshot(context.referenceDate,context.area);
+      const dimensionContext=options=>context.area==='faturados'&&!context.hierarchy?.length?{...options,hierarchy:billingHierarchy(options.dimension)}:options;
       const frames=snapshot.frames,history=filterRows(frames[context.area],context.filters,{ignoreDates:true});let rows=filterRows(frames[context.area],context.filters);
       if(context.forecastDate)rows=rows.filter(r=>r.DT_PREVISAO_FATURAMENTO_DATE===context.forecastDate);
       let result;
       if(tab==='pesquisa')result={metrics:[],series:[],tables:[],meta:{empty:!rows.length}};
-      else if(tab==='dimensoes')result=buildDimensionDashboard({...context,rows,history});
+      else if(tab==='dimensoes')result=buildDimensionDashboard(dimensionContext({...context,rows,history}));
       else if(context.area==='abertos'){
         result=buildOpenDashboard({...context,rows,dailyAverage:snapshot.dailyAverage,tab});
       }else result=buildCommercialDashboard({...context,tab,rows,history,carteira:frames.carteira,metas:frames.metas});
@@ -123,15 +132,16 @@ export class PostgresRepository {
         const period=result.meta.comparisonPeriod,dc=context.area==='emitidos'?'DATA_EMISSAO_PEDIDO_DATE':'DT_FATURA_DATE';
         const previousRows=period?history.filter(r=>r[dc]>=period.start&&r[dc]<=period.end):[];
         const dimension=['UF','CIDADE','REGIAO_UF','MICRO_REGIAO'].includes(context.dimension)?context.dimension:'UF';
-        const detail=buildDimensionDashboard({...context,dimension,rows,history,previousRows});
+        const detail=buildDimensionDashboard(dimensionContext({...context,dimension,rows,history,previousRows}));
         result.tables.push(...detail.tables);
       }
       if(tab==='mensal'&&result.meta.dimensionPeriod){
         const dc=context.area==='emitidos'?'DATA_EMISSAO_PEDIDO_DATE':'DT_FATURA_DATE',period=result.meta.dimensionPeriod;
         const monthlyRows=rows.filter(r=>r[dc]>=period.start&&r[dc]<=period.end);
-        const detail=buildDimensionDashboard({...context,rows:monthlyRows,history});
+        const detail=buildDimensionDashboard(dimensionContext({...context,rows:monthlyRows,history}));
         detail.tables[0].title+=' • mês vigente';result.tables.push(...detail.tables);
       }
+      if(context.area==='faturados'&&tab!=='carteira')result=buildBillingLogisticsDashboard(result,{...context,tab,rows});
       for(const table of result.tables||[])if(table.treeSpec){
         const spec=table.treeSpec;const dc=context.area==='emitidos'?'DATA_EMISSAO_PEDIDO_DATE':'DT_FATURA_DATE';
         let input=spec.period?.start?rows.filter(r=>r[dc]>=spec.period.start&&r[dc]<=spec.period.end):rows;
@@ -143,8 +153,9 @@ export class PostgresRepository {
     });
   }
   async getDimensions(context){
-    const snapshot=await this.snapshot(context.referenceDate,context.area);
-    return this.dimensionOptions.get(stableKey([snapshot.version,context.referenceDate,context.area]),()=>{
+    const version=await this.getVersion();
+    return this.dimensionOptions.get(stableKey([version,context.referenceDate,context.area]),async()=>{
+      const snapshot=await this.snapshot(context.referenceDate,context.area);
       const rows=snapshot.frames[context.area],dimensions={};
       for(const key of DIMENSIONS)dimensions[key]=[...new Set(rows.map(r=>r[key]).filter(v=>v!=null&&v!==''))].sort();
       const ranges={};for(const [name,column] of [['emission','DATA_EMISSAO_PEDIDO_DATE'],['billing','DT_FATURA_DATE']]){const dates=rows.map(r=>r[column]).filter(Boolean).sort();ranges[name]=dates.length?[dates[0],dates.at(-1)]:[];}

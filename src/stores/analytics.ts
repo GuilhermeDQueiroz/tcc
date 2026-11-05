@@ -78,7 +78,7 @@ export const useAnalyticsStore = defineStore('analytics', () => {
     } catch (cause) { if (current === detailSequence && !(cause instanceof DOMException && cause.name === 'AbortError')) detailsError.value = cause instanceof Error ? cause.message : 'Não foi possível carregar pedidos.' }
     finally { if (current === detailSequence) detailsLoading.value = false }
   }
-  function setArea(value: Area) { if (area.value === value) return; area.value = value; tab.value = tabs[value][0]!.id; filters.value = {}; forecastDate.value = ''; year.value = undefined; month.value = undefined; dimensions.value = null; dimension.value = 'UF'; hierarchy.value=[]; resetDetails(true) }
+  function setArea(value: Area) { if (area.value === value) return; area.value = value; tab.value = tabs[value][0]!.id; filters.value = {}; forecastDate.value = ''; year.value = undefined; month.value = undefined; dimensions.value = null; dimension.value = 'UF'; hierarchy.value=[]; metric.value=value==='faturados'?'weightKg':'value'; heatmapDimension.value=value==='faturados'?'UF':'CONSULTOR'; resetDetails(true) }
   function applyFilters(value: Filters) { filters.value = JSON.parse(JSON.stringify(value)); page.value = 1; void load() }
   function drillDown(key: string, value: unknown) { if (!key || value == null) return; applyFilters({ ...filters.value, dimensions: { ...filters.value.dimensions, [key]: [String(value)] } }) }
   async function exportDetails() { try { await download(`/bi/${area.value}/detalhes?${query({ export: 'csv', sort: sort.value, direction: direction.value, columns: columns.value.join(',') })}`, `${area.value}-pedidos.csv`) } catch (cause) { detailsError.value = String(cause instanceof Error ? cause.message : cause) } }

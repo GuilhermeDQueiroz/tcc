@@ -19,6 +19,7 @@ test('DW projection obeys source names and parameterizes categorical inputs',()=
 test('search area publishes real context before paginated details are requested',async()=>{
  const rows=JSON.parse(fs.readFileSync(new URL('../.local/normalized-emitidos.json',import.meta.url),'utf8'));
  const repository=new PostgresRepository(null);
+ repository.getVersion=async()=> '2647add2-e8fe-4c70-a6b5-96d2b0d67d6d';
  repository.snapshot=async()=>({version:'2647add2-e8fe-4c70-a6b5-96d2b0d67d6d',source:'firebird/apache-hop',frames:{emitidos:rows},publishedAt:'2026-10-01'});
  const response=await repository.getDashboard({area:'emitidos',filters:{},referenceDate:'2026-10-01'},'pesquisa');
  assert.equal(response.meta.records,rows.length);assert.equal(response.tab,'pesquisa');
@@ -35,6 +36,7 @@ test('dimension options coalesce real derivation and remain isolated by publicat
  let reads=0,version='2647add2-e8fe-4c70-a6b5-96d2b0d67d6d';
  const rows=original.map((row,index)=>index?row:new Proxy(row,{get(target,key){if(key==='UF')reads++;return target[key];}}));
  const repository=new PostgresRepository(null);
+ repository.getVersion=async()=>version;
  repository.snapshot=async(referenceDate,area)=>({version,frames:{[area]:rows}});
  const context={area:'faturados',referenceDate:'2026-10-01',filters:{}};
  const [first,second]=await Promise.all([repository.getDimensions(context),repository.getDimensions(context)]);
@@ -50,6 +52,7 @@ test('dimension options coalesce real derivation and remain isolated by publicat
 test('immutable snapshot and dimension caches survive a fifteen-minute session and expire after thirty minutes',async()=>{
  const rows=JSON.parse(fs.readFileSync(new URL('../.local/normalized-faturados.json',import.meta.url),'utf8'));
  const repository=new PostgresRepository(null),now=Date.now;
+ repository.getVersion=async()=> '2647add2-e8fe-4c70-a6b5-96d2b0d67d6d';
  let time=now(),loads=0;
  Date.now=()=>time;
  try{

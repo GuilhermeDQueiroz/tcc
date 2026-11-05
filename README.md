@@ -14,11 +14,14 @@ O projeto organiza dados do ERP Firebird em uma base analítica PostgreSQL, por 
 
 | Área | Análises disponíveis |
 |---|---|
-| Visão Estratégica | Sete indicadores, cinco gráficos, filtros de localização/modalidade/período e quatro prioridades com acesso aos pedidos |
+| Visão Estratégica | Nove indicadores, incluindo conversão no mês e escoamento com médias mensais, cinco gráficos, quatro prioridades com acesso aos pedidos e conversão por safra em 7, 15 e 30 dias, com valor, peso, cubagem e pedidos |
 | Formação de Cargas | Pedidos sem carga, parcialmente e totalmente alocados; quantidades, valor, peso e cubagem por parcela; seleção cruzada entre carga, pedido e item; mapa e previsões |
 | Pedidos em Aberto | Carteira, backlog, calendário, geografia, dimensões e pesquisa |
-| Pedidos Faturados | Semanas, acompanhamento mensal, evolução, carteira, dimensões e pesquisa |
+| Análise Logística dos Pedidos Faturados | Peso, cubagem, pedidos, lead time até faturamento, faturamento no prazo, entrega/retirada, destinos, evolução e pesquisa |
 | Pedidos Emitidos | Área comercial preservada em sua rota, sem destaque no menu principal |
+| Assistências | Visões em aberto e emitidas, quantidades e valores, idade, motivos, calendário, dimensões compartilhadas, hierarquias, peso, cubagem e detalhamento paginado |
+| Cancelamentos de venda | Eventos de cancelamento, inclusive parciais, vinculados aos pedidos e itens originais |
+| Devoluções | Devoluções de vendas e assistências por documento, item faturado original e motivo |
 
 As consultas incluem filtros, totalizadores, hierarquias, pesquisa, exportação CSV e preferências locais. A aplicação adapta a disposição dos painéis para telas menores.
 
@@ -34,7 +37,7 @@ flowchart LR
     A --> V[Vue / Pinia / ECharts]
 ```
 
-Há 32 projeções de fontes no fluxo comercial e quatorze no fluxo logístico. As publicações são versionadas e identificadas nos resultados. O ETL é executado separadamente; abrir o painel não inicia uma extração. A API utiliza a última publicação válida.
+Há 32 projeções de fontes no fluxo comercial, quatorze no fluxo logístico e quatorze no fluxo isolado de pós-venda. As publicações são versionadas e identificadas nos resultados. O ETL é executado separadamente; abrir o painel não inicia uma extração. A API utiliza a última publicação válida. As regras e os vínculos dos novos painéis estão em [Painéis de pós-venda](docs/paineis-posvenda.md).
 
 **Tecnologias verificadas:** Node.js 24.16.0, Vue 3, TypeScript, Pinia, Vue Router, Tailwind CSS, Apache ECharts, Express, PostgreSQL 18, Apache Hop 2.19, JDK 21, Python 3.12 e Firebird 5.
 
@@ -62,7 +65,14 @@ Para abrir o painel com dados, siga o [guia de reprodução](docs/reproducao.md)
 | Interface de desenvolvimento | http://127.0.0.1:5173 |
 | PostgreSQL do projeto | `localhost:5434`, banco `dados` |
 
-O launcher solicita credenciais ausentes em memória e mantém logs em `.local/runtime`. Para encerrar os processos que ele iniciou, use `scripts/parar-dev.ps1`. A instância PostgreSQL tem comandos próprios em `banco/scripts`.
+O launcher solicita credenciais ausentes em memória e mantém logs em `.local/runtime`. Para encerrar os processos que ele iniciou e o banco exclusivo:
+
+```powershell
+.\scripts\parar-dev.ps1
+.\banco\scripts\parar.ps1
+```
+
+Instâncias iniciadas por outros terminais precisam de conferência própria. Não encerre processos pelo nome globalmente: Firebird 3050 e PostgreSQL 5432 podem atender outros projetos. A conferência de 05/11/2026 deixou o ambiente deste projeto parado; veja [estado e continuidade](docs/estado-projeto.md).
 
 ## Dados e configuração
 
@@ -93,11 +103,20 @@ A [CI](.github/workflows/ci.yml) executa a verificação pública em pushes e pu
 - **Pedidos antigos:** idade da carteira, distinta de previsão vencida.
 - **Backlog estratégico:** valor aberto dividido pela média diária de faturamento dos 90 dias corridos da referência; difere do recorte de status do backlog comercial.
 - **R$/kg:** valor dos produtos faturados por massa; não é custo de frete.
+- **Conversão da safra:** parcelas faturadas em até 7, 15 e 30 dias corridos após a emissão de cada pedido, divididas pela base emitida da safra mensal. Inclui pedidos sem faturamento no denominador. Em pedidos, mede algum faturamento, inclusive parcial. Janelas incompletas aparecem como “Em acompanhamento”; não confirma entrega.
+- **Participação da safra no faturamento:** participação dos pedidos emitidos no próprio mês no faturamento desse mês. Preserva o cálculo comercial anterior, agora com nome que explicita sua base; difere da conversão dos pedidos emitidos.
 - **Mapa:** distribuição por UF/cidade e pontos de pedidos. Coordenadas do ERP têm prioridade; destinos sem coordenadas podem usar localização **aproximada pelo CEP de entrega**, inclusive centro municipal. A origem aparece no mapa. Não há otimização de rotas.
 
-Frete sobre faturamento, assistência/recolhimento como processos próprios, duração por etapa e histórico real do saldo permanecem no plano de evolução. O experimento manual × painel e a avaliação com gestores ainda precisam ser aplicados. Testes técnicos não demonstram, isoladamente, ganho de produtividade gerencial.
+No pós-venda, o intervalo acompanha o filtro de emissão/evento, dentro da cobertura publicada. A referência indica a posição da base usada para idade, previsão e saldo de assistências: um filtro de mês anterior não reconstrói a carteira daquele mês. Veja [as regras de datas](docs/paineis-posvenda.md#período-filtrado-e-posição-da-base).
+
+Frete sobre faturamento, recolhimento físico, duração por etapa e histórico real do saldo permanecem no plano de evolução. Assistências já têm painel próprio, mas não comprovam conclusão física do atendimento. O experimento manual × painel e a avaliação com gestores ainda precisam ser aplicados ou ter suas evidências identificadas. Testes técnicos não demonstram, isoladamente, ganho de produtividade gerencial.
 
 ## Documentação para a banca
+
+- [Estado do projeto, conferência GitHub e continuidade](docs/estado-projeto.md)
+- [Painéis de pós-venda](docs/paineis-posvenda.md) e [dimensões, layout e linhagem](docs/dimensoes-posvenda.md)
+- [Navegação e filtros](docs/navegacao-filtros.md) e [desempenho e arquitetura](docs/revisao-desempenho-arquitetura.md)
+- [Contribuição do painel de Faturados ao tema logístico](docs/analise-logistica-faturados.md)
 
 - [Reprodução do ambiente e das publicações](docs/reproducao.md)
 - [Roteiro de demonstração e avaliação](docs/entrega-pratica-tcc.md)
@@ -105,6 +124,7 @@ Frete sobre faturamento, assistência/recolhimento como processos próprios, dur
 - [Dicionário de indicadores](docs/dicionario-indicadores-logisticos.md) e [regras de negócio](docs/regras-negocio-logistica.md)
 - [Fontes, telas, testes e capítulos do TCC](docs/mapeamento-fontes-logisticas.md)
 - [Visão Estratégica](docs/visao-estrategica-logistica.md) e [Formação de Cargas](docs/formacao-cargas-analise-operacional.md)
+- [Conversão por safra](docs/conversao-safra.md): fórmulas, observação das janelas, filtros, conciliação e contribuição para o TCC.
 - [Plano de implementação e pendências](docs/plano-implementacao-logistica-tcc.md)
 - [Localização aproximada por CEP](docs/geolocalizacao-cep.md): consulta em lote, cache local e limites de precisão.
 - [Validação de equivalência com o legacy](docs/validacao-equivalencia.md)
@@ -113,6 +133,7 @@ Frete sobre faturamento, assistência/recolhimento como processos próprios, dur
 
 ```text
 api-server/    API, repositórios e cálculos
+shared/        Catálogos comuns à API e à interface
 src/           Interface, filtros, gráficos e consultas
 etl/           Pipelines, workflows, metadados e SQL do Apache Hop
 banco/         Instruções e scripts da instância PostgreSQL
@@ -126,4 +147,4 @@ data/          Modelo público de metas; configurações reais locais
 
 A licença do código autoral ainda não foi definida pelo autor. Dependências, fontes e recursos de terceiros conservam suas próprias licenças e créditos em [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Dados e configurações locais não são licenciados nem distribuídos pelo repositório.
 
-Orientações para alterações: [CONTRIBUTING.md](CONTRIBUTING.md). Para relatar problemas de exposição de informação, consulte [SECURITY.md](SECURITY.md).
+Orientações para alterações: [CONTRIBUTING.md](CONTRIBUTING.md) e [AGENTS.md](AGENTS.md). Para relatar problemas de exposição de informação, consulte [SECURITY.md](SECURITY.md).

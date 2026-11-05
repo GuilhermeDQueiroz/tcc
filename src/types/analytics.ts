@@ -17,11 +17,12 @@ export type Goals = Record<string, Record<string, number>>
 export const areas: { id: Area; label: string; description: string; icon: string }[] = [
   { id: 'abertos', label: 'Pedidos em Aberto', description: 'Carteira e previsão de faturamento', icon: '▤' },
   { id: 'emitidos', label: 'Pedidos Emitidos', description: 'Demanda e acompanhamento comercial', icon: '↗' },
-  { id: 'faturados', label: 'Pedidos Faturados', description: 'Faturamento e desempenho', icon: '▥' },
+  { id: 'faturados', label: 'Faturados · Logística', description: 'Fluxo físico e atendimento até o faturamento', icon: '▥' },
 ]
 export const tabs: Record<Area, { id: Tab; label: string }[]> = {
   abertos: [{ id: 'resumo', label: 'Resumo' }, { id: 'calendario', label: 'Calendário' }, { id: 'geografia', label: 'Geografia' }, { id: 'dimensoes', label: 'Dimensões' }, { id: 'pesquisa', label: 'Pesquisa' }],
   emitidos: [], faturados: [],
 }
-tabs.emitidos = tabs.faturados = [{ id: 'semanal', label: 'Semanal' }, { id: 'mensal', label: 'Mensal' }, { id: 'evolucao', label: 'Evolução' }, { id: 'geografia', label: 'Geografia' }, { id: 'carteira', label: 'Carteira de Clientes' }, { id: 'dimensoes', label: 'Dimensões' }, { id: 'pesquisa', label: 'Pesquisa' }]
+tabs.emitidos = [{ id: 'semanal', label: 'Semanal' }, { id: 'mensal', label: 'Mensal' }, { id: 'evolucao', label: 'Evolução' }, { id: 'geografia', label: 'Geografia' }, { id: 'carteira', label: 'Carteira de Clientes' }, { id: 'dimensoes', label: 'Dimensões' }, { id: 'pesquisa', label: 'Pesquisa' }]
+tabs.faturados = [{ id: 'mensal', label: 'Mensal' }, { id: 'semanal', label: 'Semanal' }, { id: 'evolucao', label: 'Evolução' }, { id: 'geografia', label: 'Destinos' }, { id: 'dimensoes', label: 'Dimensões' }, { id: 'pesquisa', label: 'Pesquisa' }]
 export const dimensionLabels: Record<string, string> = { UF: 'Estado (UF)', REGIAO_UF: 'Região', CIDADE: 'Cidade', MICRO_REGIAO: 'Microregião', SUPERVISOR: 'Supervisor', CONSULTOR: 'Consultor', TIPO_ENTREGA: 'Tipo de entrega', CLASSIFICACAO: 'Classificação', STATUS: 'Status', GRUPO_ITEM: 'Grupo do item', LINHA: 'Linha', SUBGRUPO: 'Subgrupo', TIPO: 'Tipo', COLECAO: 'Coleção', GRUPO_CLIENTE: 'Grupo de Cliente', ORIGEM: 'Origem', ORGAO: 'Órgão', DESCRICAO_ITEM: 'Produto', COR: 'Cor', FAMILIA: 'Família', Aging_Bucket: 'Faixa de tempo', Mes_Grupo: 'Mês de emissão', Mes_Previsao: 'Mês de previsão', Status_Previsao: 'Situação da previsão', Canal: 'Canal', CLIENTE: 'Cliente', CODIGO_PEDIDO: 'Pedido', Ano_Num: 'Ano' }

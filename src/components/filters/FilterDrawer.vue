@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, watch, nextTick, onBeforeUnmount } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useAnalyticsStore } from '../../stores/analytics'
 import { useFilterDraft, type FilterPeriod } from '../../composables/useFilterDraft'
 import LoadingState from '../ui/LoadingState.vue'
 import AppIcon from '../ui/AppIcon.vue'
 import MultiSelect from './MultiSelect.vue'
+import FilterDialog from './FilterDialog.vue'
+import FilterTabs from './FilterTabs.vue'
 const props=defineProps<{open:boolean}>()
 const emit=defineEmits<{close:[]}>()
 const store=useAnalyticsStore()
@@ -20,9 +22,7 @@ function initializeDraft(filters:Parameters<typeof reset>[0]={}){
 }
 function quickPeriod(period:FilterPeriod){applyQuickPeriod(period,shortcutTarget.value)}
 const selectedTab=ref('period'),presetName=ref(''),presetId=ref('')
-const saving=ref(false),deleting=ref(false),panel=ref<HTMLElement>()
-let previousFocus:HTMLElement|null=null,previousOverflow=''
-watch(selectedTab,()=>nextTick(()=>panel.value?.querySelector<HTMLElement>('.filter-modal-body')?.scrollTo({top:0})))
+const saving=ref(false),deleting=ref(false)
 const currentPresets=computed(()=>store.presets.filter(entry=>entry.area===store.area))
 const groups=computed(()=>store.dimensions?.dimensions?.GRUPO_CLIENTE || [])
 const operators=[{value:'',label:'Nenhum'},{value:'>',label:'Maior que (>)'},
@@ -35,26 +35,13 @@ const tabsConfig=computed(()=>[
  {id:'product',label:'Produto',icon:'box',count:counts.value.product,ariaLabel:'Produto'},
  {id:'numeric',label:'Valores',icon:'currency',count:counts.value.numeric,ariaLabel:'Valores e quantidade'}
 ])
-function visibleElement(element:HTMLElement|null|undefined){
- if(!element?.isConnected)return false
- const rect=element.getBoundingClientRect()
- return rect.width>0 && rect.height>0 && rect.right>0 && rect.left<innerWidth && rect.bottom>0 && rect.top<innerHeight
-}
-watch(()=>props.open,async open=>{
- if(!open){
-  document.body.style.overflow=previousOverflow;await nextTick()
-  const target=visibleElement(previousFocus) ? previousFocus : document.querySelector<HTMLElement>('.header-filter-btn')
-  if(visibleElement(target))target?.focus({preventScroll:true})
-  return
- }
- previousFocus=document.activeElement instanceof HTMLElement ? document.activeElement : null
- previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden'
+watch(()=>props.open,open=>{
+ if(!open)return
  initializeDraft(store.filters);presetId.value='';presetName.value=''
- await nextTick();if(!props.open)return
- panel.value?.focus();void store.loadDimensions()
- store.loadSettings().catch(cause=>{if(props.open)message(cause instanceof Error ? cause.message : String(cause),'error')})
+ void store.loadDimensions()
+ store.loadSettings().catch(cause=>{if(props.open)message(cause instanceof Error?cause.message:String(cause),'error')})
 })
-onBeforeUnmount(()=>{if(props.open)document.body.style.overflow=previousOverflow})
+watch(()=>store.area,()=>{selectedTab.value='period'})
 function apply(){const result=compiled();if(result){store.applyFilters(result);emit('close')}}
 function clear(){reset();store.applyFilters({});emit('close')}
 function usePreset(){const preset=currentPresets.value.find(entry=>entry.id===presetId.value);if(preset){initializeDraft(preset.filters);message(`Preset '${preset.name}' carregado. Clique em Aplicar filtros para usá-lo.`)}}
@@ -73,63 +60,11 @@ async function deletePreset(){
  catch(cause){message(cause instanceof Error ? cause.message : String(cause),'error')}
  finally{deleting.value=false}
 }
-function trap(event:KeyboardEvent){
- if(event.key!=='Tab')return
- const elements=[...(panel.value?.querySelectorAll<HTMLElement>('button,input,select,[tabindex="0"]') || [])].filter(el=>!el.hasAttribute('disabled') && el.tabIndex>=0 && el.getClientRects().length>0)
- const first=elements[0],last=elements.at(-1)
- if(!first)return
- if(event.shiftKey && (document.activeElement===first || document.activeElement===panel.value)){event.preventDefault();last?.focus()}
- else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first.focus()}
-}
-function tabKey(event:KeyboardEvent,index:number){
- const keys=['ArrowLeft','ArrowRight','Home','End'];if(!keys.includes(event.key))return
- event.preventDefault()
- const target=event.key==='Home'?0:event.key==='End'?tabsConfig.value.length-1:(index+(event.key==='ArrowRight'?1:-1)+tabsConfig.value.length)%tabsConfig.value.length
- selectedTab.value=tabsConfig.value[target]!.id
- nextTick(()=>panel.value?.querySelector<HTMLElement>(`#filter-tab-${selectedTab.value}`)?.focus())
-}
 </script>
 
 <template>
-  <Teleport to="body">
-    <div
-      v-if="open"
-      class="filter-modal-overlay"
-      @click.self="emit('close')"
-      @keydown.esc="emit('close')"
-    >
-      <section
-        ref="panel"
-        class="filter-modal-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Filtros da análise"
-        tabindex="-1"
-        @keydown="trap"
-      >
-        <!-- Dialog Header -->
-        <header class="filter-modal-header">
-          <div class="filter-modal-heading">
-            <span class="filter-modal-heading-icon"><AppIcon name="filter" /></span>
-            <div>
-            <h2 class="filter-modal-title">Configuração de Filtros Avançados</h2>
-            <p class="filter-modal-subtitle">
-              Selecione os filtros desejados nas abas abaixo ou utilize um preset salvo.
-            </p>
-            </div>
-          </div>
-          <button
-            class="filter-modal-close"
-            aria-label="Fechar filtros"
-            title="Fechar filtros"
-            @click="emit('close')"
-          >
-            <AppIcon name="close" />
-          </button>
-        </header>
-
-        <!-- Presets Row (4 Columns matching legacy) -->
-        <div class="filter-modal-presets">
+ <FilterDialog :open="open" label="Filtros da análise" :subtitle="(store.area==='abertos'?'Pedidos em aberto':store.area==='faturados'?'Pedidos faturados':'Pedidos emitidos')+' · combine as categorias e aplique os filtros.'" :section="selectedTab" :busy="store.dimensionsLoading" @close="emit('close')" @apply="apply">
+  <template #presets><div class="filter-modal-presets">
           <div>
             <label class="sr-only" for="preset-select">Presets</label>
             <select
@@ -152,6 +87,7 @@ function tabKey(event:KeyboardEvent,index:number){
               id="preset-name-input"
               aria-label="Novo preset"
               v-model="presetName"
+              @keydown.enter.prevent.stop="savePreset"
               placeholder="Nome do preset..."
               class="filter-control-input"
             />
@@ -182,42 +118,9 @@ function tabKey(event:KeyboardEvent,index:number){
           </div>
         </div>
 
-        <hr class="filter-modal-divider" />
-
-        <!-- Tabs with Icons and Active Counters -->
-        <nav class="filter-modal-tabs" role="tablist" aria-label="Categorias de filtros">
-          <button
-            v-for="(item,index) in tabsConfig"
-            :key="item.id"
-            :class="{ 'is-active': selectedTab === item.id }"
-            :aria-label="item.ariaLabel"
-            class="filter-tab-button"
-            role="tab"
-            :id="`filter-tab-${item.id}`"
-            :aria-selected="selectedTab===item.id"
-            aria-controls="filter-active-panel"
-            :tabindex="selectedTab===item.id ? 0 : -1"
-            @keydown="tabKey($event,index)"
-            @click="selectedTab = item.id"
-          >
-            <AppIcon :name="item.icon" />
-            <span>{{ item.label }}</span>
-            <span v-if="item.count > 0" class="filter-tab-badge">({{ item.count }})</span>
-          </button>
-        </nav>
-        <button
-          type="button"
-          aria-label="Valores e quantidade"
-          style="position: fixed; bottom: 0; right: 0; width: 8px; height: 8px; opacity: 0.001; z-index: 99999; pointer-events: auto;"
-          tabindex="-1"
-          @click="selectedTab = 'numeric'"
-        >
-          Valores e quantidade
-        </button>
-
-        <!-- Modal Body Content -->
-        <div class="filter-modal-body" :aria-busy="store.dimensionsLoading">
-          <LoadingState
+        <hr class="filter-modal-divider" /></template>
+  <template #tabs><FilterTabs v-model="selectedTab" :tabs="tabsConfig" prefix="filter-tab" panel-id="filter-active-panel"/></template>
+  <LoadingState
             :active="store.dimensionsLoading"
             overlay
             label="Carregando opções dos filtros…"
@@ -491,11 +394,7 @@ function tabKey(event:KeyboardEvent,index:number){
           <p v-if="feedback" :role="feedbackKind==='error' ? 'alert' : 'status'" class="filter-feedback" :class="{'is-error':feedbackKind==='error'}">
             {{ feedback }}
           </p>
-        </div>
-
-        <!-- Dialog Footer -->
-        <footer class="filter-modal-footer">
-          <button type="button" class="modal-footer-btn btn-cancel" @click="emit('close')">
+  <template #footer><button type="button" class="modal-footer-btn btn-cancel" @click="emit('close')">
             Cancelar
           </button>
           <button
@@ -505,7 +404,7 @@ function tabKey(event:KeyboardEvent,index:number){
             @click="clear"
           >
             <AppIcon name="trash" />
-            <span>Limpar Todos</span>
+            <span>Limpar filtros</span>
           </button>
           <button
             type="button"
@@ -514,11 +413,7 @@ function tabKey(event:KeyboardEvent,index:number){
             @click="apply"
           >
             <AppIcon name="check" />
-            <span>Aplicar Filtros</span>
-          </button>
-        </footer>
-      </section>
-    </div>
-  </Teleport>
+            <span>Aplicar filtros</span>
+          </button></template>
+ </FilterDialog>
 </template>
-

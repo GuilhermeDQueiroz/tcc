@@ -1,0 +1,145 @@
+[
+  {
+    "source": "DOCUMENTO_FATURA",
+    "staging": "posvenda_stage.documento_fatura",
+    "columns": {
+      "CODIGO_DOCFAT": "bigint",
+      "EMPRESA_DOCFAT": "integer",
+      "CLIENTE_DOCFAT": "integer",
+      "DTEMISSAO_DOCFAT": "timestamp without time zone",
+      "TIPO_DOCFAT": "smallint",
+      "OPCAO_DOCFAT": "smallint",
+      "ENTREGA_DOCFAT": "text",
+      "LOCALENTREGA_DOCFAT": "integer",
+      "STATUS_DOCFAT": "integer",
+      "MOTIVO_DOCFAT": "integer"
+    }
+  },
+  {
+    "source": "DOCUMENTO_ITEM",
+    "staging": "posvenda_stage.documento_item",
+    "columns": {
+      "AUTOINC_DOCITEM": "bigint",
+      "DOCUMENTO_DOCITEM": "bigint",
+      "COMPOSICAOITEM_DOCITEM": "bigint",
+      "TIPO_DOCITEM": "smallint",
+      "ITEM_DOCITEM": "integer",
+      "MOTIVO_DOCITEM": "integer",
+      "TIPOASSISTENCIA_DOCITEM": "smallint"
+    }
+  },
+  {
+    "source": "DOCUMENTO_ITEM_DETALHE",
+    "staging": "posvenda_stage.documento_item_detalhe",
+    "columns": {
+      "AUTOINC_DOCITEMDET": "bigint",
+      "AUTOINCITEM_DOCITEMDET": "bigint",
+      "QTDECHAPAS_DOCITEMDET": "numeric(18,4)",
+      "QTDEABERTA_DOCITEMDET": "numeric(18,4)",
+      "QTDEFATURADO_DOCITEMDET": "numeric(18,4)",
+      "QTDECANCELADO_DOCITEMDET": "numeric(18,4)",
+      "VLRBRUTOLIQUIDO_DOCITEMDET": "numeric(18,2)",
+      "COR_DOCITEMDET": "integer"
+    }
+  },
+  {
+    "source": "DOCUMENTO_DEVOLUCAOCANCELA",
+    "staging": "posvenda_stage.documento_devolucaocancela",
+    "columns": {
+      "AUTOINC_DOCDEV": "bigint",
+      "DOCUMENTO_DOCDEV": "bigint",
+      "AUTOINCITEMDETDOC_DOCDEV": "bigint",
+      "QUANTIDADE_DOCDEV": "numeric(18,4)",
+      "MOTIVODEVOLUCAO_DOCDEV": "integer"
+    }
+  },
+  {
+    "source": "DOCUMENTO_ENTREGA_DEVCAN",
+    "staging": "posvenda_stage.documento_entrega_devcan",
+    "columns": {
+      "AUTOINC_DOCENTDEV": "bigint",
+      "DOCUMENTO_DOCENTDEV": "bigint",
+      "AUTOINCDOCENT_DOCENTDEV": "bigint",
+      "OPCAODOCUMENTO_DOCENTDEV": "smallint",
+      "QTDECHAPAS_DOCENTDEV": "numeric(18,4)",
+      "MOTIVO_DOCENTDEV": "integer"
+    }
+  },
+  {
+    "source": "DOCUMENTO_ENTREGA",
+    "staging": "posvenda_stage.documento_entrega",
+    "columns": {
+      "AUTOINC_DOCENT": "bigint",
+      "DOCUMENTO_DOCENT": "bigint",
+      "AUTOINCITEMDETDOC_DOCENT": "bigint",
+      "TIPO_DOCENT": "smallint"
+    }
+  },
+  {
+    "source": "DOCUMENTO_PEDIDO",
+    "staging": "posvenda_stage.documento_pedido",
+    "columns": {
+      "DOCUMENTO_DOCPED": "bigint",
+      "DTPREVISAOFATURAMENTO_DOCPED": "timestamp without time zone"
+    }
+  },
+  {
+    "source": "MOTIVO",
+    "staging": "posvenda_stage.motivo",
+    "columns": {
+      "CODIGO_MOTIVO": "integer",
+      "DESCRICAO_MOTIVO": "text",
+      "TIPO_MOTIVO": "smallint"
+    }
+  },
+  {
+    "source": "PESSOA",
+    "staging": "posvenda_stage.pessoa",
+    "columns": {
+      "CODIGO_PESSOA": "integer",
+      "RAZAOSOCIAL_PESSOA": "text",
+      "GRUPO_PESSOA": "integer"
+    }
+  },
+  {
+    "source": "PESSOA_ENDERECO",
+    "staging": "posvenda_stage.pessoa_endereco",
+    "columns": {
+      "AUTOINC_PESSOA_END": "integer",
+      "CIDADE_PESSOA_END": "integer"
+    }
+  },
+  {
+    "source": "ITEM",
+    "staging": "posvenda_stage.item",
+    "columns": {
+      "CODIGO_ITEM": "integer",
+      "DESCRICAO_ITEM": "text"
+    }
+  },
+  {
+    "source": "CIDADE",
+    "staging": "posvenda_stage.cidade",
+    "columns": {
+      "CODIGO_CIDADE": "integer",
+      "DESCRICAO_CIDADE": "text",
+      "UF_CIDADE": "integer"
+    }
+  },
+  {
+    "source": "UF",
+    "staging": "posvenda_stage.uf",
+    "columns": {
+      "CODIGO_UF": "integer",
+      "SIGLA_UF": "text"
+    }
+  },
+  {
+    "source": "STATUS",
+    "staging": "posvenda_stage.status",
+    "columns": {
+      "CODIGO_STATUS": "integer",
+      "DESCRICAO_STATUS": "text"
+    }
+  }
+]

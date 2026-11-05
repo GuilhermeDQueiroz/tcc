@@ -2,9 +2,10 @@ import {defineStore} from 'pinia'
 import {computed,ref,shallowRef} from 'vue'
 import {request} from '../api/client'
 import type {Metric,Series,Filters} from '../types/analytics'
+import type {CohortAnalysis} from '../types/cohorts'
 
 export interface StrategicDashboard {
- dataVersion:string;referenceDate:string;metrics:Metric[];operationalMetrics:Metric[];series:Series[];options:Record<string,string[]>;
+ dataVersion:string;referenceDate:string;metrics:Metric[];operationalMetrics:Metric[];series:Series[];options:Record<string,string[]>;cohorts:CohortAnalysis;
  meta:{publishedAt:string;history:{start:string;end:string;records:number;withForecast:number;forecastCoverage:number|null;partialMonth:boolean};publications:{logistics:{version:string;referenceDate:string;publishedAt:string};billing:{version:string;publishedAt:string;lastBillingDate:string|null}}}
 }
 export const useStrategicStore=defineStore('strategic',()=>{

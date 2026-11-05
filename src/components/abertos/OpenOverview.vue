@@ -13,11 +13,12 @@ import LoadingState from '../ui/LoadingState.vue'
 import AppIcon from '../ui/AppIcon.vue'
 import AnalysisFrame from '../ui/AnalysisFrame.vue'
 import {AnalyticChart} from '../analytics/asyncChart'
+import sharedDimensions from '../../../shared/analysis-dimensions.json'
 const props=defineProps<{payload:DashboardPayload;year:number;month:number}>()
 const emit=defineEmits<{select:[date:string];shift:[amount:number];backlog:[type:string]}>()
 const store=useAnalyticsStore(),selectedDimension=computed({get:()=>store.openDimension,set:value=>{store.openDimension=value}}),visualization=ref('table'),selectedMetric=ref('value'),hierarchy=ref('')
 const tableRef=ref<InstanceType<typeof AnalyticTable>>(),chartRef=ref<InstanceType<typeof AnalyticChart>>(),researchDate=ref(''),displayLimit=ref('all'),displayOrder=ref('default')
-const dimensionIcons:Record<string,string>={Mes_Grupo:'line',Mes_Previsao:'calendar',UF:'map',REGIAO_UF:'pin',TIPO_ENTREGA:'truck',STATUS:'status',SUPERVISOR:'users',CONSULTOR:'user',GRUPO_CLIENTE:'users',GRUPO_ITEM:'box',SUBGRUPO:'grid',LINHA:'layers',TIPO:'arrow',COLECAO:'tag',DESCRICAO_ITEM:'box',CLASSIFICACAO:'star',ORIGEM:'arrow',ORGAO:'building',Aging_Bucket:'clock',CIDADE:'building',MICRO_REGIAO:'pin',pesquisa:'search'}
+const dimensionIcons:Record<string,string>=Object.fromEntries(sharedDimensions.map(entry=>[entry.legacy,entry.icon]))
 const dimensionPayload=ref<DashboardPayload>(),dimensionError=ref(''),dimensionLoading=ref(false)
 let sequence=0,abort:AbortController|undefined
 const metric=(id:string)=>props.payload.metrics.find(m=>m.id==='abertos.resumo.'+id)!
@@ -26,7 +27,7 @@ const firstMetrics=computed(()=>props.payload.metrics.slice(0,5))
 const secondMetrics=computed(()=>['groups','serviceDays','orders60','value60'].map(metric))
 const deliveries=computed(()=>props.payload.metrics.filter(m=>m.id.includes('.entrega.')))
 const currentMonth=computed(()=>new Date(props.year,props.month-1,1).toLocaleDateString('pt-BR',{month:'short',year:'numeric'}))
-const dimensionItems=[['Mes_Grupo','Resumo Mensal'],['Mes_Previsao','Previsão de Faturamento'],['UF','UF'],['REGIAO_UF','Região da UF'],['TIPO_ENTREGA','Tipo de Entrega'],['STATUS','Status do Pedido'],['SUPERVISOR','Supervisor'],['CONSULTOR','Consultor'],['GRUPO_CLIENTE','Grupo de Cliente'],['GRUPO_ITEM','Grupo do Item'],['SUBGRUPO','Subgrupo'],['LINHA','Linha'],['TIPO','Tipo'],['COLECAO','Coleção'],['DESCRICAO_ITEM','Produto'],['CLASSIFICACAO','Classificação'],['ORIGEM','Origem'],['ORGAO','Órgão'],['Aging_Bucket','Faixa de Tempo'],['CIDADE','Cidade'],['MICRO_REGIAO','Microregião'],['pesquisa','Pesquisa de Pedidos']]
+const dimensionItems=sharedDimensions.map(entry=>[entry.legacy,entry.label])
 const displayTables=computed(()=>(dimensionPayload.value?.tables || [{id:'abertos-dimensoes',placeholder:true,title:'Análise por dimensão',rows:[],columns:[{key:selectedDimension.value,label:dimensionLabels[selectedDimension.value] || selectedDimension.value},{key:'Valor',label:'Valor',format:'currency'}]}]).map(table=>({...table,title:dimensionItems.find(([key])=>key===selectedDimension.value)?.[1] || table.title,columns:table.columns.map(column=>column.key==='NS'?{...column,format:'serviceDecimal'}:column.key===selectedDimension.value?{...column,label:selectedDimension.value==='Mes_Grupo'?'Mês':dimensionItems.find(([key])=>key===selectedDimension.value)?.[1] || column.label}:column)})))
 const dimensionWidths=computed(()=>Object.fromEntries((displayTables.value[0]?.columns||[]).map((column,index)=>[column.key,index===0?260:column.key==='% Part'?145:column.format==='currency'?165:140])))
 const dimensionSeries=computed(()=>{if(!dimensionPayload.value)return undefined;const selected=dimensionPayload.value.series[visualization.value==='line'?1:0];if(!selected)return undefined;return {...selected,type:visualization.value==='donut'?'donut':selected.type,title:dimensionItems.find(([key])=>key===selectedDimension.value)?.[1] || selected.title,availableRows:visualization.value==='line'?selected.rows:dimensionPayload.value.tables[0]?.rows,overviewStyle:true}})

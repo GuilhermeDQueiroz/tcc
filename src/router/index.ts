@@ -4,6 +4,7 @@ const PedidosEmitidos=()=>import('../views/PedidosEmitidos.vue')
 const PedidosFaturados=()=>import('../views/PedidosFaturados.vue')
 const FormacaoCargas=()=>import('../views/FormacaoCargas.vue')
 const VisaoEstrategica=()=>import('../views/VisaoEstrategica.vue')
+const PosVenda=()=>import('../views/PosVenda.vue')
 export default createRouter({
   history:createWebHistory(),
   routes:[
@@ -13,6 +14,9 @@ export default createRouter({
     {path:'/faturados',component:PedidosFaturados},
     {path:'/cargas',component:FormacaoCargas},
     {path:'/estrategico',component:VisaoEstrategica},
+    {path:'/assistencias',component:PosVenda},
+    {path:'/cancelamentos',component:PosVenda},
+    {path:'/devolucoes',component:PosVenda},
     {path:'/:pathMatch(.*)*',redirect:'/abertos'},
   ],
 })

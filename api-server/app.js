@@ -3,6 +3,9 @@ import compression from 'compression';
 import {InputError,validateAreaTab,parseFilters,ANALYSIS_DIMENSIONS} from './domain/contracts.js';
 import {loadStageLabels} from './domain/logistics.js';
 import {StrategicRepository} from './repositories/strategic.js';
+import {AftersalesRepository} from './repositories/posvenda.js';
+import {validateAftersalesQuery} from './domain/posvenda.js';
+import {logisticsPayload} from './presentation/logistics.js';
 const connectionFailures=new Map([
   ['timeout exceeded when trying to connect','pool_acquire_timeout'],
   ['Connection terminated due to connection timeout','connection_timeout'],
@@ -12,6 +15,17 @@ const integer=(value,min,max,fallback)=>{if(value==null)return fallback;const n=
 export function createApp({repository,logisticsRepository,settingsStore,clock=()=>new Date(),logger=console}={}){
   const app=express();app.disable('x-powered-by');app.use(compression());app.use(express.json({limit:'100kb'}));
   const strategic=new StrategicRepository(repository,logisticsRepository);
+  const aftersales=repository?.pool?new AftersalesRepository(repository.pool):null;
+  app.get('/api/v1/posvenda/:area',async(req,res)=>{
+    const query=validateAftersalesQuery(req.params.area,req.query);
+    if(!aftersales)throw Object.assign(new Error('Fonte de pós-venda indisponível.'),{status:409});
+    const data=await aftersales.getDashboard(req.params.area,query);
+    if(query.export==='csv'){
+      const escape=value=>'"'+String(value??'').replaceAll('"','""')+'"';
+      res.type('text/csv; charset=utf-8').set('Content-Disposition',`attachment; filename="${req.params.area}.csv"`).send('\uFEFF'+[data.table.columns.map(c=>escape(c.label)).join(';'),...data.table.rows.map(row=>data.table.columns.map(c=>escape(row[c.key])).join(';'))].join('\r\n'));return;
+    }
+    res.json(data);
+  });
   app.get('/api/v1/logistica/estrategico',async(req,res)=>{
     if(Object.keys(req.query).some(key=>!['filters','granularity'].includes(key)))throw new InputError('Filtro estratégico inválido.');
     const filters=parseFilters(req.query.filters),granularity=req.query.granularity||'month';
@@ -37,7 +51,7 @@ export function createApp({repository,logisticsRepository,settingsStore,clock=()
     for(const key of ['emissionStart','emissionEnd','forecastStart','forecastEnd'])if(req.query[key]!==undefined){if(typeof req.query[key]!=='string')throw new InputError('Data inválida.');parseFilters(JSON.stringify({emissionRange:[req.query[key],req.query[key]]}));filters[key]=req.query[key];}
     for(const [start,end] of [['emissionStart','emissionEnd'],['forecastStart','forecastEnd']])if(filters[start]&&filters[end]&&filters[start]>filters[end])throw new InputError('Período inválido.');
     if(req.query.ageMin!==undefined)filters.ageMin=integer(req.query.ageMin,0,10000,0);
-    res.json(await logisticsRepository.getDashboard(filters));
+    res.json(logisticsPayload(await logisticsRepository.getDashboard(filters)));
   });
   app.get('/api/v1/bi/:area/:tab',async(req,res)=>{
     const {area,tab}=req.params;validateAreaTab(area);

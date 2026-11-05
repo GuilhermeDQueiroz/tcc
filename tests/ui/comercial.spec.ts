@@ -1,10 +1,11 @@
 import { test, expect } from '@playwright/test'
 
-for (const [area, title] of [['emitidos', 'Pedidos Emitidos'], ['faturados', 'Pedidos Faturados']]) {
+for (const [area, title] of [['emitidos', 'Análise de Pedidos Emitidos'], ['faturados', 'Análise Logística dos Pedidos Faturados']]) {
   test(`${area} oferece todas as análises e hierarquia`, async ({ page }) => {
     await page.goto(`/${area}`)
     await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible()
-    for (const label of ['Semanal', 'Mensal', 'Evolução', 'Geografia', 'Carteira de Clientes', 'Dimensões', 'Pesquisa']) {
+    const labels=area==='faturados'?['Mensal','Semanal','Evolução','Destinos','Dimensões','Pesquisa']:['Semanal','Mensal','Evolução','Geografia','Carteira de Clientes','Dimensões','Pesquisa']
+    for (const label of labels) {
       await expect(page.getByRole('tab', { name: label, exact: true })).toBeVisible()
     }
     await page.getByRole('tab', { name: 'Dimensões', exact: true }).click()

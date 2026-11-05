@@ -1,12 +1,27 @@
+# Dependências e saídas geradas
 node_modules/
 dist/
+coverage/
+htmlcov/
+*.tsbuildinfo
+*.class
+
+# Ambiente, credenciais e execução local
 .env
 .env.*
 !.env.example
+.envrc
+.pgpass
+pgpass.conf
 .local/
 *.log
+*.pid
+*.pid.lock
+
+# Evidências privadas e resultados de testes
 test-results/
 playwright-report/
+blob-report/
 tests/ui/screenshots/
 tests/ui/results/
 etl/lib/*.jar
@@ -17,6 +32,12 @@ data/local/
 $ProjetoCache/
 __pycache__/
 *.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.coverage
+.coverage.*
 
 # Cópias de banco e configurações comerciais reais
 *.fdb
@@ -25,6 +46,13 @@ __pycache__/
 *.dump
 *.backup
 *.bak
+*.dmp
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3-wal
+*.sqlite3-shm
 *.pem
 *.key
 *.pfx
@@ -36,6 +64,7 @@ data/metas-inicial.json
 .agents/
 .codex/
 .venv/
+venv/
 .idea/
 .vscode/
 .DS_Store

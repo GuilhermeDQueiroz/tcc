@@ -13,6 +13,8 @@ A tela `/estrategico`, acessível pelo menu **Visão Estratégica**, reúne a ca
 | Pedidos > 30 dias | Pedidos distintos com emissão anterior à referência menos 30 dias | Publicação logística atual |
 | Nível de serviço | Média do lead time entre emissão do pedido e faturamento, calculada sobre os registros faturados | Histórico selecionado |
 | OTIF | Média de `ON_TIME_CLEAN` × 100 | Histórico selecionado; regra existente de faturamento |
+| Conversão no mês | Pedidos emitidos com algum faturamento no próprio mês ÷ todos os pedidos emitidos das safras observadas × 100 | Emitidos e faturados da mesma publicação; meses encerrados |
+| Escoamento | Média mensal do faturamento em R$ ÷ média mensal da entrada de pedidos em R$ × 100 | Mesmo intervalo para os dois fluxos; inclui faturamentos de safras anteriores |
 
 O backlog desta tela considera **toda a carteira logística selecionada**. Ele difere do “Backlog real” de Pedidos em Aberto, que aplica o recorte de status do cálculo original. Os dois valores não devem ser apresentados no TCC como indicadores idênticos. O denominador usa a mesma localização, tipo de entrega e emissão da seleção; o filtro visual de faturamento não altera os 90 dias de cálculo. Faturamento médio nulo ou negativo torna esse indicador indisponível.
 
@@ -20,7 +22,15 @@ Pedidos com mais de 30 dias representam tempo em aberto, não necessariamente at
 
 O nome **OTIF** foi mantido conforme a definição adotada no projeto. Neste recorte, o cálculo verifica faturamento até a previsão de faturamento e não atesta entrega ao cliente nem atendimento integral. A transformação existente atribui zero quando não existe previsão; essa regra foi preservada. A cobertura de previsão é fornecida em `meta.history.forecastCoverage` e na ajuda do card. A rotina de registro de entrega ao cliente não participa deste cálculo, portanto sua utilização não deve ser descrita como realizada por esta implementação.
 
-Os cards de desempenho são calculados sobre todos os registros selecionados. Não são a média das médias mensais. O mesmo pedido pode ter vários registros faturados; a unidade de observação permanece o registro, conforme a transformação e os painéis existentes.
+Nível de serviço e OTIF são calculados sobre os registros selecionados, sem tirar a média das médias mensais. Na conversão no mês, a unidade é o pedido distinto: vários itens e notas não duplicam sua contagem, e o primeiro faturamento parcial já caracteriza ocorrência em **Algum faturamento**. A média do período é ponderada pelo número de pedidos de cada safra, incluindo os que não foram faturados. Esse card difere da participação da safra no faturamento e da conversão em até 30 dias.
+
+O mesmo card exibe **Integral no mês**: pedidos com todas as quantidades de cada produto e cor faturadas até o último dia do mês de entrada, divididos pela mesma base emitida. Parcelas de notas são somadas por pedido, produto e cor; faturamento excedente de uma combinação não compensa faltas em outra. A tolerância numérica é de 0,000001 unidade. Ausência de identificação de produto ou quantidades válidas torna a taxa integral indisponível e é informada na ajuda. Cancelamento não é faturamento, e integralidade de faturamento não comprova entrega física. As contagens e a qualidade dessa apuração ficam em `meta.flow.fullyConvertedOrders`, `fullConversionUnknownOrders` e `fullSameMonthConversion`.
+
+Os dois novos cards usam o intervalo comum entre o histórico exibido e o filtro de emissão, quando presente. Conversão no mês considera apenas competências inteiras dentro do recorte, cujo último dia já foi observado: meses iniciais ou finais selecionados parcialmente não entram no percentual. Faturamentos são vinculados pelo pedido e pela data de emissão; os filtros de localização e entrega selecionam a população emitida, sem descartar suas notas emitidas para outro destino. Datas inválidas e pedidos com datas de emissão conflitantes ficam fora da base.
+
+No escoamento, cada fluxo usa os filtros de localização e entrega do próprio evento e a mesma janela de calendário. O filtro de emissão delimita a janela comum; os faturamentos de safras anteriores continuam incluídos. São exibidas as médias mensais de faturamento e entrada. Meses sem movimento participam do denominador temporal; recortes parciais são identificados e divididos pelo número de competências incluídas, sem projeção de fechamento. A razão equivale a faturamento total ÷ entrada total no intervalo, sem calcular a média aritmética dos percentuais mensais. Bases não positivas ficam indisponíveis e resultados acima de 100% permanecem visíveis. Esse resultado não confirma entrega ou, isoladamente, redução do saldo da carteira, que também depende de cancelamentos, devoluções e ajustes.
+
+Os nove indicadores ficam na faixa principal. As bases dos novos cards e o período efetivamente utilizado são fornecidos em `meta.flow`.
 
 ## Prioridades da carteira e acesso aos pedidos
 
@@ -53,9 +63,13 @@ Meses sem registros têm médias e razões indisponíveis. Para toneladas, perí
 
 ## Implementação e rastreabilidade
 
-O fluxo usa as publicações existentes de `logistica.item_pedido`, `logistica.alocacao` e `dw.pedidos_faturados`. Não cria extração adicional no Firebird nem altera o ETL. `api-server/domain/strategic.js` concentra os cálculos; `api-server/repositories/strategic.js` combina os snapshots imutáveis e mantém cache por ambas as versões, filtros e granularidade. A API é `GET /api/v1/logistica/estrategico`.
+O fluxo usa as publicações existentes de `logistica.item_pedido`, `logistica.alocacao`, `dw.pedidos_emitidos` e `dw.pedidos_faturados`. Não cria extração adicional no Firebird nem altera o ETL. `api-server/domain/strategic.js` concentra os indicadores gerais e `api-server/domain/cohorts.js` calcula a conversão por safra. Emitidos e faturados são lidos em uma única transação somente leitura com isolamento repetível, sob a mesma versão comercial. `api-server/repositories/strategic.js` combina os snapshots imutáveis e mantém cache por ambas as versões, filtros e granularidade. A API é `GET /api/v1/logistica/estrategico`.
 
-O payload entrega agregados, prioridades em `operationalMetrics`, opções e referências das duas publicações, sem repetir tabelas detalhadas de pedidos e cargas. A interface utiliza Pinia, carregamento de gráficos sob demanda e os componentes existentes. Requisições anteriores são canceladas e descartadas; falha na fonte remove os resultados anteriores para evitar associá-los a filtros novos.
+O payload entrega agregados, prioridades em `operationalMetrics`, conversão mensal em `cohorts`, opções e referências das duas publicações, sem repetir tabelas detalhadas de pedidos e cargas. A interface utiliza Pinia, carregamento de gráficos sob demanda e os componentes existentes. Requisições anteriores são canceladas e descartadas; falha na fonte remove os resultados anteriores para evitar associá-los a filtros novos.
+
+## Conversão por safra
+
+A seção adicional acompanha a demanda emitida em cada mês e suas parcelas faturadas em até 7, 15 e 30 dias corridos. Valor, peso, cubagem e pedidos podem ser alternados sem emitir relatórios separados. A última safra com todas as janelas completas é selecionada inicialmente; meses mais recentes ficam disponíveis para acompanhamento. O gráfico e a tabela comparam as mesmas janelas entre meses. Veja as [fórmulas, filtros e limites da análise](conversao-safra.md).
 
 As versões e os horários ficam em `meta.publications`; o período e a cobertura, em `meta.history`; a base de 90 dias, em `meta.backlog`. Essas informações permitem rastrear o recorte usado nos resultados do TCC.
 
@@ -63,7 +77,7 @@ As versões e os horários ficam em `meta.publications`; o período e a cobertur
 
 `npm test` verifica cálculos, ponderação por registros, agrupamento temporal, filtros compartilhados, datas inválidas, medidas ausentes, indisponibilidade de fonte e transferência dos recortes operacionais. `npm run build` verifica tipos e gera a interface de produção. Os testes de navegador `strategic.spec.ts`, `strategic-errors.spec.ts` e `strategic-priorities.spec.ts` cobrem navegação, gráficos, filtros, adaptação móvel, falhas de recarga e abertura dos pedidos reais de uma prioridade.
 
-`node scripts/verify-strategic.mjs`, com as variáveis de conexão PostgreSQL do projeto já configuradas, executa consultas somente leitura independentes dos cálculos da API. Confere os sete cards, as quatro prioridades e cada competência dos quatro gráficos mensais e grava um relatório local em `.local/strategic-real-verification.json`, sem gravar credenciais.
+`node scripts/verify-strategic.mjs`, com as variáveis de conexão PostgreSQL do projeto já configuradas, executa consultas somente leitura independentes dos cálculos da API. Confere os nove cards, as médias e bases de fluxo, as quatro prioridades e cada competência dos quatro gráficos mensais e grava um relatório local em `.local/strategic-real-verification.json`, sem gravar credenciais.
 
 A implementação amplia a parte prática. A avaliação dos resultados, a discussão das limitações e a correspondência com a metodologia escrita devem incorporar estas definições para que o documento descreva o que foi efetivamente realizado.
 

@@ -95,8 +95,8 @@ export function monthlyAnalysis({area,rows,history=rows,goalsConfig={},metas=[],
   metrics.find(card=>card.id==='projection').supplementary=[{label:'Média Diária',value:dailyAverage,format:'currency'},{label:area==='emitidos'?'Dias Restantes':'Dias Úteis Restantes',value:remaining,format:'number'},{label:'Meta Total',value:totalGoal>0?projection/totalGoal*100:0,format:'percent'}];
   if(area==='faturados')metrics.find(card=>card.id==='serviceDays').supplementary=[{label:'Varejo',value:serviceSegments.retail>0?serviceSegments.retail:null,format:'days'},{label:'E-commerce',value:serviceSegments.ecommerce>0?serviceSegments.ecommerce:null,format:'days'}];
   const safra=current.filter(row=>row.DATA_EMISSAO_PEDIDO_DATE?.startsWith(monthKey)),safraOrders=distinct(safra.map(row=>row.CODIGO_PEDIDO)),safraValue=sum(safra.map(row=>row.VALOR_FATURADO_CLEAN));
-  if(area==='faturados')metrics.push({id:'safraOrdersPercent',label:'Conversão (Safra): Qtd',value:s.orders>0?safraOrders/s.orders*100:0,format:'percent'},
-    {id:'safraValuePercent',label:'Conversão (Safra): Valor',value:s.value>0?safraValue/s.value*100:0,format:'percent'});
+  if(area==='faturados')metrics.push({id:'safraOrdersPercent',label:'Participação da safra: Pedidos',value:s.orders>0?safraOrders/s.orders*100:null,format:'percent',help:'Dos pedidos com algum faturamento no mês, percentual emitido nesse mesmo mês. Faturamentos parciais contam uma vez por pedido. Não é a conversão de todos os pedidos emitidos.'},
+    {id:'safraValuePercent',label:'Participação da safra: Valor',value:s.value>0?safraValue/s.value*100:null,format:'percent',help:'Valor faturado de pedidos emitidos no próprio mês ÷ valor total faturado no mês × 100. A base é o faturamento, e não o valor dos pedidos emitidos.'});
   const currentDays=new Map(daily.map(row=>[Number(row.Data.slice(8,10)),row.Valor])),previousDays=new Map(groupRows(previousFull,column).map(({key,rows:items})=>[Number(key.slice(8,10)),groupSum(items.map(row=>row.VALOR_FATURADO_CLEAN))]));
   let cy=0,ly=0,projected=s.value;
   const comparison=Array.from({length:days},(_,index)=>{
