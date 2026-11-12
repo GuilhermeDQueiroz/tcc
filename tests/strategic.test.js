@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {buildLogisticsDashboard} from '../api-server/domain/logistics.js';
 import {createApp} from '../api-server/app.js';
 import {backlogState} from '../api-server/domain/logistics-backlog.js';
+import {buildFormationBalanceMetrics} from '../api-server/domain/formation-balance.js';
 import {buildOpenDashboard} from '../api-server/domain/open.js';
 
 const module=await import('../api-server/domain/strategic.js').catch(()=>({}));
@@ -25,6 +26,17 @@ const billingRows=[
 const publication={version:'billing-a',publishedAt:'2026-10-01',source:'firebird/apache-hop'};
 const options={logistics:logistics(),billingRows,publication,filters:{billingRange:['2025-10-01','2026-09-30']}};
 const metric=(data,id)=>data.metrics.find(metric=>metric.id===id).value;
+
+test('formation shows published logistics balance and a filtered 90-day coverage',()=>{
+ const cards=buildFormationBalanceMetrics(logistics(),billingRows);
+ assert.deepEqual(cards.map(card=>card.id),['logistica.portfolioValue','logistica.backlogReal']);
+ assert.equal(cards[0].value,240);
+ assert.equal(cards[1].value,8);
+ assert.equal(cards[1].status.tone,'critical');
+ const state=buildFormationBalanceMetrics(logistics({uf:['SP']}),billingRows,{uf:['SP']});
+ assert.equal(state[0].value,200);
+ assert.equal(state[1].value,10);
+});
 
 test('overview defers the dimensional table while preserving the cards and monthly analysis',()=>{
  const full=build(options),overview=build({...options,includeAnalysis:false});
@@ -58,6 +70,12 @@ test('annual comparisons align equivalent windows, accumulate amounts and weight
  const data=build({...options,billingRows:rows,filters:{billingRange:['2026-01-01','2026-02-28']}});
  const {comparison,monthlyTable}=data.financial;
  assert.equal(comparison.start,'2026-01-01');assert.equal(comparison.previousStart,'2025-01-01');assert.equal(comparison.revenueChange,100);
+ assert.equal(data.metrics.find(card=>card.id==='strategic.value').comparison.value,100);
+ assert.equal(data.metrics.find(card=>card.id==='strategic.value').comparison.label,'vs 2025');
+ assert.match(data.metrics.find(card=>card.id==='strategic.value').comparison.title,/01\/01\/2026 a 28\/02\/2026 contra 01\/01\/2025 a 28\/02\/2025/);
+ assert.equal(data.metrics.find(card=>card.id==='strategic.monthlyTonnage').comparison.value,0);
+ assert.equal(data.metrics.find(card=>card.id==='strategic.ticket').comparison.value,100);
+ assert.equal(data.metrics.find(card=>card.id==='strategic.serviceDays').comparison.betterWhenLower,true);
  const monthly=data.series.find(series=>series.id==='strategic.annualMonthly');
  assert.deepEqual(monthly.rows.map(row=>[row.previous,row.current]),[[100,200],[300,600]]);
  const cumulative=data.series.find(series=>series.id==='strategic.annualCumulative');
@@ -69,6 +87,7 @@ test('annual comparisons align equivalent windows, accumulate amounts and weight
  const sums=data.analysis.table.rows.reduce((total,row)=>total+row.difference,0);assert.equal(sums,data.analysis.table.total.difference);
  const noPrevious=build({...options,billingRows:rows.filter(row=>row.DT_FATURA_DATE.startsWith('2026'))});
  assert.equal(noPrevious.financial.comparison.available,false);assert.deepEqual(noPrevious.financial.annualSeries[0].rows,[]);
+ assert.equal(noPrevious.metrics.find(card=>card.id==='strategic.value').comparison,undefined);
  assert.equal(noPrevious.financial.monthlyTable.total.difference,null);
 });
 
@@ -208,8 +227,9 @@ test('logistics backlog uses every legacy color boundary and keeps absent rates 
 
 test('strategic view keeps the published balance distinct from a twelve-month billing window',()=>{
  const data=build(options);
- assert.equal(data.metrics.length,13);
- assert.equal(new Set(data.metrics.map(card=>card.id)).size,13);assert.equal(metric(data,'strategic.portfolioValue'),240);
+ assert.equal(data.metrics.length,14);
+ assert.equal(new Set(data.metrics.map(card=>card.id)).size,14);assert.equal(metric(data,'strategic.portfolioValue'),240);
+ assert.equal(metric(data,'strategic.value'),2700);
  assert.equal(logistics().metrics.find(card=>card.id==='logistica.loads').label,'Cargas em aberto');
  assert.equal(logistics().metrics.find(card=>card.id==='logistica.loads').value,2);
  assert.equal(metric(data,'strategic.backlogReal'),8);

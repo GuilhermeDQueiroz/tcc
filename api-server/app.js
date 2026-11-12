@@ -57,7 +57,9 @@ export function createApp({repository,logisticsRepository,settingsStore,clock=()
     for(const key of ['emissionStart','emissionEnd','forecastStart','forecastEnd'])if(req.query[key]!==undefined){if(typeof req.query[key]!=='string')throw new InputError('Data inválida.');parseFilters(JSON.stringify({emissionRange:[req.query[key],req.query[key]]}));filters[key]=req.query[key];}
     for(const [start,end] of [['emissionStart','emissionEnd'],['forecastStart','forecastEnd']])if(filters[start]&&filters[end]&&filters[start]>filters[end])throw new InputError('Período inválido.');
     if(req.query.ageMin!==undefined)filters.ageMin=integer(req.query.ageMin,0,10000,0);
-    res.json(logisticsPayload(await logisticsRepository.getDashboard(filters)));
+    const dashboard=await logisticsRepository.getDashboard(filters);
+    const portfolioMetrics=repository?.snapshot&&repository?.getVersion?await strategic.getFormationBalance(dashboard,filters):[];
+    res.json(logisticsPayload({...dashboard,portfolioMetrics}));
   });
   app.get('/api/v1/bi/:area/:tab',async(req,res)=>{
     const {area,tab}=req.params;validateAreaTab(area);

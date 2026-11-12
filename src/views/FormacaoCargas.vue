@@ -4,6 +4,7 @@ import {useLogisticsStore} from '../stores/logistics'
 import LogisticsFilterDrawer from '../components/filters/LogisticsFilterDrawer.vue'
 import LogisticsActiveFilterChips from '../components/filters/LogisticsActiveFilterChips.vue'
 import MetricCard from '../components/analytics/MetricCard.vue'
+import BacklogCard from '../components/analytics/BacklogCard.vue'
 import {AnalyticChart} from '../components/analytics/asyncChart'
 import AnalyticTable from '../components/analytics/AnalyticTable.vue'
 import LoadingState from '../components/ui/LoadingState.vue'
@@ -53,6 +54,9 @@ onMounted(()=>void store.load());onBeforeUnmount(()=>store.cancel())
   <div v-if="store.error" class="logistics-error" role="alert">{{store.error}} <button @click="store.load">Tentar novamente</button></div>
   <LogisticsFilterDrawer/>
   <LogisticsActiveFilterChips/>
+  <div v-if="store.dashboard?.portfolioMetrics?.length" class="formation-balance-metrics overview-metrics" aria-label="Carteira e backlog logístico">
+   <component :is="metric.id==='logistica.backlogReal'?BacklogCard:MetricCard" v-for="metric in store.dashboard.portfolioMetrics" :key="metric.id" :metric="metric" show-unavailable/>
+  </div>
   <div v-if="store.dashboard" class="logistics-metrics" :class="{'logistics-metrics-load':selection?.kind==='load'}"><MetricCard v-for="metric in displayMetrics" :key="metric.id" :metric="metric" compact/></div>
   <section class="logistics-workspace" aria-label="Exploração de cargas e pedidos">
    <div class="logistics-selection" :class="{'logistics-selection-empty':!selection}" role="status" aria-live="polite">

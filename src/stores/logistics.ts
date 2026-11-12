@@ -4,7 +4,7 @@ import {request} from '../api/client'
 import type {Metric,AnalyticTable,Series} from '../types/analytics'
 import {emptyLogisticsFilters,type LogisticsFilters} from '../domain/logistics/filters'
 export interface LogisticsDashboard {
- dataVersion:string;referenceDate:string;metrics:Metric[];tables:AnalyticTable[];companies:string[];
+ dataVersion:string;referenceDate:string;metrics:Metric[];portfolioMetrics?:Metric[];tables:AnalyticTable[];companies:string[];
  series:Series[];operationalTables:AnalyticTable[];options:{ufs:string[];cities:string[];statuses:string[];clients:string[];products:string[];loadStages:string[]};
  meta:{publishedAt:string;startDate:string;source:string;selectedItems:number;unpricedItems:number;allocationQuantity:number;openQuantity:number;freeQuantity:number;ordersMultipleLoads:number;missingGeographyOrders:number;geoWarning?:string|null;forecast:{withoutDateQuantity:number;overdueQuantity:number;scheduledQuantity:number};measures:Record<string,{value:number;missing:number}>}
 }

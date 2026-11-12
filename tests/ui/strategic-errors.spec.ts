@@ -4,7 +4,7 @@ test('a failed reload clears previous figures rather than showing them under a n
  test.setTimeout(90_000)
  await page.goto('/estrategico')
  await expect(page.locator('.loading-screen')).toHaveCount(0,{timeout:60_000})
- await expect(page.locator('[data-metric-id="strategic.backlogReal"]')).toBeVisible()
+ await expect(page.locator('[data-metric-id="strategic.value"]')).toBeVisible()
  await page.route('**/api/v1/logistica/estrategico?**',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:'A publicação está indisponível.'})}))
  await page.getByRole('button',{name:'Configurar PESO POR MÊS',exact:true}).click()
  await page.getByRole('radio',{name:'Dias',exact:true}).click()
@@ -14,16 +14,16 @@ test('a failed reload clears previous figures rather than showing them under a n
  await expect(page.getByRole('button',{name:'Tentar novamente',exact:true})).toBeVisible()
 })
 
-test('a missing backlog value stays unavailable in the card and its exact-value help',async({page})=>{
+test('a missing billed value stays unavailable in the card and its exact-value help',async({page})=>{
  test.setTimeout(90_000)
  await page.route('**/api/v1/logistica/estrategico?**',async route=>{
   const response=await route.fetch(),data=await response.json()
-  data.metrics.find((metric:{id:string})=>metric.id==='strategic.backlogReal').value=null
+  data.metrics.find((metric:{id:string})=>metric.id==='strategic.value').value=null
   await route.fulfill({response,json:data})
  })
  await page.goto('/estrategico')
  await expect(page.locator('.loading-screen')).toHaveCount(0,{timeout:60_000})
- const card=page.locator('[data-metric-id="strategic.backlogReal"]')
+ const card=page.locator('[data-metric-id="strategic.value"]')
  await expect(card.locator(':scope > strong')).toHaveText('—')
  await expect(card.locator(':scope > strong')).not.toHaveAttribute('title',/R\$/)
  await expect(card.locator('.metric-exact-value')).toHaveCount(0)

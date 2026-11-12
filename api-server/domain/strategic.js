@@ -170,6 +170,7 @@ export function buildStrategicDashboard({logistics,billingRows,emissionRows=[],p
  const metrics=[
   {...metric('backlogReal','Backlog logístico',backlog.realDays,'days',balanceHelp+'Cobertura em dias de faturamento da carteira logística: Documento em Carga, Logística, Faturado Parcial e Documento Liberado. Valor pendente ÷ faturamento médio diário dos 90 dias corridos terminados na referência, com os mesmos filtros de localização, entrega e emissão. O período visual de faturamento não altera essa base. Faixas do legacy aplicadas ao logístico: <15 crítico baixo; 15 a <25 atenção baixo; 25 a <35 ideal; 35 a <45 atenção alto; ≥45 crítico alto. Sem média positiva ou valor conhecido, indisponível. São faixas de acompanhamento do projeto, não prazo prometido nem disponibilidade física de estoque.'),status:backlog.state},
   metric('portfolioValue','Carteira logística',backlog.realValue,'currency',balanceHelp+'Valor aberto nos status Documento em Carga, Logística, Faturado Parcial e Documento Liberado. Itens e pedidos em várias cargas são contados uma vez. Preços ausentes tornam o valor indisponível.'),
+  metric('value','Valor',totals.value,'currency',historyHelp+'Valor total faturado no período filtrado. Não é o saldo da carteira.'),
   metric('serviceDays','Nível de serviço',totals.service,'days',historyHelp+'Lead time médio dos registros faturados: data de faturamento menos data de emissão do pedido. O total é calculado sobre os registros, sem fazer média das médias mensais.'),
   metric('otif','OTIF',totals.otif,'percent',historyHelp+'Regra atual: proporção dos registros faturados até a previsão de faturamento. Sem previsão é contado como fora do prazo, conforme a regra existente. Não comprova entrega física nem atendimento integral. Registros com previsão: '+(coverage==null?'não disponível':coverage.toFixed(1).replace('.',',')+'%')+'.'),
   metric('sameMonthConversion','Conversão',flow.sameMonthConversion,'percent',conversionHelp+'Pedidos com algum faturamento no próprio mês de emissão ÷ todos os pedidos emitidos × 100, incluindo parciais. Média ponderada por pedidos, incluindo os sem faturamento, sem duplicar itens ou notas. Base: '+flow.convertedOrders.toLocaleString('pt-BR')+' com faturamento de '+flow.conversionOrders.toLocaleString('pt-BR')+' emitidos. Não é a janela de 30 dias nem comprova entrega física.'),
@@ -206,6 +207,24 @@ export function buildStrategicDashboard({logistics,billingRows,emissionRows=[],p
   {id:'strategic.delivery',title:'TIPO DE ENTREGA',type:'donut',x:'type',dimension:'TIPO_ENTREGA',y:['value'],format:'currency',labels:{value:'Valor (R$)',weightKg:'Peso'},metricOptions:{value:'value',weightKg:'weightKg'},metricLabels:{value:'Valor (R$)',weightKg:'Peso'},metricFormats:{value:'currency',weightKg:'weight'},colorMap:{ENTREGA:'#8BC53F',RETIRA:'#4E9D2D'},compactDonut:true,overviewStyle:true,rows:[...deliveries].sort(([a],[b])=>a.localeCompare(b,'pt-BR')).map(([type,rows])=>{const t=summarize(rows);return {type,value:t.value,weightKg:t.weight};})},
  ];
  const {previousRows,previousCovered,annualComparison,...financial}=buildStrategicFinancial({history:valid.filter(row=>row.DT_FATURA_DATE<=publishedEnd),selected,monthly,totals,start,end,filters,heatmapDimension,heatmapMetric,flow});
+ if(annualComparison){
+  const current=summarize(annualComparison.currentRows),previous=summarize(annualComparison.previousRows);
+  const monthlyDistinct=(rows,key,from,to)=>{
+   const groups=new Map();for(const row of rows){const period=monthStart(row.DT_FATURA_DATE);if(!groups.has(period))groups.set(period,[]);groups.get(period).push(row);}
+   const values=calendar(from,to,'month').map(period=>summarize(groups.get(period)||[])[key]);
+   return values.length&&values.every(value=>value!=null)?sum(values)/values.length:null;
+  };
+  const currentOrders=monthlyDistinct(annualComparison.currentRows,'orders',annualComparison.start,annualComparison.end);
+  const priorOrders=monthlyDistinct(annualComparison.previousRows,'orders',financial.comparison.previousStart,financial.comparison.previousEnd);
+  const currentGroups=monthlyDistinct(annualComparison.currentRows,'groups',annualComparison.start,annualComparison.end);
+  const priorGroups=monthlyDistinct(annualComparison.previousRows,'groups',financial.comparison.previousStart,financial.comparison.previousEnd);
+  const values={value:[current.value,previous.value],monthlyTonnage:[current.weight,previous.weight],monthlyVolume:[current.volume,previous.volume],monthlyQuantity:[current.quantity,previous.quantity],monthlyOrders:[currentOrders,priorOrders],monthlyGroups:[currentGroups,priorGroups],serviceDays:[current.service,previous.service],ticket:[current.ticket,previous.ticket],revenueTon:[current.weight>0&&current.value!=null?current.value/current.weight:null,previous.weight>0&&previous.value!=null?previous.value/previous.weight:null],otif:[current.otif,previous.otif]};
+  const comparisonHelp='Comparativo anual: '+formatDate(annualComparison.start)+' a '+formatDate(annualComparison.end)+' contra '+formatDate(financial.comparison.previousStart)+' a '+formatDate(financial.comparison.previousEnd)+'. O valor principal do card continua usando todo o período filtrado.';
+  for(const card of metrics){const pair=values[card.id.slice('strategic.'.length)];if(!pair)continue;const [now,prior]=pair;
+   if(now!=null&&prior>0&&Number.isFinite(now)&&Number.isFinite(prior))card.comparison={value:(now/prior-1)*100,label:'vs '+financial.comparison.previousLabel,format:'percent',arrow:true,betterWhenLower:card.id==='strategic.serviceDays',title:comparisonHelp};
+   card.help+=' '+comparisonHelp;
+  }
+ }
  const options={};
  for(const [key,logisticsKey] of [['UF','ufs'],['CIDADE','cities'],['TIPO_ENTREGA',null]]){
   const values=[...valid,...emissionRows].map(row=>key==='TIPO_ENTREGA'?canonicalDelivery(row[key]):row[key]).filter(value=>typeof value==='string'&&value.trim()&&value!=='None');

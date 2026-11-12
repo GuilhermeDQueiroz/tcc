@@ -1,13 +1,12 @@
 # Visão estratégica
 
-A tela `/estrategico`, acessível pelo menu **Logística → Visão estratégica**, reúne a carteira aberta e o desempenho dos faturamentos. Ela complementa a formação de cargas com uma leitura gerencial das pendências, do volume processado e do tempo de atendimento.
+A tela `/estrategico`, acessível pelo menu **Logística → Visão estratégica**, reúne o desempenho dos faturamentos no período selecionado. Carteira e backlog logístico aparecem na Formação de Cargas.
 
 ## Indicadores e população
 
 | Indicador | Definição | Base |
 | --- | --- | --- |
-| Backlog logístico | Valor pendente nos status logísticos ÷ faturamento médio diário dos 90 dias corridos terminados na referência | Carteira logística e faturamentos publicados |
-| Carteira logística | Valor aberto dos mesmos status logísticos, sem dividir pela média diária | Publicação logística atual; R$ |
+| Valor | Soma do valor faturado no período selecionado | Faturamentos publicados; R$ |
 | Nível de serviço | Média do lead time entre emissão do pedido e faturamento, calculada sobre os registros faturados | Histórico selecionado |
 | OTIF | Média de `ON_TIME_CLEAN` × 100 | Histórico selecionado; regra existente de faturamento |
 | Conversão | Pedidos emitidos com algum faturamento no próprio mês ÷ todos os pedidos emitidos das safras observadas × 100 | Emitidos e faturados da mesma publicação; meses encerrados |
@@ -20,8 +19,10 @@ A tela `/estrategico`, acessível pelo menu **Logística → Visão estratégica
 | Qtd pedidos | Soma dos pedidos distintos de cada mês ÷ número de competências | Um pedido faturado em meses diferentes participa de cada mês |
 | Grupos atendidos | Soma dos grupos de cliente distintos de cada mês ÷ número de competências | Um grupo em meses diferentes participa de cada mês |
 
+Os selos comparativos de Valor, Peso, Volume, Qtd itens, Qtd pedidos, Grupos atendidos, Ticket médio, Nível de serviço, R$/TON e OTIF confrontam a janela comparável do último ano no filtro com as mesmas datas do ano anterior. Sem base anterior positiva ou medida conhecida, não há selo. Nos cards de médias mensais, as duas janelas têm o mesmo número de competências; pedidos e grupos são contados distintos por competência antes da comparação. O valor principal de cada card continua calculado sobre todo o período filtrado. A queda do nível de serviço em dias recebe cor favorável; os demais indicadores usam aumento como favorável. Conversão e escoamento conservam suas próprias bases e não recebem um comparativo por esta regra.
 
-O card **Backlog logístico** apresenta somente os dias equivalentes de faturamento da carteira nos status que contêm Documento em Carga, Logística, Faturado Parcial ou Documento Liberado, normalizando acentos e caixa. A situação aparece no card de backlog; o valor exato fica no card independente Carteira logística. O cálculo da carteira geral foi retirado deste painel; Pedidos em Aberto apresenta somente o card Backlog, calculado sobre a carteira geral e sem a linha suplementar de valor. Valores em pedidos com várias cargas são contados uma vez, sem somar novamente as alocações. Um preço ausente no recorte logístico torna sua cobertura indisponível; preço ausente fora desses status não invalida o valor logístico conhecido.
+
+Os cards **Carteira logística** e **Backlog logístico** foram movidos para Formação de Cargas. O primeiro mostra o saldo na publicação atual dos status Documento em Carga, Logística, Faturado Parcial e Documento Liberado; o segundo mostra esse saldo dividido pelo faturamento médio diário dos últimos 90 dias corridos até a referência. A Visão estratégica conserva esses valores apenas no contrato da API para compatibilidade, sem exibi-los. Pedidos em Aberto mantém seu próprio Backlog sobre a carteira geral.
 
 O denominador usa os mesmos filtros de localização, tipo de entrega e emissão da seleção; o filtro visual de faturamento não altera os 90 dias corridos terminados na referência publicada. Média diária nula ou negativa torna as coberturas indisponíveis. A data de referência continua identificando a posição da carteira, sem reconstrução automática de saldos históricos.
 
@@ -82,7 +83,7 @@ A seção **ANÁLISE POR DIMENSÃO** usa os faturamentos selecionados e as dimen
 
 A tabela contém faturamento, toneladas, R$/ton, médias mensais de itens, pedidos e grupos, nível de serviço e OTIF. Os totais são recalculados sobre toda a seleção. Pedidos e grupos podem estar em mais de uma linha de dimensão; somar suas médias por linha não produz necessariamente a média global. R$/ton e médias de prazo também não são somados. As configurações oferecem seleção de medida, tabela, barras, pizza/donut, treemap, seleção de colunas e CSV. A tabela dimensional usa rolagem contínua e preserva o total e a exportação da seleção completa.
 
-Carteira e backlog são saldos na referência publicada; conversão e escoamento relacionam populações de emissão e faturamento. Carteira e backlog são apresentados nos cards principais. Conversão e escoamento podem ser consultados na análise dimensional por UF, cidade e modalidade de entrega; os outros recortes não publicam essas duas taxas. `dimension` é validada na API e participa da chave de cache junto das publicações, filtros e granularidade.
+Carteira e backlog são saldos na referência publicada e ficam na Formação de Cargas; conversão e escoamento relacionam populações de emissão e faturamento. Conversão e escoamento podem ser consultados na análise dimensional por UF, cidade e modalidade de entrega; os outros recortes não publicam essas duas taxas. `dimension` é validada na API e participa da chave de cache junto das publicações, filtros e granularidade.
 
 Os novos cards mensais usam o número de competências do histórico, incluindo meses sem movimento, conforme escolha do autor. Recortes parciais participam sem projeção. Cadastro ou quantidade ausente torna a medida dependente indisponível; os dados não são preenchidos artificialmente.
 
@@ -152,7 +153,7 @@ As capturas locais `.local/strategic-final-desktop.png`, `.local/strategic-final
 
 A tabela de evolução mensal expõe R$/TON, Conversão e Escoamento diretamente. Seu total de conversão é ponderado pelos pedidos emitidos elegíveis; o total de escoamento é a razão dos valores dos dois fluxos. Não são médias simples dos percentuais das linhas.
 
-O agregado RESUMO DO PERÍODO · MESMAS MÉTRICAS DOS CARDS da API reproduz os 11 indicadores de desempenho: médias mensais de peso, volume, itens, pedidos e grupos; ticket, nível de serviço, OTIF, R$/TON, conversão e escoamento. Contagens distintas são apuradas em cada competência antes da média. Taxas e razões usam suas bases completas. Esse resumo e a tabela CARTEIRA LOGÍSTICA ATUAL foram retirados da interface em 09/11/2026 por solicitação do autor, junto dos textos de apresentação. Seus agregados permanecem no contrato da API para compatibilidade. Carteira e backlog continuam nos cards principais; não é criada série de saldos históricos.
+O agregado RESUMO DO PERÍODO · MESMAS MÉTRICAS DOS CARDS da API reproduz 11 indicadores de desempenho: médias mensais de peso, volume, itens, pedidos e grupos; ticket, nível de serviço, OTIF, R$/TON, conversão e escoamento. Contagens distintas são apuradas em cada competência antes da média. Taxas e razões usam suas bases completas. Esse resumo e a tabela CARTEIRA LOGÍSTICA ATUAL permanecem apenas no contrato da API para compatibilidade. O card Valor é a soma faturada do período; não é o saldo da carteira. Não é criada série de saldos históricos.
 
 Na dimensão, pedidos e valores de emissão sem faturamento continuam na população das taxas. Conversão é atribuída à categoria do pedido emitido e aceita suas notas com destino diferente; escoamento usa a categoria de cada evento. Um pedido com mais de uma categoria de emissão pode participar de mais de uma linha, mas o total é recalculado sem duplicação. As razões por categoria não são somadas. Medidas de média mensal de peso e volume também estão nas configurações. Recortes incompatíveis retiram conversão/escoamento das colunas e medidas, sem apresentar zero como substituto.
 

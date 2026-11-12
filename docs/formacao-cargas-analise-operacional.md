@@ -1,5 +1,9 @@
 # Formação de cargas: ampliação para apoio à logística
 
+## Cards de carteira e backlog — 12/11/2026
+
+A Formação de Cargas apresenta dois cards gerais: **Carteira logística**, saldo dos pedidos nos status Documento em Carga, Logística, Faturado Parcial e Documento Liberado; e **Backlog logístico**, esse saldo dividido pelo faturamento médio diário dos 90 dias corridos terminados na referência publicada. O saldo acompanha os filtros do painel. O faturamento de referência acompanha UF, cidade, tipo de entrega e emissão. Selecionar uma carga ou pedido na área operacional não muda esses dois cards gerais. Base diária nula ou ausente deixa o backlog indisponível, sem substituição por zero. Os dados vêm das publicações logística e comercial; não exigem extração adicional.
+
 Entrega de 2 de outubro de 2026, complementar à [primeira implementação](implementacao-logistica-primeira-entrega.md), utilizando as sete imagens enviadas pelo autor como referências de necessidades operacionais. Os valores das imagens não foram usados como dados ou metas do painel.
 
 ## Funcionalidades entregues

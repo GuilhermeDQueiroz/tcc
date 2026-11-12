@@ -1,4 +1,6 @@
 .logistics-page{position:relative;display:flex;flex-direction:column;gap:12px;min-width:0;width:100%}
+.formation-balance-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;min-width:0}
+@media(max-width:700px){.formation-balance-metrics{grid-template-columns:minmax(0,1fr)}}
 .logistics-tools{margin-left:auto;position:relative;z-index:4}
 .logistics-help{position:relative;margin-left:auto}
 .logistics-help summary{display:grid;place-items:center;width:24px;height:28px;cursor:pointer;list-style:none;color:#68806c}

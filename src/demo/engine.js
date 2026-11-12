@@ -14,6 +14,7 @@ export function createDemoApi({manifest,load}){
   async getVersion(){return manifest.publications.commercial;}
   async snapshot(date,area){
    if(date!==referenceDate)throw new Error('A demonstração tem posição fixa em '+referenceDate.split('-').reverse().join('/')+'.');
+   if(area==='formation-balance')return load('faturados');
    if(area==='strategic'){
     const [emission,billing]=await Promise.all([load('emitidos'),load('faturados')]);
     return {...billing,frames:{emitidos:emission.frames.emitidos,faturados:billing.frames.faturados}};
@@ -59,7 +60,8 @@ export function createDemoApi({manifest,load}){
    if(parts[1]==='formacao'){
     const filters={...q};
     for(const key of ['uf','city','delivery','erpStatus','client','product'])if(url.searchParams.has(key))filters[key]=url.searchParams.getAll(key);
-    return logisticsPayload(await logistics.getDashboard(filters));
+    const dashboard=await logistics.getDashboard(filters);
+    return logisticsPayload({...dashboard,portfolioMetrics:await strategic.getFormationBalance(dashboard,filters)});
    }
   }
   if(parts[0]==='posvenda'){

@@ -2,7 +2,6 @@
 import {computed,onMounted,onBeforeUnmount} from 'vue'
 import {useStrategicStore} from '../stores/strategic'
 import MetricCard from '../components/analytics/MetricCard.vue'
-import BacklogCard from '../components/analytics/BacklogCard.vue'
 import CohortPanel from '../components/analytics/CohortPanel.vue'
 import StrategicDimensions from '../components/analytics/StrategicDimensions.vue'
 import {AnalyticChart} from '../components/analytics/asyncChart'
@@ -20,16 +19,16 @@ const activeFilters=computed(()=>[
 ])
 function removeFilter(key:string){const filters=JSON.parse(JSON.stringify(store.filters));if(key==='billingRange'||key==='emissionRange')delete filters[key];else delete filters.dimensions?.[key];store.applyFilters(filters)}
 const cardOrder=[
- ['portfolioValue','Carteira logística'],['monthlyTonnage','Peso'],['monthlyVolume','Volume'],
+ ['value','Valor'],['monthlyTonnage','Peso'],['monthlyVolume','Volume'],
  ['monthlyQuantity','Qtd itens'],['monthlyOrders','Qtd pedidos'],['monthlyGroups','Grupos atendidos'],
- ['serviceDays','Nível de serviço'],['backlogReal','Backlog logístico'],
+ ['serviceDays','Nível de serviço'],
  ['ticket','Ticket médio'],['revenueTon','R$/TON'],['otif','OTIF'],
  ['sameMonthConversion','Conversão'],['outflow','Escoamento'],
 ] as const
 const placeholders=cardOrder.map(([,label])=>label)
 const orderedMetrics=computed(()=>{
  const positions=new Map<string,number>(cardOrder.map(([id],index)=>['strategic.'+id,index]))
- return [...(store.dashboard?.metrics||[])].sort((a,b)=>(positions.get(a.id)??Infinity)-(positions.get(b.id)??Infinity))
+ return [...(store.dashboard?.metrics||[])].filter(metric=>positions.has(metric.id)).sort((a,b)=>(positions.get(a.id)??Infinity)-(positions.get(b.id)??Infinity))
 })
 // Annual comparisons lead the chart area; the remaining evolutions follow their cards.
 const orderedAnalyses=computed(()=>{
@@ -55,7 +54,7 @@ onBeforeUnmount(()=>store.cancel())
   <LoadingState :active="store.loading" screen label="Carregando visão estratégica…"/>
   <div v-if="store.error" role="alert" class="error-state strategic-error"><span>{{store.error}}</span><button @click="store.load()">Tentar novamente</button></div>
   <div class="strategic-metrics overview-metrics">
-   <template v-if="store.dashboard"><component :is="metric.id==='strategic.backlogReal'?BacklogCard:MetricCard" v-for="metric in orderedMetrics" :key="metric.id" :metric="metric" show-unavailable/></template>
+   <template v-if="store.dashboard"><MetricCard v-for="metric in orderedMetrics" :key="metric.id" :metric="metric" show-unavailable/></template>
    <article v-else v-for="(label,index) in placeholders" :key="index" class="metric-card strategic-placeholder"><span class="metric-label">{{label}}</span><strong>—</strong></article>
   </div>
 

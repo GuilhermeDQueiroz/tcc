@@ -2,9 +2,17 @@ import {strategicDefaultPeriod} from '../../shared/strategic-period.js';
 import {AsyncCache,stableKey} from '../cache.js';
 import {buildStrategicDashboard,buildStrategicDimensionPayload,canonicalDelivery} from '../domain/strategic.js';
 import {buildLogisticsDashboard} from '../domain/logistics.js';
+import {buildFormationBalanceMetrics} from '../domain/formation-balance.js';
 
 export class StrategicRepository {
  constructor(repository,logisticsRepository){this.repository=repository;this.logisticsRepository=logisticsRepository;this.payloads=new AsyncCache({maxEntries:8,ttl:300000});}
+ async getFormationBalance(logistics,filters={}){
+  const version=await this.repository.getVersion();
+  return this.payloads.get(stableKey(['formation-balance',logistics.dataVersion,version,filters]),async()=>{
+   const snapshot=await this.repository.snapshot(logistics.referenceDate,'formation-balance');
+   return buildFormationBalanceMetrics(logistics,snapshot.frames.faturados,filters);
+  });
+ }
  async getAnalysis(filters={},dimension='UF'){
   const defaultPeriod=strategicDefaultPeriod();
   filters={...filters,billingRange:filters.billingRange||[defaultPeriod.start,defaultPeriod.end]};

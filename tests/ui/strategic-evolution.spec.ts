@@ -28,9 +28,9 @@ test('strategic monthly measures reconcile the published period, dimension total
  await page.goto('/estrategico')
  await expect(page.locator('.loading-screen')).toHaveCount(0,{timeout:60_000})
  const data=await page.request.get('/api/v1/logistica/estrategico').then(response=>response.json())
- await expect(page.locator('.strategic-metrics>.metric-card')).toHaveCount(13)
- await expect(page.locator('[data-metric-id="strategic.backlogReal"] .backlog-value')).toHaveCount(0)
- await expect(page.locator('[data-metric-id="strategic.portfolioValue"]')).toContainText('Carteira logística')
+ await expect(page.locator('.strategic-metrics>.metric-card')).toHaveCount(12)
+ await expect(page.locator('[data-metric-id="strategic.backlogReal"],[data-metric-id="strategic.portfolioValue"]')).toHaveCount(0)
+ await expect(page.locator('[data-metric-id="strategic.value"]')).toContainText('Valor')
  for(const id of ['revenueTon','monthlyVolume','ticket','monthlyTonnage','monthlyQuantity','monthlyOrders','monthlyGroups']){
   const card=page.locator(`[data-metric-id="strategic.${id}"]`)
   await expect(card).toBeVisible();await expect(card.locator(':scope>strong')).not.toHaveText('—')

@@ -29,23 +29,22 @@ export function indicatorGuide(path:string,view:string,kind:string):IndicatorGui
   ['Pesquisa','A aba Pesquisa de Pedidos oferece consulta e filtros próprios para examinar os documentos da carteira.'],
  ]),tools]
  if(path==='/estrategico')return [section('Indicadores e cálculos',[
-  ['Carteira e backlog logístico','Usam o saldo nos status Documento em Carga, Logística, Faturado Parcial e Documento Liberado. Backlog divide esse saldo pela média diária de faturamento dos 90 dias até a posição publicada. O período visual de faturamento não altera essa base; o resultado representa dias equivalentes, não prazo de entrega.'],
-  ['Faixas do backlog','Abaixo de 15 dias: crítico baixo; de 15 a menos de 25: atenção baixo; de 25 a menos de 35: ideal; de 35 a menos de 45: atenção alto; a partir de 45: crítico alto. São faixas de acompanhamento do projeto.'],
+  ['Valor','Soma dos valores faturados no período selecionado. O valor do card não representa a carteira em aberto.'],
   ['Peso, volume, itens, pedidos e grupos','Os cards mostram médias mensais do período, incluindo competências sem movimento. Pedidos e grupos são contados distintos em cada mês.'],
   ['Ticket médio e R$/TON','Ticket é faturamento dividido pelas unidades faturadas. R$/TON é faturamento dividido pelo peso em toneladas. São razões dos totais, não médias simples das razões mensais.'],
   ['Nível de serviço e OTIF','Nível de serviço mede o tempo médio de emissão até faturamento por registro. O OTIF deste projeto mede faturamento até a previsão; sem previsão conta como fora do prazo. Não comprova entrega física nem atendimento integral.'],
   ['Conversão','Pedidos emitidos que tiveram algum faturamento no próprio mês, inclusive parcial, divididos pelos pedidos emitidos. Usa competências completas e é ponderada por pedidos.'],
   ['Escoamento','Faturamento dividido pela entrada de pedidos em R$ no mesmo intervalo. Inclui faturamento de pedidos antigos e pode superar 100%.'],
  ]),section('Análises e recursos do painel',[
-  ['Comparativos anuais','Comparam o ano final do filtro com o mesmo intervalo do ano anterior. A variação nas dimensões usa esse trecho comparável; as demais colunas usam todo o filtro. A extração de faturamentos começa em 01/01/2025, mesmo que a primeira nota seja posterior.'],
+  ['Comparativos anuais','Os selos dos cards comparam janelas equivalentes do último ano disponível e do ano anterior. O número principal continua usando todo o período filtrado. Sem base anterior positiva, o selo não aparece. Queda no nível de serviço em dias é favorável; para os demais valores, aumento é favorável.'],
   ['Período inicial','O filtro começa em 01/01 do ano anterior e termina hoje, pelo horário de São Paulo. Você pode escolher outro intervalo; ele não será reduzido às datas com registros. A consulta utiliza a publicação disponível.'],
   ['Evoluções','Acompanhe peso, itens, pedidos, grupos, prazos, ticket, OTIF, escoamento e R$/TON. Nas configurações de Peso, escolha meses, semanas ou dias.'],
   ['Conversão por mês','O gráfico por emissão usa janelas de 7, 15 e 30 dias após o fim do mês. Essas janelas são diferentes da conversão no próprio mês apresentada no card.'],
   ['Tabela de evolução mensal','Primeira aba da Análise por dimensão. As linhas mostram os resultados de cada mês, incluindo conversão, escoamento e R$/TON. O total é recalculado e não soma percentuais ou contagens que se repetem. Quantidades mensais diferem das médias dos cards.'],
   ['Dimensões e mapa','O mapa soma faturamento por UF. A análise dimensional detalha os faturamentos; conversão e escoamento estão disponíveis em UF, cidade e modalidade de entrega. Trocar dimensão carrega apenas essa análise.'],
-  ['Carteira e backlog','Os cards apresentam o saldo logístico da posição publicada e sua cobertura sobre a média diária de 90 dias. Não representam saldos históricos por mês.'],
  ]),tools]
  if(path==='/cargas')return [section('Indicadores e interpretação',[
+  ['Carteira e backlog logístico','Carteira é o saldo dos pedidos nos status Documento em Carga, Logística, Faturado Parcial e Documento Liberado. Backlog divide esse saldo pelo faturamento médio diário dos últimos 90 dias até a posição publicada. As cores indicam as faixas de acompanhamento: abaixo de 15 dias, crítico baixo; de 15 a menos de 25, atenção baixo; de 25 a menos de 35, ideal; de 35 a menos de 45, atenção alto; a partir de 45, crítico alto. A seleção de um pedido ou carga não altera esses dois cards, que representam o conjunto filtrado.'],
   ['Cargas em aberto','Conta cargas distintas com saldo nos vínculos publicados. Uma carga com vários pedidos não deve ser contada várias vezes.'],
   ['Saldo em carga e sem carga','Mostram a parcela alocada e a parcela livre dos pedidos. Alocação não comprova estoque pronto, faturamento, saída ou entrega.'],
   ['Medidas físicas','Peso e cubagem correspondem às quantidades pendentes do recorte, nas unidades indicadas. Preço ou medida ausente pode tornar um resultado indisponível.'],

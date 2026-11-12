@@ -71,6 +71,19 @@ test('cohort sources are read in one repeatable read transaction with one public
  }
 });
 
+test('formation backlog reads only the billed 90-day projection',async()=>{
+ const commands=[],meta={id:'same-publication',fim:'2026-10-01',origem:'Firebird'};
+ const client={async query(sql,values){commands.push({sql,values});return {rows:sql.includes('etl.execucao_carga')?[meta]:[]};},release(){}};
+ const repository=new PostgresRepository({async query(){return {rows:[meta]};},async connect(){return client;}});
+ const snapshot=await repository.snapshot('2026-09-30','formation-balance');
+ assert.deepEqual(Object.keys(snapshot.frames),['faturados']);
+ const select=commands.find(command=>command.sql.includes('dw.pedidos_faturados'));
+ assert.ok(select);assert.deepEqual(select.values.slice(-2),['2026-07-03','2026-09-30']);
+ assert.match(select.sql,/VALOR_FATURADO_CLEAN/);
+ assert.doesNotMatch(select.sql,/PESO_FATURADO_CLEAN|VOLUME_M3_FATURADO_CLEAN|CODIGO_PEDIDO/);
+ assert.equal(commands.filter(command=>command.sql.includes('dw.pedidos_')).length,1);
+});
+
 test('strategic dimension snapshot retains product and customer attributes',async()=>{
  const commands=[];
  const meta={id:'same-publication',fim:'2026-10-01',origem:'Firebird'};

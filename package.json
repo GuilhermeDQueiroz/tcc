@@ -21,6 +21,7 @@
     "start": "node api-server/server.js",
     "build": "vue-tsc --noEmit && vite build",
     "demo:export": "node --max-old-space-size=6144 scripts/export-demo.mjs",
+    "demo:refresh": "node --max-old-space-size=6144 scripts/refresh-demo-initial.mjs",
     "demo:dev": "vite --mode demo --host 127.0.0.1",
     "demo:build": "vue-tsc --noEmit && vite build --mode demo",
     "demo:package": "npm run demo:build && node scripts/package-demo.mjs",
