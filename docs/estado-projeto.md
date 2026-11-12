@@ -1,5 +1,9 @@
 # Estado do projeto e continuidade
 
+## GitHub e demonstração Vercel — 12/11/2026
+
+As alterações dos painéis, ETL, testes e código da demonstração foram enviadas para `main` no commit `41ad5d2`. A fotografia demonstrativa foi reexportada a partir do PostgreSQL exclusivo, com posição em 30/09/2026, e publicada no projeto Vercel `tcc-bi-logistica`. A publicação respondeu 200 nas rotas `/`, `/estrategico`, `/assistencias` e `/demo/manifest.json`. Validação anterior ao envio: 143 testes públicos, build comum, quatro testes de navegador da demonstração e inspeção do índice Git (452 arquivos, sem ocorrências nas regras verificadas). A fotografia e o pacote permanecem em `.local/`, fora do Git.
+
 ## Detalhamento e seleção na Formação de Cargas — 10/11/2026
 
 A tabela de cargas expande carga → grupo de cliente → pedido → produto/cor; a tabela de pedidos expande pedido → produto/cor. A seleção em ambas atualiza os cards: uma carga considera somente suas parcelas alocadas, enquanto um pedido considera seu saldo completo. Repetir a seleção limpa o recorte cruzado. A publicação logística foi refeita da cópia Firebird anonimizada com grupo e cor: 4.685 itens, 1.335 pedidos, 2.125 vínculos e 58 cargas; os totais preservaram a versão anterior. Compilação, 141 testes públicos e teste de navegador da interação passaram. Detalhes das regras em [Formação de cargas](formacao-cargas-analise-operacional.md).

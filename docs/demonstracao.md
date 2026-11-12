@@ -2,7 +2,7 @@
 
 Publicação de produção: [tcc-bi-logistica.vercel.app](https://tcc-bi-logistica.vercel.app), projeto `tcc-bi-logistica` na conta do autor. O endereço substitui a publicação temporária inicial.
 
-As alterações locais de Home, navegação e novas visões de Assistências ainda aguardam um novo pacote e publicação. A fotografia de 30/09/2026 já foi reexportada com os cancelamentos de assistência; o endereço de produção continua exibindo a versão anterior até a conclusão do build demonstrativo e do deploy.
+Atualização de 12/11/2026: o código foi enviado ao GitHub no commit `41ad5d2` e a demonstração foi republicada na Vercel. A fotografia foi reexportada em 12/11/2026 com posição em 30/09/2026. As rotas `/`, `/estrategico` e `/assistencias`, além do manifesto da demonstração, responderam 200 após a publicação. O pacote estático fica fora do Git; o envio do código não aciona automaticamente a publicação da Vercel.
 
 Use **Ocultar aviso** para recolher a faixa de demonstração e **Mostrar aviso** no cabeçalho para restaurá-la. A preferência vale durante a sessão da aba, inclusive ao recarregar ou trocar de painel.
 
