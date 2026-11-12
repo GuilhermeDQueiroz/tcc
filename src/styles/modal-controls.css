@@ -1,0 +1,42 @@
+.modal-close-button,
+.analysis-actions .modal-close-button,
+.config-heading .modal-close-button {
+ display:grid;
+ place-items:center;
+ flex:none;
+ width:40px;
+ height:40px;
+ padding:0;
+ border:1px solid transparent;
+ border-radius:11px;
+ background:#e5f4df;
+ color:#006a3a;
+ cursor:pointer;
+ transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.modal-close-button .app-icon {
+ width:20px;
+ height:20px;
+}
+.modal-close-button:hover:not(:disabled),
+.analysis-actions .modal-close-button:hover:not(:disabled),
+.config-heading .modal-close-button:hover:not(:disabled) {
+ background:#d3ecc7;
+ border-color:#a9d48c;
+ box-shadow:0 4px 12px #173c2720;
+ transform:translateY(-1px);
+}
+.modal-close-button:active:not(:disabled),
+.analysis-actions .modal-close-button:active:not(:disabled),
+.config-heading .modal-close-button:active:not(:disabled) {
+ background:#c6e5b8;
+ box-shadow:none;
+ transform:translateY(0);
+}
+.modal-close-button:focus-visible {
+ outline:3px solid #8bc53f;
+ outline-offset:2px;
+}
+@media(prefers-reduced-motion:reduce) {
+ .modal-close-button {transition:none;}
+}

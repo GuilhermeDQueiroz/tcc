@@ -1,4 +1,4 @@
-import type {AnalyticTable,Row,Series} from '../../types/analytics'
+import type {AnalyticTable,Metric,Row,Series} from '../../types/analytics'
 export type FormationSelection={kind:'load'|'order';id:string}|null
 const children=(row:Row)=>Array.isArray(row.children)?row.children as Row[]:[]
 // Unknown measures stay unknown. Add only leaf allocations, never order totals twice.
@@ -30,6 +30,41 @@ export function formationTables(tables:AnalyticTable[],selection:FormationSelect
   return {...source,id:'pedido-'+order.pedido_id,children:items,...total(items,orderKeys),cargas:selection.id,situacao:'Em carga selecionada',previsao:items.map(item=>item.previsao).filter(Boolean).sort()[0]||null}
  })
  return {loads,orders:withRows(orders,rows,orderKeys)}
+}
+export function groupLoadTable(table:AnalyticTable):AnalyticTable{
+ const rows=table.rows.map(load=>{
+  const groups=new Map<string,Row[]>()
+  for(const order of children(load)){
+   const label=String(order.grupo_cliente||'Não informado')
+   if(!groups.has(label))groups.set(label,[])
+   groups.get(label)!.push(order)
+  }
+  const grouped=[...groups].map(([label,orders],index)=>{
+   const dates=orders.map(order=>order.previsao).filter(Boolean).map(String).sort()
+   return {id:String(load.id)+'-grupo-'+index,carga_id:load.carga_id,grupo_cliente:label,_selectable:false,identificacao:'Grupo '+label,
+    pedidos:new Set(orders.map(order=>String(order.pedido_id))).size,previsao:dates[0]||null,
+    ...total(orders,allocationKeys),children:orders}
+  })
+  return {...load,children:grouped}
+ })
+ return {...table,rows,tree:rows}
+}
+export function formationMetrics(metrics:Metric[],tables:AnalyticTable[],selection:FormationSelection):Metric[]{
+ if(!selection)return metrics
+ const values:Record<string,Metric['value']>={}
+ if(selection.kind==='load'){
+  const load=tables[1]?.rows.find(row=>String(row.carga_id)===selection.id)
+  if(!load)return metrics
+  Object.assign(values,{orders:load.pedidos,loads:1,valueLoad:load.valor_em_carga,weightLoad:load.peso_em_carga,cubeLoad:load.cubagem_em_carga})
+  const shown=new Set(Object.keys(values))
+  return metrics.filter(metric=>shown.has(metric.id.replace('logistica.',''))).map(metric=>({...metric,value:values[metric.id.replace('logistica.','')]??null,subtitle:undefined,help:`Carga ${selection.id} selecionada. ${metric.help||''}`}))
+ }
+ const order=tables[0]?.rows.find(row=>String(row.pedido_id)===selection.id)
+ if(!order)return metrics
+ const linkedLoads=tables[1]?.rows.filter(load=>children(load).some(row=>String(row.pedido_id)===selection.id)).length||0
+ Object.assign(values,{orders:1,none:Number(order.alocacao==='none'),partial:Number(order.alocacao==='partial'),full:Number(order.alocacao==='full'),loads:linkedLoads,
+  free:order.quantidade_sem_carga,valueLoad:order.valor_em_carga,valueFree:order.valor_sem_carga,weightLoad:order.peso_em_carga,weightFree:order.peso_sem_carga,cubeLoad:order.cubagem_em_carga,cubeFree:order.cubagem_sem_carga})
+ return metrics.map(metric=>({...metric,value:values[metric.id.replace('logistica.','')]??null,subtitle:undefined,help:`Pedido ${selection.id} selecionado. ${metric.help||''}`}))
 }
 export function formationOrders(tables:AnalyticTable[],selection:FormationSelection){
  if(selection?.kind==='order')return tables[0]!.rows.filter(row=>String(row.pedido_id)===selection.id)

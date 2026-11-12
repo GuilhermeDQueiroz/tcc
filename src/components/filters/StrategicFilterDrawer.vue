@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {strategicDefaultPeriod} from '../../../shared/strategic-period.js'
 import {ref,watch,computed} from 'vue'
 import {useStrategicStore} from '../../stores/strategic'
 import type {Filters} from '../../types/analytics'
@@ -16,8 +17,9 @@ const tabs=computed(()=>[
 ])
 watch(()=>store.filtersOpen,open=>{
  if(open){
+  const defaultPeriod=strategicDefaultPeriod()
   draft.value=JSON.parse(JSON.stringify(store.filters));draft.value.dimensions??={}
-  billing.value=[...(draft.value.billingRange||['',''])];emission.value=[...(draft.value.emissionRange||['',''])];error.value='';selectedTab.value='period'
+  billing.value=[...(draft.value.billingRange||[defaultPeriod.start,defaultPeriod.end])];emission.value=[...(draft.value.emissionRange||['',''])];error.value='';selectedTab.value='period'
  }
 })
 function close(){store.filtersOpen=false}
@@ -28,19 +30,18 @@ function apply(){
   if(!range[0]&&!range[1])continue
   if(!range[0]||!range[1]||range[0]>range[1]){selectedTab.value='period';error.value='Preencha as duas datas com o início anterior ou igual ao fim.';return}
   for(const date of range){const parsed=new Date(date+'T00:00:00Z');if(!Number.isFinite(parsed.getTime())||parsed.toISOString().slice(0,10)!==date){error.value='Informe datas válidas.';return}}
-  if(key==='billingRange'&&range[0]>(store.dashboard?.meta.publications.logistics.referenceDate||'9999-12-31')){error.value='O início do faturamento deve estar dentro do período publicado.';return}
   value[key]=[range[0],range[1]]
  }
  store.applyFilters(value);close()
 }
 </script>
 <template>
- <FilterDialog :open="store.filtersOpen" label="Filtros · Visão Estratégica" subtitle="Visão Estratégica · selecione o período e os destinos para análise." :section="selectedTab" @close="close" @apply="apply">
+ <FilterDialog :open="store.filtersOpen" label="Filtros · Visão estratégica" :section="selectedTab" @close="close" @apply="apply">
   <template #tabs><FilterTabs v-model="selectedTab" :tabs="tabs" prefix="strategic-filter-tab" panel-id="strategic-filter-panel"/></template>
   <div id="strategic-filter-panel" class="filter-tab-panel" role="tabpanel" :aria-labelledby="'strategic-filter-tab-'+selectedTab">
    <div v-if="selectedTab==='location'" class="strategic-filter-locations"><MultiSelect v-for="[field,label] in categories" :key="field" :label="label" :options="store.dashboard?.options[field]||[]" :model-value="draft.dimensions?.[field]||[]" @update:model-value="draft.dimensions![field]=$event"/></div>
    <div v-else class="period-tab-content">
-    <fieldset class="strategic-period-fields"><legend>Faturamento · gráficos e desempenho</legend><div><label>De<input v-model="billing[0]" type="date" class="filter-control-input" aria-label="Faturamento inicial"></label><label>Até<input v-model="billing[1]" type="date" class="filter-control-input" aria-label="Faturamento final"></label></div><p>Sem período selecionado, exibe os últimos 12 meses publicados. A carteira aberta mantém sua referência atual.</p></fieldset>
+    <fieldset class="strategic-period-fields"><legend>Faturamento · gráficos e desempenho</legend><div><label>De<input v-model="billing[0]" type="date" class="filter-control-input" aria-label="Faturamento inicial"></label><label>Até<input v-model="billing[1]" type="date" class="filter-control-input" aria-label="Faturamento final"></label></div></fieldset>
     <fieldset class="strategic-period-fields"><legend>Emissão do pedido · carteira e histórico</legend><div><label>De<input v-model="emission[0]" type="date" class="filter-control-input" aria-label="Emissão inicial"></label><label>Até<input v-model="emission[1]" type="date" class="filter-control-input" aria-label="Emissão final"></label></div></fieldset>
    </div>
   </div>
@@ -54,6 +55,5 @@ function apply(){
 .strategic-period-fields legend{font-size:13px;font-weight:600;padding:0 8px 0 0;color:#31563e}
 .strategic-period-fields>div{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .strategic-period-fields label{font-size:12px;color:#64748b;display:grid;gap:6px;min-width:0}
-.strategic-period-fields p{font-size:12px;line-height:1.6;color:#64748b;margin:10px 0 0}
 @media(max-width:600px){.strategic-filter-locations{grid-template-columns:1fr}.strategic-period-fields>div{gap:8px}.filter-modal-header h2{font-size:14px}}
 </style>

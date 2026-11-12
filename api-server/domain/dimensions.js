@@ -7,12 +7,19 @@ export const HIERARCHIES={
   REGIAO_UF:['REGIAO_UF','UF','CONSULTOR','CLIENTE','CODIGO_PEDIDO'],UF:['UF','CONSULTOR','CLIENTE','CODIGO_PEDIDO'],LINHA:['LINHA','SUBGRUPO','DESCRICAO_ITEM','CODIGO_PEDIDO'],SUBGRUPO:['SUBGRUPO','DESCRICAO_ITEM','CODIGO_PEDIDO'],
   GRUPO_ITEM:['GRUPO_ITEM','SUBGRUPO','LINHA','DESCRICAO_ITEM','CODIGO_PEDIDO'],TIPO:['TIPO','SUBGRUPO','DESCRICAO_ITEM','CODIGO_PEDIDO'],COLECAO:['COLECAO','LINHA','DESCRICAO_ITEM','CODIGO_PEDIDO'],DESCRICAO_ITEM:['DESCRICAO_ITEM','CODIGO_PEDIDO'],
   CLASSIFICACAO:['CLASSIFICACAO','GRUPO_CLIENTE','CLIENTE','CODIGO_PEDIDO'],ORIGEM:['ORIGEM','GRUPO_CLIENTE','CLIENTE','CODIGO_PEDIDO'],ORGAO:['ORGAO','GRUPO_CLIENTE','CLIENTE','CODIGO_PEDIDO'],STATUS:['STATUS','SUPERVISOR','CONSULTOR','CLIENTE','CODIGO_PEDIDO'],TIPO_ENTREGA:['TIPO_ENTREGA','UF','CONSULTOR','CLIENTE','CODIGO_PEDIDO']};
+export const OPEN_DRILLDOWN=['TIPO_ENTREGA','SUPERVISOR','CONSULTOR','GRUPO_CLIENTE','CODIGO_PEDIDO','ITEM_PEDIDO'];
+const itemName=row=>{
+  const code=row.CODIGO_ITEM==null?'':String(row.CODIGO_ITEM).trim();
+  const description=String(row.DESCRICAO_ITEM??'').trim();
+  const color=String(row.COR??'').trim();
+  return [code?`Item ${code}`:'Item sem código',description&&description!=='None'?description:null,color&&color!=='None'?`Cor: ${color}`:null].filter(Boolean).join(' · ');
+};
 function aggregate(rows,area,dimension,previous=[],totalValue=0){
-  const s=summarize(rows,area,{grouped:true});const prev=groupSum(previous.map(r=>r[numericColumns(area).value]));
-  return {[dimension]:rows[0]?.[dimension],Valor:s.value,Peso:s.weightKg,Volume_M3:s.volumeM3,Qtde:s.quantity,NivelServico:s.serviceDays??0,NS:s.serviceDays??0,OTIF:s.onTime??0,
+  const s=summarize(rows,area,{grouped:true}),late=area==='abertos'?summarize(rows.filter(row=>row.NIVEL_DE_SERVICO_CLEAN>60),area,{grouped:true}):null;const prev=groupSum(previous.map(r=>r[numericColumns(area).value]));
+  return {...(late?{Pedidos_60:late.orders,Valor_60:late.value}:{}),[dimension]:rows[0]?.[dimension],Valor:s.value,Peso:s.weightKg,Volume_M3:s.volumeM3,Qtde:s.quantity,NivelServico:s.serviceDays??0,NS:s.serviceDays??0,OTIF:s.onTime??0,
     Qtd_Pedidos:dimension==='CODIGO_PEDIDO'&&rows.length?1:s.orders,'Qtd Pedidos':dimension==='CODIGO_PEDIDO'&&rows.length?1:s.orders,
     Grupos_Atendidos:area==='abertos'&&dimension==='GRUPO_CLIENTE'?rows.length:s.groups,'Grupos Atendidos':dimension==='GRUPO_CLIENTE'&&rows.length?1:s.groups,
-    'Ticket Medio':s.value/(s.quantity||1),'R$/Ton':s.value/Math.fround((s.weightKg||1)/1000),'% Part':totalValue>0?s.value/totalValue:0,Valor_Prev:prev,Diff_Raw:s.value-prev};
+    'Ticket Medio':s.value/(s.quantity||1),'R$/Ton':area==='abertos'?(s.weightKg>0?s.value/(s.weightKg/1000):null):s.value/Math.fround((s.weightKg||1)/1000),'% Part':totalValue>0?s.value/totalValue:0,Valor_Prev:prev,Diff_Raw:s.value-prev};
 }
 export function dimensionRows(rows,area,dimension,previous=[]){
   const prevGroups=new Map(groupRows(previous,[dimension]).map(g=>[g[0][dimension],g]));
@@ -27,7 +34,7 @@ export function dimensionRows(rows,area,dimension,previous=[]){
   if(dimension==='Aging_Bucket'){const order=['0-15 dias','16-30 dias','31-45 dias','46-60 dias','> 60 dias','Indefinido'];result.sort((a,b)=>order.indexOf(a[dimension])-order.indexOf(b[dimension]));}
   return result;
 }
-export function buildHierarchy(rows,area,columns,previous=[],{maxChildren=12,maxRoots,rootRows}={}){
+export function buildHierarchy(rows,area,columns,previous=[],{maxChildren=12,maxRoots,rootRows,complete=false}={}){
   const overall=summarize(rows,area).value;
   const minimumDate=group=>group.reduce((date,row)=>{const current=isoDate(row.DATA_EMISSAO_PEDIDO_DATE);return current&&(!date||current<date)?current:date;},'');
   const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
@@ -41,14 +48,14 @@ export function buildHierarchy(rows,area,columns,previous=[],{maxChildren=12,max
     else if(dim==='CODIGO_PEDIDO')groups.sort((a,b)=>minimumDate(a.g).localeCompare(minimumDate(b.g))||b.s.value-a.s.value);
     if(depth===0&&rootRows){const byKey=new Map(groups.map(group=>[String(group.g[0][dim]),group]));groups=rootRows.map(summary=>({...byKey.get(String(summary[dim])),g:byKey.get(String(summary[dim]))?.g||[],key:summary[dim],summary}));}
     if(depth===0&&maxRoots!=null)groups=groups.slice(0,maxRoots);
-    if(depth>0){const cap=dim==='CODIGO_PEDIDO'?Math.max(maxChildren,20):Math.min(maxChildren,[Infinity,8,6,5,4][depth]??5);groups=groups.slice(0,cap);}
+    if(depth>0&&!complete&&dim!=='ITEM_PEDIDO'){const cap=dim==='CODIGO_PEDIDO'?Math.max(maxChildren,20):Math.min(maxChildren,[Infinity,8,6,5,4][depth]??5);groups=groups.slice(0,cap);}
     return groups.map(({g,key=g[0]?.[dim],summary},i)=>{
       const p=previousGroups.get(key)||[],id=path?`${path}_${i}`:`n_${i}`,a=aggregate(g,area,dim,p,overall);
       if(g.length&&(columns.slice(0,depth+1).includes('GRUPO_CLIENTE')||['CLIENTE','CODIGO_PEDIDO'].includes(dim)))a['Grupos Atendidos']=a.Grupos_Atendidos=1;
       // shared.py build_multi_level_tree uses zero-safe ticket, double tonne
       // division and zero difference when no comparison frame was supplied.
       a['Ticket Medio']=a.Ticket=a.Qtde>0?a.Valor/a.Qtde:0;
-      a['R$/Ton']=a.Peso>0?a.Valor/(a.Peso/1000):0;
+      a['R$/Ton']=a.Peso>0?a.Valor/(a.Peso/1000):area==='abertos'?null:0;
       if(!previous.length)a.Diff_Raw=0;
       const aliases={value:a.Valor,weightKg:a.Peso,volumeM3:a.Volume_M3,quantity:a.Qtde,orders:a.Qtd_Pedidos,groups:a.Grupos_Atendidos,
         part_pct:a['% Part'],Pedidos:a.Qtd_Pedidos,Clientes:a.Grupos_Atendidos,Grupos:a.Grupos_Atendidos,Qtd_Itens:a.Qtde,
@@ -61,11 +68,11 @@ export function buildHierarchy(rows,area,columns,previous=[],{maxChildren=12,max
     });
   }return build(rows,previous,0);
 }
-export const dimensionColumns=dimension=>[
+export const dimensionColumns=(dimension,area)=>[
   {key:dimension,label:dimension,format:'text'},{key:'Valor',label:'Valor (R$)',format:'currency'},{key:'% Part',label:'Participação',format:'ratio'},
   {key:'NS',label:'Nível de serviço',format:'days'},{key:'Ticket Medio',label:'Ticket médio',format:'currency'},{key:'R$/Ton',label:'R$/Ton',format:'currency'},
   {key:'Qtd_Pedidos',label:'Qtd pedidos',format:'integer'},{key:'Qtde',label:'Qtd itens',format:'integer'},{key:'Peso',label:'Peso (t)',format:'weight'},
-  {key:'Volume_M3',label:'Volume (m³)',format:'volume'},{key:'Grupos_Atendidos',label:'Grupos atendidos',format:'integer'}];
+  {key:'Volume_M3',label:'Volume (m³)',format:'volume'},{key:'Grupos_Atendidos',label:'Grupos atendidos',format:'integer'},...(area==='abertos'?[{key:'Pedidos_60',label:'Pedidos > 60 dias',format:'integer'},{key:'Valor_60',label:'Valor > 60 dias',format:'currency'}]:[])];
 export function buildDimensionDashboard({rows,history=[],previousRows,area,dimension='UF',hierarchy,referenceDate,metric='value',chartType='bar'}){
   if(area==='abertos')rows=prepareOpenRows(rows,referenceDate);
   const dateCol=area==='emitidos'?'DATA_EMISSAO_PEDIDO_DATE':'DT_FATURA_DATE';let previous=[];
@@ -81,16 +88,23 @@ export function buildDimensionDashboard({rows,history=[],previousRows,area,dimen
   total.Qtd_Pedidos=area==='abertos'?s.orders:sum(data.map(r=>r.Qtd_Pedidos));total.Grupos_Atendidos=area==='abertos'?s.groups:sum(data.map(r=>r['Grupos Atendidos']));
   total['Qtd Pedidos']=total.Qtd_Pedidos;total['Grupos Atendidos']=total.Grupos_Atendidos;
   total['Ticket Medio']=total.Qtde>0?total.Valor/(area==='abertos'?total.Qtde:sum(data.map(r=>r.Qtde||1),{float32:true})):0;
-  total['R$/Ton']=total.Peso>0?total.Valor/Math.fround(total.Peso/1000):0;
-  let columns=dimensionColumns(dimension);
+  total['R$/Ton']=area==='abertos'?(total.Peso>0?total.Valor/(total.Peso/1000):null):(total.Peso>0?total.Valor/Math.fround(total.Peso/1000):0);
+  if(area==='abertos'){const late=summarize(rows.filter(row=>row.NIVEL_DE_SERVICO_CLEAN>60),area);total.Pedidos_60=late.orders;total.Valor_60=late.value;}
+  let columns=dimensionColumns(dimension,area);
   if(area!=='abertos')columns=[...columns,{key:'Diff_Raw',label:'Superávit / déficit ano anterior',format:'currency'},...(area==='faturados'?[{key:'OTIF',label:'OTIF',format:'ratio'}]:[])];
-  const effectiveHierarchy=hierarchy||HIERARCHIES[dimension]||[dimension,'CLIENTE','CODIGO_PEDIDO'];
-  const tree=buildHierarchy(rows,area,effectiveHierarchy,previous,{maxChildren:area==='abertos'?12:6,rootRows:effectiveHierarchy[0]===dimension?data:undefined});
+  const baseHierarchy=hierarchy||(area==='abertos'?[dimension,...OPEN_DRILLDOWN.filter(key=>key!==dimension)]:HIERARCHIES[dimension]||[dimension,'CLIENTE','CODIGO_PEDIDO']);
+  const effectiveHierarchy=[...baseHierarchy.filter(key=>key!=='ITEM_PEDIDO'),'ITEM_PEDIDO'];
+  const prepareItem=row=>{
+    const prepared={...row,ITEM_PEDIDO:itemName(row)};
+    if(area==='abertos')for(const key of effectiveHierarchy.slice(1,-1))if(prepared[key]==null||String(prepared[key]).trim()==='')prepared[key]='Não informado';
+    return prepared;
+  };
+  const tree=buildHierarchy(rows.map(prepareItem),area,effectiveHierarchy,previous.map(prepareItem),{maxChildren:area==='abertos'?12:6,rootRows:effectiveHierarchy[0]===dimension?data:undefined,complete:area==='abertos'});
   const table={id:`${area}.dimensoes.${dimension}`,title:`Análise por ${dimension}`,rows:data,columns,total,tree};
-  const key={value:'Valor',weightKg:'Peso',quantity:'Qtde',volumeM3:'Volume_M3',orders:'Qtd_Pedidos'}[metric]||'Valor';
-  const top=[...data].sort((a,b)=>b[key]-a[key]);let chart=top.slice(0,15);
-  if(chartType==='pie'&&top.length>10)chart=[...top.slice(0,9),{[dimension]:'Outros',[key]:sum(top.slice(9).map(r=>r[key]),{float32:metric!=='value'})}];
-  const series=[{id:`${area}.dimensoes.distribuicao`,title:`${dimension} • ${metric}`,type:chartType==='table'?'bar':chartType,rows:chart,x:dimension,y:[key],format:metric==='value'?'currency':metric==='weightKg'?'weight':metric==='volumeM3'?'volume':'integer',dimension}];
+  const key={value:'Valor',weightKg:'Peso',quantity:'Qtde',volumeM3:'Volume_M3',orders:'Qtd_Pedidos',revenuePerTon:'R$/Ton'}[metric]||'Valor';
+  const top=[...data].sort((a,b)=>(b[key]??-Infinity)-(a[key]??-Infinity));let chart=top.slice(0,15);
+  if(chartType==='pie'&&top.length>10){const other=top.slice(9);chart=[...top.slice(0,9),{[dimension]:'Outros',[key]:metric==='revenuePerTon'?sum(other.map(r=>r.Peso))>0?sum(other.map(r=>r.Valor))/(sum(other.map(r=>r.Peso))/1000):null:sum(other.map(r=>r[key]),{float32:metric!=='value'})}];}
+  const series=[{id:`${area}.dimensoes.distribuicao`,title:`${dimension} • ${metric}`,type:chartType==='table'?'bar':chartType,rows:chart,x:dimension,y:[key],format:['value','revenuePerTon'].includes(metric)?'currency':metric==='weightKg'?'weight':metric==='volumeM3'?'volume':'integer',dimension}];
   const monthCol=area==='abertos'?'Mes_Grupo':'Mes_Ano',ev=rows.map(r=>({...r,[monthCol]:area==='abertos'?r.Mes_Grupo:isoDate(r[dateCol])?.slice(0,7)}));
   const cats=new Set(top.slice(0,area==='abertos'?15:7).map(r=>r[dimension]));
   const categorized=ev.filter(r=>r[monthCol]).map(r=>({...r,category:cats.has(r[dimension])?r[dimension]:'Outros'}));

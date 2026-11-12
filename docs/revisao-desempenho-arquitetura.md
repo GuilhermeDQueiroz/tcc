@@ -1,5 +1,23 @@
 # Revisão de desempenho, arquitetura e organização
 
+## Nova medição e ajustes — 09/11/2026
+
+O carregamento da interface tinha um tempo mínimo artificial de **2 s**, mais uma saída animada de 350 ms, mesmo quando a API respondia rapidamente. `LoadingState.vue` agora encerra a tela de espera assim que a requisição termina; indicadores locais permanecem visíveis por até 250 ms e a saída dura 150 ms. A indicação continua ativa durante requisições demoradas. Com caches aquecidos, uma navegação medida de Pedidos em Aberto exibiu os 11 cards em cerca de **0,7 s** no navegador; a amostra não representa p95 nem inclui uma inicialização fria da API.
+
+Nas opções de filtro comercial, `getDimensions` ordenava dois arrays com todas as datas do histórico para obter apenas mínimo e máximo. A faixa agora é calculada em uma única varredura por coluna, sem alterar a seleção ou o resultado. Um teste público cobre datas fora de ordem e valores ausentes.
+
+O filtro genérico agora retorna uma cópia direta quando não há condições efetivas, preservando a identidade separada do array e evitando avaliar condições vazias para cada registro. Na conversão da Visão Estratégica, o tipo de entrega só é normalizado em todos os emitidos quando há filtro ou agrupamento por entrega; os recortes padrão por UF e cidade usam os próprios registros. Os testes de filtros e de métricas estratégicas conferem a equivalência funcional. Uma segunda execução isolada do perfil sofreu forte variação de memória e cache (leitura comercial de 25 s e cálculo de 65 s, com API residente em cerca de 1,6 GiB); ela não serve para estimar ganho percentual dessas alterações.
+
+O mesmo filtro agora prepara dimensões, faixas de data e termo de busca uma vez por chamada, em vez de reconstruí-los para cada registro. Um teste público confere a combinação desses critérios. A mudança reduz trabalho repetido nos históricos grandes; não substitui a necessidade de diminuir a leitura inicial e a população processada.
+
+A Visão Estratégica passou a requisitar `section=overview` na abertura. Essa resposta entrega os 13 cards, gráficos, mapa e tabela mensal, mas adia o cálculo da tabela dimensional detalhada. Ao escolher uma dimensão, inclusive a UF inicial, a interface solicita `section=analysis` e atualiza apenas essa tabela; se o usuário já estiver nela quando o filtro mudar, a nova dimensão também é carregada. O endpoint sem `section` mantém a resposta completa para consumidores existentes. Na medição isolada anterior, a análise dimensional custou cerca de 4,8 s de CPU; o ganho percebido depende do estado de memória e cache. Testes públicos e um teste de navegador confirmam cards e tabela mensal antes da requisição dimensional, seguidos pelo carregamento correto da UF.
+
+Verificação final desta rodada: **137 testes públicos** e build aprovados; o teste de navegador específico da abertura progressiva passou. A troca UF → Cidade também foi conferida diretamente no navegador. Um teste de navegador mais amplo de troca de dimensão e erros expirou após o Chrome perder a sessão sob pressão de memória; a API e a interface continuaram respondendo. Esse resultado não comprova falha funcional, mas impede declarar toda a suíte de interface aprovada nesta máquina.
+
+Uma medição exploratória após reiniciar a API local, com PostgreSQL 18 e publicação existente, mostrou a primeira resposta de Pedidos em Aberto em **2,5 s**, Visão Estratégica em **17,2 s**, Formação de Cargas em **0,5 s** e Assistências em **4,9 s**. Respostas aquecidas podem cair para poucos milissegundos; as amostras foram sequenciais e não isolam concorrência ou cache do sistema operacional. Em uma execução separada de perfil da Visão Estratégica, a leitura e normalização do histórico comercial levou **13,0 s** e a preparação do painel **21,6 s**; esta execução independente não é diretamente comparável à requisição HTTP. Dentro da preparação, as maiores parcelas observadas foram conversão e escoamento (**5,0 s**), safras (**5,3 s**), análises financeiras (**4,3 s**) e análise por dimensão (**4,8 s**).
+
+A primeira abertura da Visão Estratégica continua sendo o principal gargalo. A próxima intervenção deve publicar agregados ou consultar somente os grãos necessários para o resumo inicial, mantendo as fontes detalhadas para as análises abertas sob demanda. Antes de substituir as reduções atuais, reconcilie resultados de pedidos distintos, faturamento parcial, conflitos de emissão, janelas de conversão e aritmética de ponto flutuante com as publicações existentes. Formação de Cargas ainda envia cerca de **5,8 MB** de JSON sem compressão e monta tabelas contínuas extensas; virtualização preservando expansão e seleção continua indicada. O chunk de gráficos permanece em torno de **775 kB** minificado e pode ser dividido por família de visualização.
+
 Data: 03/11/2026. Escopo: `business-intelligence-logistica`, API Node/Express, interface Vue, consultas PostgreSQL e organização do ETL. As alterações anteriores existentes na pasta foram preservadas.
 
 ## Melhorias implementadas
@@ -104,11 +122,19 @@ Extrair construtores de opções por família facilita testes e manutenção. O 
 
 Manter os modelos e os metadados estruturais necessários dentro do próprio repositório e documentar explicitamente os insumos privados. A validação da geração deve ocorrer em diretório temporário antes de substituir os artefatos existentes.
 
-### Média: revisar o tempo mínimo do indicador de carregamento
+### Indicador de carregamento revisado em 09/11/2026
 
-`LoadingState.vue` mantém a indicação por pelo menos dois segundos e depois aplica uma saída de 350 ms. Essa escolha é intencional e coberta por testes. Quando a API responde em poucos milissegundos, a percepção de espera permanece dominada pela apresentação.
+O atraso mínimo de dois segundos de `LoadingState.vue` foi retirado das telas completas; a saída agora leva 150 ms. Indicadores locais conservam apenas 250 ms de permanência mínima. Na recarga de Pedidos em Aberto com resposta da API em 15,9 ms, o indicador ficou visível por 350,6 ms no navegador. Antes, só o mínimo e a saída exigiam aproximadamente 2,35 s. Esta é uma medição pontual de percepção da interface, não uma redução do custo da consulta.
 
-Uma evolução possível é uma política configurável: evitar mostrar o indicador para respostas muito rápidas e manter um tempo curto de leitura somente quando ele chegar a aparecer. Essa mudança de experiência deve ser avaliada junto com os testes atuais.
+As opções de data dos filtros comerciais passaram a localizar mínimo e máximo em uma passagem, sem ordenar todos os registros. O contrato de datas foi conferido com registros fora de ordem e datas ausentes. A alteração diminui trabalho na API quando as opções não estão em cache; não reduz a leitura inicial do snapshot.
+
+Em amostras HTTP locais, na sequência Abertos → Visão estratégica → Formação de Cargas → Assistências → Abertos, as respostas levaram 2.523 ms, 219 ms, 600 ms, 736 ms e 8 ms, respectivamente. São observações exploratórias com caches em estados diferentes. A primeira carga dos históricos comerciais completos e a montagem das tabelas de cargas continuam como os maiores custos estruturais descritos acima; a revisão do indicador não os substitui.
+
+### Consulta estratégica inicial revisada em 09/11/2026
+
+O perfil isolado mostrou leitura de emissão/faturamento de 38,5–48,6 s e cálculo estratégico de 47,8–173,3 s, conforme a pressão de memória da execução. Dentro do cálculo, a análise por safra chegou a 99,9 s. Ela agora evita copiar todos os emitidos quando não há filtro de tipo de entrega, reutiliza a validação de datas e elimina alocações repetidas no processamento das janelas de 7, 15 e 30 dias. Na medição posterior, a mesma etapa levou 10,9 s. Os 11 testes de safra passaram.
+
+A consulta inicial busca apenas as colunas usadas pelos cards e gráficos. Os atributos adicionais de produto e cliente são lidos pela consulta própria da Análise por dimensão. Um pedido de dimensão detalhada `DESCRICAO_ITEM` retornou 276 grupos em 19,8 s. A validação de datas do fluxo também passou a reutilizar resultados por data, com cache limitado. Na comparação HTTP local sem resposta pronta em cache, a Visão estratégica passou de 79,5 s para 23,0 s após todas as mudanças (27,5 s antes da última otimização). Os JSONs completos do painel padrão tiveram SHA-256 idêntico nas três medições. São amostras locais, não uma estimativa de p95; leitura inicial, cálculos do fluxo e renderização das tabelas ainda podem exigir segundos.
 
 ### Baixa: organizar módulos e estilos pela responsabilidade atual
 

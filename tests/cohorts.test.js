@@ -65,9 +65,21 @@ test('cohort sources are read in one repeatable read transaction with one public
  assert.equal(data.version,'same-publication');assert.equal(data.frames.emitidos[0].VALOR_EMITIDO_CLEAN,100);assert.equal(data.frames.faturados[0].VALOR_FATURADO_CLEAN,100);
  assert.match(commands[0],/REPEATABLE READ READ ONLY/);assert.equal(commands.at(-1),'COMMIT');assert.equal(commands.filter(sql=>sql.startsWith('BEGIN')).length,1);assert.equal(released,true);
  for(const sql of commands.filter(sql=>sql.includes('dw.pedidos_'))){
-  assert.ok(!sql.includes('"DESCRICAO_ITEM"'),'strategic sources must omit unused product descriptions');
+  if(sql.includes('dw.pedidos_emitidos'))assert.ok(!sql.includes('"DESCRICAO_ITEM"'),'emission sources omit unused product descriptions');
+  else assert.ok(!sql.includes('"DESCRICAO_ITEM"'),'initial billing omits product attributes reserved for dimensional analysis');
   for(const column of ['CODIGO_PEDIDO','CODIGO_ITEM','COR','CIDADE','UF','TIPO_ENTREGA','DATA_EMISSAO_PEDIDO_DATE','CONSULTOR','SUPERVISOR','GRUPO_CLIENTE'])assert.ok(sql.includes('"'+column+'"'),column+' remains available for measures, linking or exclusions');
  }
+});
+
+test('strategic dimension snapshot retains product and customer attributes',async()=>{
+ const commands=[];
+ const meta={id:'same-publication',fim:'2026-10-01',origem:'Firebird'};
+ const client={async query(sql){commands.push(sql);return {rows:sql.includes('etl.execucao_carga')?[meta]:[]};},release(){}};
+ const repository=new PostgresRepository({async query(){return {rows:[meta]};},async connect(){return client;}});
+ await repository.snapshot('2026-09-30','strategic-analysis');
+ const billingSQL=commands.find(sql=>sql.includes('dw.pedidos_faturados'));
+ assert.match(billingSQL,/"DESCRICAO_ITEM"/);
+ assert.match(billingSQL,/"CLIENTE"/);
 });
 
 test('unknown delivery labels normalize identically in emitted rows and the selected filter',()=>{

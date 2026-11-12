@@ -21,15 +21,21 @@ População: pedidos de venda elegíveis com itens de composição principal, ti
 
 Detalhes de medidas e hierarquia: [Formação de Cargas](formacao-cargas-analise-operacional.md). Total global de pedidos é distinto: somar contagens por carga pode repetir pedidos distribuídos em várias cargas.
 
+Em Pedidos em Aberto, **R$/TON** = valor total do saldo selecionado ÷ (peso total do saldo em kg / 1.000). O card e os recortes dimensionais calculam a razão a partir de seus totais; não somam razões das linhas. Sem peso positivo, a medida fica indisponível. A mesma opção está nas configurações dos gráficos do painel.
+
 ## Visão Estratégica
 
 | Identificador da API | Medida e fórmula | População / unidade |
 |---|---|---|
-| `strategic.loads` | Cargas distintas com alocação aberta no recorte | Carteira selecionada; cargas |
-| `strategic.valueLoad` | Valor das parcelas abertas em carga | Carteira selecionada; R$ |
-| `strategic.weightKg` | Peso de todo o saldo aberto | Carteira selecionada; kg, exibido em t |
-| `strategic.backlogReal` | Valor aberto / média diária de receita dos 90 dias corridos terminados na referência | Mesmos filtros compartilhados; dias equivalentes; base não positiva/ausente indisponível |
-| `strategic.orders30` | Pedidos distintos com emissão anterior à referência − 30 dias | Carteira selecionada; comparação estrita `> 30` |
+| `strategic.backlogReal` | Valor aberto nos status Documento em Carga, Logística, Faturado Parcial e Documento Liberado / média diária de faturamento dos 90 dias corridos terminados na referência | Carteira logística selecionada; dias equivalentes; base não positiva/ausente indisponível |
+| `strategic.portfolioValue` | Valor aberto nos status logísticos | Saldo na referência publicada; R$ |
+| `strategic.revenueKg` | Faturamento total / massa faturada total em kg | Razão ponderada; R$/kg |
+| `strategic.monthlyVolume` | Cubagem faturada total / competências | Média mensal em m³; card Volume |
+| `strategic.ticket` | Faturamento total / unidades faturadas | Valor médio por item, conforme legacy; não por pedido |
+| `strategic.monthlyTonnage` | Soma das massas mensais / meses / 1.000 | Média de toneladas por competência |
+| `strategic.monthlyQuantity` | Unidades faturadas / competências | Média de unidades por mês |
+| `strategic.monthlyOrders` | Soma de pedidos distintos por competência / competências | Média mensal, sem duplicar notas no mesmo mês |
+| `strategic.monthlyGroups` | Soma de grupos distintos por competência / competências | Média mensal; totais dimensionais recalculados |
 | `strategic.serviceDays` | Média de `NIVEL_DE_SERVICO_CLEAN` | Registros faturados selecionados; dias até faturamento |
 | `strategic.otif` | Média de `ON_TIME_CLEAN` × 100 | Registros faturados selecionados; percentual de pontualidade de faturamento |
 | `priority.valueFree` | Valor das parcelas sem carga | Carteira selecionada; R$; preço ausente torna a medida indisponível |
@@ -37,7 +43,7 @@ Detalhes de medidas e hierarquia: [Formação de Cargas](formacao-cargas-analise
 | `priority.overdueOrders` | Previsão do pedido válida e anterior à referência | Carteira selecionada; hoje não é vencido |
 | `priority.undatedOrders` | Pedido sem previsão válida de faturamento | Carteira selecionada; não é atraso comprovado |
 
-O identificador histórico `strategic.backlogReal` não define o mesmo indicador chamado Backlog real em Pedidos em Aberto: na Visão Estratégica entra toda a carteira logística selecionada, enquanto o painel comercial aplica situações do legacy. Não comparar os dois como equivalentes.
+O identificador `strategic.backlogReal` agora representa o backlog dos status logísticos, seguindo a seleção e as faixas de cor do legacy. Somente a cobertura e o valor logísticos ficam em `meta.backlog` deste painel; o backlog geral é apresentado no card de Pedidos em Aberto. A publicação e o denominador podem diferir do painel comercial; comparar resultados exige conferir referência, cobertura e filtros. `logistica.loads` exibe Cargas em aberto somente na Formação de Cargas; os antigos cards estratégicos de cargas, valor em carga, peso aberto e pedidos acima de 30 dias foram retirados.
 
 OTIF mantém a convenção interna por faturamento e a média por registro do legacy. Prazo ausente recebe zero na transformação atual; a cobertura de previsão é exibida separadamente. A proposta de excluir prazos ausentes e medir conclusão integral por pedido requer nova versão e homologação; ainda não está implementada. O indicador atual não comprova entrega física nem In Full.
 

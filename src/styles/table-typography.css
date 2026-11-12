@@ -1,0 +1,7 @@
+/* Global table typography contract, including teleported/expanded tables.
+   Central precedence keeps local density rules from changing type or casing. */
+table th,table td{font-family:inherit!important}
+table th{font-size:11px!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:.035em;line-height:1.4}
+table td{font-size:12px!important;line-height:1.45}
+table th button,table th input,table th select{font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;text-transform:inherit!important;letter-spacing:inherit}
+table td button{font-family:inherit!important;font-size:inherit!important}

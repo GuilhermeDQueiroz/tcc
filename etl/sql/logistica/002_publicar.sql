@@ -24,6 +24,9 @@ ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cubagem_unitaria nume
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cliente_id bigint;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cliente text;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS produto text;
+ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS grupo_cliente text;
+ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cor_codigo bigint;
+ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cor_descricao text;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS uf text;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cidade text;
 ALTER TABLE logistica.item_pedido ADD COLUMN IF NOT EXISTS cep text;
@@ -59,6 +62,10 @@ UPDATE logistica.item_pedido ip SET
  peso_unitario=CASE WHEN v.pesobruto_item_detalhe>0 THEN v.pesobruto_item_detalhe WHEN m.pesobruto_item>0 THEN m.pesobruto_item ELSE NULL END,
  cubagem_unitaria=CASE WHEN v.volumem3_item_detalhe>0 THEN v.volumem3_item_detalhe WHEN m.volumem3_item>0 AND m.volumem3_item<10 THEN m.volumem3_item ELSE NULL END,
  cliente_id=d.cliente_docfat,cliente=COALESCE(p.razaosocial_pessoa,'Cliente '||d.cliente_docfat),produto=m.descricao_item,
+ grupo_cliente=CASE WHEN p.grupo_pessoa=0 THEN COALESCE(NULLIF(TRIM(p.razaosocial_pessoa),''),'Cliente '||d.cliente_docfat::text)
+   WHEN p.grupo_pessoa IS NULL THEN 'Não informado'
+   ELSE p.grupo_pessoa::text||' - '||COALESCE(NULLIF(TRIM(g.descricao_grupo),''),'Sem descrição') END,
+ cor_codigo=i.cor_docitemdet,cor_descricao=c.descricao_cor,
  uf=uf.sigla_uf,cidade=city.descricao_cidade,cep=NULLIF(TRIM(address.cep_pessoa_end),''),status_erp=s.descricao_status,
  latitude=CASE WHEN address.latitude_pessoa_end BETWEEN -34 AND 6 AND address.latitude_pessoa_end<>0 AND address.longitude_pessoa_end BETWEEN -74 AND -34 THEN address.latitude_pessoa_end END,
  longitude=CASE WHEN address.latitude_pessoa_end BETWEEN -34 AND 6 AND address.latitude_pessoa_end<>0 AND address.longitude_pessoa_end BETWEEN -74 AND -34 THEN address.longitude_pessoa_end END,
@@ -68,6 +75,8 @@ JOIN logistica_stage.documento_fatura d ON d.codigo_docfat=i.documento_docitemde
 LEFT JOIN logistica_stage.item m ON m.codigo_item=i.item_docitemdet
 LEFT JOIN logistica_stage.item_detalhe v ON v.autoinc_item_detalhe=i.autoincitemdetalhe_docitemdet
 LEFT JOIN logistica_stage.pessoa p ON p.codigo_pessoa=d.cliente_docfat
+LEFT JOIN logistica_stage.grupo g ON g.codigo_grupo=p.grupo_pessoa
+LEFT JOIN logistica_stage.cor c ON c.codigo_cor=i.cor_docitemdet
 LEFT JOIN logistica_stage.pessoa_endereco address ON address.autoinc_pessoa_end=d.localentrega_docfat
 LEFT JOIN logistica_stage.cidade city ON city.codigo_cidade=address.cidade_pessoa_end
 LEFT JOIN logistica_stage.uf uf ON uf.codigo_uf=city.uf_cidade

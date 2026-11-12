@@ -10,7 +10,7 @@
 @media(min-width:768px) {
   .sidebar nav, .sidebar-collapsed .sidebar nav { padding: 8px 10px; }
   .sidebar nav a, .sidebar-collapsed .sidebar nav a { justify-content: flex-start; padding: 10px 12px; overflow: hidden; white-space: nowrap; }
-  .sidebar nav a.router-link-active { padding-left: 12px; }
+  .sidebar nav a.nav-active { padding-left: 12px; }
   .sidebar .sidebar-footer > button { justify-content: flex-start; padding-inline: 14px; overflow: hidden; white-space: nowrap; }
   .sidebar .nav-label, .sidebar .sidebar-footer > button > span {
     display: block; max-width: 190px; opacity: 1; visibility: visible; transform: translateX(0); overflow: hidden; white-space: nowrap;

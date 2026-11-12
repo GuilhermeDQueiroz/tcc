@@ -1,0 +1,11 @@
+{
+  "common": {
+    "value": { "label": "Valor (R$)", "format": "currency" },
+    "weightKg": { "label": "Peso", "format": "weight64" },
+    "volumeM3": { "label": "Volume (m³)", "format": "volume" },
+    "quantity": { "label": "Quantidade de itens", "format": "quantity4" }
+  },
+  "assistencias": { "documents": { "label": "Quantidade de assistências", "format": "integer" } },
+  "cancelamentos": { "orders": { "label": "Quantidade de pedidos", "format": "integer" } },
+  "devolucoes": { "orders": { "label": "Quantidade de documentos de origem", "format": "integer" } }
+}

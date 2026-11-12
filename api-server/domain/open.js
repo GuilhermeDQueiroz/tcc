@@ -1,6 +1,7 @@
 import {summarize,sum,mean,distinct,groupRows} from './metrics.js';
 import {backlogSummary,forecastCalendar,prepareOpenRows} from './forecast.js';
 import {dimensionRows,dimensionColumns,buildHierarchy} from './dimensions.js';
+import {backlogState} from './logistics-backlog.js';
 const UFS=['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO'];
 export function buildOpenDashboard({rows,referenceDate,dailyAverage=0,tab='resumo',year,month,backlogType='real',metric='value'}){
   rows=prepareOpenRows(rows,referenceDate);const s=summarize(rows,'abertos'),backlog=backlogSummary(rows,dailyAverage);
@@ -13,15 +14,16 @@ export function buildOpenDashboard({rows,referenceDate,dailyAverage=0,tab='resum
     value('groups','Grupos aguardando',s.groups,'integer'),value('serviceDays','Nível de serviço',s.serviceDays,'days',{supplementary:[
       {label:'Varejo',value:mean(ordinaryRows.map(r=>r.NIVEL_DE_SERVICO_CLEAN),{float32:true})??0,format:'days'},
       {label:'E-commerce',value:mean(specialRows.map(r=>r.NIVEL_DE_SERVICO_CLEAN),{float32:true})??0,format:'days'}]}),
-    value('backlogReal','Backlog real',backlog.realDays,'days',{subtitle:backlog.status}),value('backlogGeneral','Backlog geral',backlog.generalDays,'days'),
+    value('backlogReal','Backlog real',backlog.realDays,'days',{subtitle:backlog.status}),value('backlogGeneral','Backlog',dailyAverage>0?backlog.generalDays:null,'days',{status:backlogState(dailyAverage>0?backlog.generalDays:null),help:'Valor total da carteira aberta selecionada ÷ média diária de faturamento dos últimos 90 dias. Inclui todos os status do recorte. Mede dias equivalentes de faturamento, não prazo de entrega. Sem média diária positiva, indisponível.'}),
     value('orders60','Pedidos > 60 dias',oldSummary.orders,'integer',{supplementary:[{label:'Participação dos pedidos',value:s.orders>0?oldSummary.orders/s.orders*100:0,format:'percent'}]}),
-    value('value60','Valor > 60 dias',oldSummary.value,'currency',{supplementary:[{label:'Participação do valor',value:s.value>0?oldSummary.value/s.value*100:0,format:'percent'}]})];
+    value('value60','Valor > 60 dias',oldSummary.value,'currency',{supplementary:[{label:'Participação do valor',value:s.value>0?oldSummary.value/s.value*100:0,format:'percent'}]}),
+    value('revenuePerTon','R$/TON',s.weightKg>0?s.value/(s.weightKg/1000):null,'currency',{help:'Valor total dos pedidos em aberto dividido pelo peso total em toneladas no recorte selecionado. Sem peso positivo, indisponível.'})];
   const series=[],tables=[];
   function add(dim,title,type='bar',limit){
     const data=dimensionRows(rows,'abertos',dim);const ordered=[...data];
-    const key=metric==='weightKg'?'Peso':metric==='quantity'?'Qtde':metric==='volumeM3'?'Volume_M3':'Valor';
+    const key=metric==='weightKg'?'Peso':metric==='quantity'?'Qtde':metric==='volumeM3'?'Volume_M3':metric==='revenuePerTon'?'R$/Ton':'Valor';
     series.push({id:`abertos.resumo.${dim==='Aging_Bucket'?'aging':dim}`,title,type,rows:limit?ordered.slice(0,limit):ordered,x:dim,y:[key],format:metric==='weightKg'?'weight':metric==='quantity'?'integer':metric==='volumeM3'?'volume':'currency',dimension:dim});
-    tables.push({id:`abertos.resumo.tabela.${dim}`,title,rows:data,columns:dimensionColumns(dim),total:{[dim]:'TOTAL',Valor:sum(data.map(r=>r.Valor)),Peso:sum(data.map(r=>r.Peso),{float32:true}),Volume_M3:sum(data.map(r=>r.Volume_M3),{float32:true}),Qtde:sum(data.map(r=>r.Qtde),{float32:true}),Qtd_Pedidos:s.orders,Grupos_Atendidos:s.groups,NS:s.serviceDays,'Ticket Medio':s.ticket,'R$/Ton':s.revenuePerTon,'% Part':1}});
+    tables.push({id:`abertos.resumo.tabela.${dim}`,title,rows:data,columns:dimensionColumns(dim),total:{[dim]:'TOTAL',Valor:sum(data.map(r=>r.Valor)),Peso:sum(data.map(r=>r.Peso),{float32:true}),Volume_M3:sum(data.map(r=>r.Volume_M3),{float32:true}),Qtde:sum(data.map(r=>r.Qtde),{float32:true}),Qtd_Pedidos:s.orders,Grupos_Atendidos:s.groups,NS:s.serviceDays,'Ticket Medio':s.ticket,'R$/Ton':s.weightKg>0?s.value/(s.weightKg/1000):null,'% Part':1}});
     return data;
   }
   if(tab==='calendario'){
@@ -39,11 +41,11 @@ export function buildOpenDashboard({rows,referenceDate,dailyAverage=0,tab='resum
   const statusSeries=series.at(-1),statusRows=[...statusSeries.rows].sort((a,b)=>a.Valor-b.Valor),statusTotal=sum(statusRows.map(r=>r.Valor));
   statusRows.forEach(r=>r.Part=statusTotal>0?r.Valor/statusTotal:0);
   statusSeries.availableRows=statusRows;
-  if(statusRows.length>10){const others=statusRows.slice(0,-9),v=sum(others.map(r=>r.Valor));statusSeries.rows=[{STATUS:'Outros Status',Valor:v,Qtd_Pedidos:sum(others.map(r=>r.Qtd_Pedidos)),Part:statusTotal>0?v/statusTotal:0},...statusRows.slice(-9)];}
+  if(statusRows.length>10){const others=statusRows.slice(0,-9),v=sum(others.map(r=>r.Valor)),weight=sum(others.map(r=>r.Peso),{float32:true});statusSeries.rows=[{STATUS:'Outros Status',Valor:v,Peso:weight,'R$/Ton':weight>0?v/(weight/1000):null,Qtd_Pedidos:sum(others.map(r=>r.Qtd_Pedidos)),Part:statusTotal>0?v/statusTotal:0},...statusRows.slice(-9)];}
   else statusSeries.rows=statusRows;
   add('Mes_Previsao','Previsão de faturamento');add('Status_Previsao','Status da previsão','pie');
   add('TIPO_ENTREGA','Entrega e retirada','pie');
-  const delivery=series.at(-1);delivery.y=['Peso'];delivery.format='weight';delivery.metricOptions={value:'Valor',weightKg:'Peso'};
+  const delivery=series.at(-1);delivery.y=['Peso'];delivery.format='weight';delivery.metricOptions={value:'Valor',weightKg:'Peso',revenuePerTon:'R$/Ton'};delivery.metricFormats={revenuePerTon:'currency'};
   delivery.rows=delivery.rows.map(r=>({...r,Tipo:r.TIPO_ENTREGA==='ENTREGA'?'Sim (Entrega)':'Não (Retira)'}));delivery.x='Tipo';
   add('Canal','Canais de pedidos','pie');
   // Restore the overview composition from pedidos_em_aberto.py. These reuse

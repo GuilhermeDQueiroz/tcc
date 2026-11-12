@@ -36,12 +36,13 @@ WHERE d.tipo_docfat=2 AND d.opcao_docfat=1 AND d.entrega_docfat='N'
  AND di.autoinc_docitem=di.composicaoitem_docitem AND di.tipo_docitem IN (1,4)
  AND c.grupo_pessoa IS DISTINCT FROM 1603;
 
--- Cancellation events point to the original sales item through DOCDEV. Use
+-- Cancellation events point to the original sales or assistance item through DOCDEV. Use
 -- event dates and quantities, never sum the cumulative cancelled balance again.
 INSERT INTO posvenda.registro
 SELECT '${ETL_RUN_ID}','cancelamentos',v.autoinc_docdev,e.codigo_docfat,o.codigo_docfat,di.item_docitem,e.empresa_docfat,
  e.dtemissao_docfat::date,o.dtemissao_docfat::date,NULL,e.tipo_docfat,
- c.razaosocial_pessoa,u.sigla_uf,city.descricao_cidade,product.descricao_item,m.descricao_motivo,s.descricao_status,'Venda',
+ c.razaosocial_pessoa,u.sigla_uf,city.descricao_cidade,product.descricao_item,m.descricao_motivo,s.descricao_status,
+ CASE e.tipo_docfat WHEN 1 THEN 'Venda' ELSE 'Assistência' END,
  v.quantidade_docdev,i.qtdeaberta_docitemdet,i.qtdefaturado_docitemdet,i.qtdecancelado_docitemdet,
  v.quantidade_docdev*(i.vlrbrutoliquido_docitemdet/NULLIF(i.qtdechapas_docitemdet,0)),NULL,i.vlrbrutoliquido_docitemdet/NULLIF(i.qtdechapas_docitemdet,0),o.cliente_docfat
 FROM posvenda_stage.documento_devolucaocancela v
@@ -56,8 +57,8 @@ LEFT JOIN posvenda_stage.uf u ON u.codigo_uf=city.uf_cidade
 LEFT JOIN posvenda_stage.item product ON product.codigo_item=di.item_docitem
 LEFT JOIN posvenda_stage.motivo m ON m.codigo_motivo=COALESCE(NULLIF(v.motivodevolucao_docdev,0),e.motivo_docfat)
 LEFT JOIN posvenda_stage.status s ON s.codigo_status=o.status_docfat
-WHERE e.tipo_docfat=1 AND e.opcao_docfat=2 AND e.entrega_docfat='N'
- AND o.tipo_docfat=1 AND o.opcao_docfat=1 AND o.entrega_docfat='N'
+WHERE e.tipo_docfat IN (1,2) AND e.opcao_docfat=2 AND e.entrega_docfat='N'
+ AND o.tipo_docfat=e.tipo_docfat AND o.opcao_docfat=1 AND o.entrega_docfat='N'
  AND e.dtemissao_docfat::date BETWEEN '${AFTERSALES_START_DATE}' AND '${AFTERSALES_REFERENCE_DATE}'
  AND di.autoinc_docitem=di.composicaoitem_docitem AND di.tipo_docitem IN (1,4) AND v.quantidade_docdev>0
  AND c.grupo_pessoa IS DISTINCT FROM 1603;
@@ -94,7 +95,7 @@ DO $$ BEGIN
  IF EXISTS(SELECT 1 FROM posvenda_stage.documento_devolucaocancela v
  JOIN posvenda_stage.documento_fatura e ON e.codigo_docfat=v.documento_docdev
  LEFT JOIN posvenda_stage.documento_item_detalhe i ON i.autoinc_docitemdet=v.autoincitemdetdoc_docdev
- WHERE e.tipo_docfat=1 AND e.opcao_docfat=2 AND i.autoinc_docitemdet IS NULL)
+ WHERE e.tipo_docfat IN (1,2) AND e.opcao_docfat=2 AND i.autoinc_docitemdet IS NULL)
  THEN RAISE EXCEPTION 'Cancelamento sem item original; publicação interrompida'; END IF;
  IF EXISTS(SELECT 1 FROM posvenda_stage.documento_entrega_devcan v
  JOIN posvenda_stage.documento_fatura e ON e.codigo_docfat=v.documento_docentdev

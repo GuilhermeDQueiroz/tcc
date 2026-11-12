@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-for (const [area, title] of [['emitidos', 'Análise de Pedidos Emitidos'], ['faturados', 'Análise Logística dos Pedidos Faturados']]) {
+for (const [area, title] of [['emitidos', 'Pedidos Emitidos'], ['faturados', 'Pedidos Faturados']]) {
   test(`${area} oferece todas as análises e hierarquia`, async ({ page }) => {
     await page.goto(`/${area}`)
     await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible()

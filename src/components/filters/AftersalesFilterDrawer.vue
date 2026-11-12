@@ -5,7 +5,7 @@ import FilterDialog from './FilterDialog.vue'
 import FilterTabs from './FilterTabs.vue'
 import AppIcon from '../ui/AppIcon.vue'
 const store=useAftersalesStore(),draft=ref<Record<string,string>>({}),selectedTab=ref('period'),error=ref('')
-const fields=[['reason','Motivo'],['product','Produto'],['kind','Tipo']] as const
+const fields=computed(()=>store.scopeKind?[['reason','Motivo'],['product','Produto']] as const:[['reason','Motivo'],['product','Produto'],['kind','Tipo']] as const)
 const locations=[['uf','Estado (UF)'],['city','Cidade']] as const
 const count=(keys:string[])=>keys.filter(key=>!!draft.value[key]).length
 const tabs=computed(()=>[

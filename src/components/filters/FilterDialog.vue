@@ -40,11 +40,11 @@ function keydown(event:KeyboardEvent){
 </script>
 <template>
  <Teleport to="body">
-  <div v-if="open" class="filter-modal-overlay" @click.self="emit('close')" @keydown="keydown">
+  <div v-if="open" class="filter-modal-overlay" @keydown="keydown">
    <section id="advanced-filter-dialog" ref="panel" class="filter-modal-dialog" role="dialog" aria-modal="true" :aria-label="label" tabindex="-1">
     <header class="filter-modal-header">
-     <div class="filter-modal-heading"><span class="filter-modal-heading-icon"><AppIcon name="filter"/></span><div><h2 class="filter-modal-title">Filtros avançados</h2><p class="filter-modal-subtitle">{{subtitle}}</p></div></div>
-     <button type="button" class="filter-modal-close" aria-label="Fechar filtros" title="Fechar filtros" @click="emit('close')"><AppIcon name="close"/></button>
+     <div class="filter-modal-heading"><span class="filter-modal-heading-icon"><AppIcon name="filter"/></span><div><h2 class="filter-modal-title">Filtros avançados</h2><p v-if="subtitle" class="filter-modal-subtitle">{{subtitle}}</p></div></div>
+     <button type="button" class="filter-modal-close modal-close-button" aria-label="Fechar filtros" title="Fechar filtros" @click="emit('close')"><AppIcon name="close"/></button>
     </header>
     <slot name="presets"/>
     <slot name="tabs"/>

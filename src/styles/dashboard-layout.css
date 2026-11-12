@@ -1,0 +1,5 @@
+/* Every analytical route uses the same available page width. */
+.main-shell main{padding:12px 10px;max-width:none}
+.main-shell main>.analytics-page{width:100%;max-width:none;margin-inline:0;padding-inline:0}
+.main-shell main>.analytics-page .open-overview{padding-inline:0;min-width:0}
+@media(max-width:767px){.main-shell main{padding:10px 0}}

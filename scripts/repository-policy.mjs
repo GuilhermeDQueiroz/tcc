@@ -1,5 +1,5 @@
 const privatePaths=/^(?:\.local|\.superpowers|\.agents|\.codex|node_modules|dist|coverage|htmlcov|test-results|playwright-report|blob-report|banco\/(?:data|backups|logs)|data\/local|tests\/ui\/(?:results|screenshots)|\$ProjetoCache)(?:\/|$)/i;
-const privateDirectories=/(?:^|\/)(?:\.venv|venv|__pycache__|\.pytest_cache|\.mypy_cache|\.ruff_cache|\.cache)(?:\/|$)/i;
+const privateDirectories=/(?:^|\/)(?:\.vercel|\.venv|venv|__pycache__|\.pytest_cache|\.mypy_cache|\.ruff_cache|\.cache)(?:\/|$)/i;
 const privateExtensions=/\.(?:fdb|gdb|fbk|dump|backup|bak|dmp|sqlite3?(?:-wal|-shm)?|jar|class|pyc|pyo|log|pid(?:\.lock)?|tsbuildinfo|pem|pfx|p12|key)$/i;
 const privateConfiguration=/(?:^|\/)(?:\.envrc|\.pgpass|pgpass\.conf|\.coverage(?:\.[^/]*)?)$/i;
 const sensitiveAssignment=/\b(?:PG_PASSWORD|FIREBIRD_PASSWORD|DB_POSTGRES_PASSWORD|DB_FIREBIRD_PASSWORD|password|senha|api[_-]?key|access[_-]?token)\b["']?[ \t]*[:=][ \t]*(["'])([^"'\r\n]*)\1/gi;

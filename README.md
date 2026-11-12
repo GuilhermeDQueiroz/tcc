@@ -14,9 +14,9 @@ O projeto organiza dados do ERP Firebird em uma base analítica PostgreSQL, por 
 
 | Área | Análises disponíveis |
 |---|---|
-| Visão Estratégica | Nove indicadores, incluindo conversão no mês e escoamento com médias mensais, cinco gráficos, quatro prioridades com acesso aos pedidos e conversão por safra em 7, 15 e 30 dias, com valor, peso, cubagem e pedidos |
+| Visão estratégica | Treze cards com carteira, backlog, volume mensal, ticket por item e fluxo físico; comparações anuais de faturamento e R$/ton acumulado, evoluções, tabela mensal com conversão/escoamento, mapa de faturamento e análise dimensional |
 | Formação de Cargas | Pedidos sem carga, parcialmente e totalmente alocados; quantidades, valor, peso e cubagem por parcela; seleção cruzada entre carga, pedido e item; mapa e previsões |
-| Pedidos em Aberto | Carteira, backlog, calendário, geografia, dimensões e pesquisa |
+| Pedidos em Aberto | Carteira, backlog, calendário, geografia, dimensões com pedidos e valor > 60 dias, atalhos para faixa de tempo e pesquisa |
 | Análise Logística dos Pedidos Faturados | Peso, cubagem, pedidos, lead time até faturamento, faturamento no prazo, entrega/retirada, destinos, evolução e pesquisa |
 | Pedidos Emitidos | Área comercial preservada em sua rota, sem destaque no menu principal |
 | Assistências | Visões em aberto e emitidas, quantidades e valores, idade, motivos, calendário, dimensões compartilhadas, hierarquias, peso, cubagem e detalhamento paginado |
@@ -24,6 +24,10 @@ O projeto organiza dados do ERP Firebird em uma base analítica PostgreSQL, por 
 | Devoluções | Devoluções de vendas e assistências por documento, item faturado original e motivo |
 
 As consultas incluem filtros, totalizadores, hierarquias, pesquisa, exportação CSV e preferências locais. A aplicação adapta a disposição dos painéis para telas menores.
+
+Para apresentar sem API ou banco ativos, há um [modo de demonstração estática](docs/demonstracao.md) com uma fotografia das publicações reais anonimizadas. `npm run demo:export` prepara os dados locais; `npm run demo:package` gera o pacote independente para a Vercel. A fotografia fica fora do Git e a interface identifica sua posição e seus limites.
+
+**Demonstração para apresentação:** [tcc-bi-logistica.vercel.app](https://tcc-bi-logistica.vercel.app). A posição dos dados é informada no próprio painel; essa versão não atualiza o ERP.
 
 ## Arquitetura
 
@@ -61,7 +65,7 @@ Para abrir o painel com dados, siga o [guia de reprodução](docs/reproducao.md)
 
 | Serviço | Endereço |
 |---|---|
-| Aplicação compilada e API | http://127.0.0.1:3002 |
+| Aplicação compilada e API | http://127.0.0.1:3003 |
 | Interface de desenvolvimento | http://127.0.0.1:5173 |
 | PostgreSQL do projeto | `localhost:5434`, banco `dados` |
 
@@ -101,7 +105,7 @@ A [CI](.github/workflows/ci.yml) executa a verificação pública em pushes e pu
 - **Nível de Serviço / Lead Time:** tempo médio até faturamento, com média por registro; não confirma entrega ao cliente.
 - **OTIF:** convenção interna de pontualidade de faturamento. A regra atual e a cobertura de previsão são exibidas; não comprova entrega física nem In Full.
 - **Pedidos antigos:** idade da carteira, distinta de previsão vencida.
-- **Backlog estratégico:** valor aberto dividido pela média diária de faturamento dos 90 dias corridos da referência; difere do recorte de status do backlog comercial.
+- **Backlog estratégico:** valor aberto dos status logísticos dividido pela média diária de faturamento dos 90 dias corridos da referência; o card geral fica em Pedidos em Aberto e o valor da carteira logística tem card próprio.
 - **R$/kg:** valor dos produtos faturados por massa; não é custo de frete.
 - **Conversão da safra:** parcelas faturadas em até 7, 15 e 30 dias corridos após a emissão de cada pedido, divididas pela base emitida da safra mensal. Inclui pedidos sem faturamento no denominador. Em pedidos, mede algum faturamento, inclusive parcial. Janelas incompletas aparecem como “Em acompanhamento”; não confirma entrega.
 - **Participação da safra no faturamento:** participação dos pedidos emitidos no próprio mês no faturamento desse mês. Preserva o cálculo comercial anterior, agora com nome que explicita sua base; difere da conversão dos pedidos emitidos.

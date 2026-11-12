@@ -8,23 +8,32 @@ const physical=(row,quantity,key)=>{
 };
 const defaultHierarchy={month:['uf','client','document'],forecastMonth:['forecastStatus','document'],uf:['city','client','document'],region:['uf','city','client'],delivery:['uf','client'],supervisor:['consultant','clientGroup','client'],consultant:['clientGroup','client','document'],clientGroup:['client','document'],productGroup:['subgroup','product','document'],subgroup:['product','document'],line:['product','document'],productType:['product','document'],collection:['product','document'],product:['document'],city:['client','document'],reason:['product','document'],client:['document']};
 
-export function buildAftersalesDimensions({rows,options,dimension,quantity,value,referenceDate,dimensionValue,hierarchy,metric='value'}){
- function aggregate(input,label){
-  const values={label,value:0,weightKg:0,volumeM3:0,quantity:0,documents:0,orders:0,ageDays:null,share:null};
+export function eventLeadDays(row){
+ const days=diffDays(row.data,row.emissao_original);
+ return Number.isFinite(days)&&days>=0?days:null;
+}
+
+export function summarizeAftersalesMeasures(rows,quantity,value,referenceDate){
+  const values={value:0,weightKg:0,volumeM3:0,quantity:0,documents:0,orders:0,ageDays:null};
   const documents=new Set(),orders=new Set();let ages=0,dated=0;
-  for(const row of input){
+  for(const row of rows){
    if(row.documento_id!=null)documents.add(row.documento_id);
    if(row.pedido_id!=null)orders.add(row.pedido_id);
    values.value=add(values.value,number(row[value]));values.quantity=add(values.quantity,number(row[quantity]));
    values.weightKg=add(values.weightKg,physical(row,quantity,'peso_unitario'));
    values.volumeM3=add(values.volumeM3,physical(row,quantity,'volume_unitario'));
-   const age=diffDays(referenceDate,row.data);if(Number.isFinite(age)){ages+=age;dated++;}
+   const age=['cancelamentos','devolucoes'].includes(row.categoria)?eventLeadDays(row):diffDays(referenceDate,row.data);
+   if(Number.isFinite(age)){ages+=age;dated++;}
   }
   values.documents=documents.size;values.orders=orders.size;values.ageDays=dated?ages/dated:null;
   return values;
- }
+}
+
+export function buildAftersalesDimensions({rows,area,options,dimension,quantity,value,referenceDate,dimensionValue,hierarchy,metric='value'}){
+ const aggregate=(input,label)=>({label,...summarizeAftersalesMeasures(input,quantity,value,referenceDate),share:null});
  const total=aggregate(rows,'TOTAL');
- const levels=hierarchy?.length?hierarchy:[dimension,...(defaultHierarchy[dimension]||['document'])];
+ const baseLevels=hierarchy?.length?hierarchy:[dimension,...(defaultHierarchy[dimension]||['document'])];
+ const levels=[...baseLevels.filter(key=>key!=='document'&&key!=='item'),'document','item'];
  const compare=(a,b)=>{
   if(['month','forecastMonth'].includes(a.dimension))return a.label.localeCompare(b.label,'pt-BR');
   return Number(b.summary[metric]??-Infinity)-Number(a.summary[metric]??-Infinity)||a.label.localeCompare(b.label,'pt-BR',{numeric:true});
@@ -37,7 +46,7 @@ export function buildAftersalesDimensions({rows,options,dimension,quantity,value
  function build(input,depth=0,path=''){
   const key=levels[depth];if(!key)return [];
   let groups=grouped(input,key);
-  if(depth>0&&(groups.length>20||nodes>3000)){
+  if(depth>0&&key!=='item'&&(groups.length>20||nodes>3000)){
    const keep=nodes>3000?0:20,rest=groups.slice(keep);
    groups=[...groups.slice(0,keep),{label:`Outros (${rest.length} grupos)`,source:rest.flatMap(group=>group.source),dimension:key,summary:aggregate(rest.flatMap(group=>group.source),`Outros (${rest.length} grupos)`),remainder:true}];
   }
@@ -57,8 +66,9 @@ export function buildAftersalesDimensions({rows,options,dimension,quantity,value
    {key:'label',label:options[dimension],format:'text'},{key:'value',label:'Valor (R$)',format:'currency'},
    {key:'share',label:'Participação',format:'progress'},{key:'weightKg',label:'Peso (t)',format:'weight64'},
    {key:'volumeM3',label:'Volume (m³)',format:'volume'},{key:'quantity',label:'Quantidade',format:'decimal'},
-   {key:'orders',label:'Pedidos',format:'integer'},{key:'documents',label:'Documentos',format:'integer'},
-   {key:'ageDays',label:'Idade média (dias)',format:'serviceDecimal'}],rows:rootRows,tree,total},
+   {key:'orders',label:area==='devolucoes'?'Documentos de origem':'Pedidos',format:'integer'},
+   {key:'documents',label:area==='devolucoes'?'Documentos de devolução':'Documentos',format:'integer'},
+   {key:'ageDays',label:({cancelamentos:'Prazo médio até cancelar (dias)',devolucoes:'Prazo médio até devolução (dias)'})[area]||'Idade média (dias)',format:'serviceDecimal'}],rows:rootRows,tree,total},
   evolution:{id:'posvenda.analysis.evolution',title:'Evolução mensal por dimensão',type:'line',rows:evolution,x:'period',y:[metric],category:dimension==='month'?undefined:'category',format:metric==='value'?'currency':metric==='weightKg'?'weight':metric==='volumeM3'?'volume':'decimal',overviewStyle:true},
   coverage:{weightMissing:rows.filter(row=>number(row.peso_unitario)==null).length,volumeMissing:rows.filter(row=>number(row.volume_unitario)==null).length,commercialConflicts:rows.filter(row=>row.conflito_comercial).length},
  };

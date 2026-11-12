@@ -3,6 +3,8 @@ import compression from 'compression';
 import {InputError,validateAreaTab,parseFilters,ANALYSIS_DIMENSIONS} from './domain/contracts.js';
 import {loadStageLabels} from './domain/logistics.js';
 import {StrategicRepository} from './repositories/strategic.js';
+import {strategicDimensionKeys} from './domain/strategic-analysis.js';
+import {strategicHeatmapMeasures} from './domain/strategic-financial.js';
 import {AftersalesRepository} from './repositories/posvenda.js';
 import {validateAftersalesQuery} from './domain/posvenda.js';
 import {logisticsPayload} from './presentation/logistics.js';
@@ -27,12 +29,16 @@ export function createApp({repository,logisticsRepository,settingsStore,clock=()
     res.json(data);
   });
   app.get('/api/v1/logistica/estrategico',async(req,res)=>{
-    if(Object.keys(req.query).some(key=>!['filters','granularity'].includes(key)))throw new InputError('Filtro estratégico inválido.');
-    const filters=parseFilters(req.query.filters),granularity=req.query.granularity||'month';
+    if(Object.keys(req.query).some(key=>!['filters','granularity','dimension','heatmapDimension','heatmapMetric','section'].includes(key)))throw new InputError('Filtro estratégico inválido.');
+    const filters=parseFilters(req.query.filters),granularity=req.query.granularity||'month',dimension=req.query.dimension||'UF';
+    if(!strategicDimensionKeys.has(dimension))throw new InputError('Dimensão estratégica inválida.');
+    const heatmapDimension=req.query.heatmapDimension||'year',heatmapMetric=req.query.heatmapMetric||'value';
+    if((heatmapDimension!=='year'&&!strategicDimensionKeys.has(heatmapDimension))||!Object.hasOwn(strategicHeatmapMeasures,heatmapMetric)||typeof heatmapMetric!=='string')throw new InputError('Mapa de calor estratégico inválido.');
     if(!['month','week','day'].includes(granularity))throw new InputError('Detalhamento inválido.');
     if(Object.keys(filters).some(key=>!['dimensions','billingRange','emissionRange'].includes(key))||Object.keys(filters.dimensions||{}).some(key=>!['UF','CIDADE','TIPO_ENTREGA'].includes(key)))throw new InputError('Filtro estratégico inválido.');
+    if(req.query.section!=null&&!['analysis','overview'].includes(req.query.section))throw new InputError('Seção estratégica inválida.');
     if(!logisticsRepository?.snapshot||!repository?.snapshot)throw Object.assign(new Error('Publicações da visão estratégica indisponíveis.'),{status:409});
-    res.json(await strategic.getDashboard(filters,granularity));
+    res.json(req.query.section==='analysis'?await strategic.getAnalysis(filters,dimension):await strategic.getDashboard(filters,granularity,dimension,heatmapDimension,heatmapMetric,req.query.section!=='overview'));
   });
   app.get('/api/v1/health',async(req,res)=>{const dataVersion=await repository.getVersion();res.json({status:'ok',dataVersion,source:'firebird/apache-hop'});});
   app.get('/api/v1/logistica/formacao',async(req,res)=>{
@@ -63,9 +69,9 @@ export function createApp({repository,logisticsRepository,settingsStore,clock=()
     if(req.query.forecastDate){parseFilters(JSON.stringify({emissionRange:[req.query.forecastDate,req.query.forecastDate]}));context.forecastDate=req.query.forecastDate;}
     const extra=['CLIENTE','CODIGO_PEDIDO','Mes_Grupo','Mes_Previsao','Aging_Bucket','Status_Previsao','Canal'];
     if(![...ANALYSIS_DIMENSIONS,...extra].includes(context.dimension))throw new InputError('Dimensão inválida.');
-    if(!['real','geral'].includes(context.backlogType)||!['value','weightKg','quantity','volumeM3','orders'].includes(context.metric)||!['bar','barHorizontal','pie','line','heatmap','table','treemap'].includes(context.chartType))throw new InputError('Opção de visualização inválida.');
+    if(!['real','geral'].includes(context.backlogType)||!['value','weightKg','quantity','volumeM3','orders','revenuePerTon'].includes(context.metric)||!['bar','barHorizontal','pie','line','heatmap','table','treemap'].includes(context.chartType))throw new InputError('Opção de visualização inválida.');
     context.hierarchy=req.query.hierarchy?String(req.query.hierarchy).split(','):undefined;
-    if(context.hierarchy&&(context.hierarchy.length>6||context.hierarchy.some(d=>![...ANALYSIS_DIMENSIONS,...extra].includes(d))))throw new InputError('Hierarquia inválida.');
+    if(context.hierarchy&&([...context.hierarchy.filter(d=>d!=='ITEM_PEDIDO'),'ITEM_PEDIDO'].length>8||context.hierarchy.some(d=>![...ANALYSIS_DIMENSIONS,...extra,'ITEM_PEDIDO'].includes(d))))throw new InputError('Hierarquia inválida.');
     if(![...ANALYSIS_DIMENSIONS,'Ano_Num'].includes(context.heatmapDimension))throw new InputError('Dimensão do mapa de calor inválida.');
     if(tab==='filtros'){res.json(await repository.getDimensions(context));return;}
     if(tab==='detalhes'){

@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import contract from '../../etl/contrato-colunas-dw.json' with {type:'json'};
 import {AsyncCache,stableKey} from '../cache.js';
 import {InputError,DIMENSIONS,validateAreaTab} from '../domain/contracts.js';
 import {filterRows} from '../domain/filters.js';
@@ -10,12 +10,12 @@ import {buildCommercialDashboard} from '../domain/commercial.js';
 import {buildBillingLogisticsDashboard,billingHierarchy} from '../domain/billing-logistics.js';
 import {prepareOpenRows} from '../domain/forecast.js';
 import {groupOpenOrders,openOrderColumns} from '../domain/open-orders.js';
-const contract=JSON.parse(fs.readFileSync(new URL('../../etl/contrato-colunas-dw.json',import.meta.url),'utf8'));
 const views={abertos:'pedidos_abertos',emitidos:'pedidos_emitidos',faturados:'pedidos_faturados',carteira:'carteira_clientes',metas:'metas_consultores'};
 const q=name=>'"'+name+'"';
 const logicalColumns=area=>contract.areas[area].columns;
 const strategicColumns=new Set(['CODIGO_PEDIDO','CODIGO_ITEM','COR','DATA_EMISSAO_PEDIDO_DATE','DT_FATURA_DATE','DT_PREVISAO_FATURAMENTO_DATE','UF','CIDADE','TIPO_ENTREGA','CONSULTOR','SUPERVISOR','GRUPO_CLIENTE',
  'VALOR_EMITIDO_CLEAN','PESO_EMITIDO_CLEAN','VOLUME_M3_EMITIDO_CLEAN','QUANTIDADE_EMITIDA_CLEAN','VALOR_FATURADO_CLEAN','PESO_FATURADO_CLEAN','VOLUME_M3_FATURADO_CLEAN','QUANTIDADE_FATURADA_CLEAN','NIVEL_DE_SERVICO_CLEAN','ON_TIME_CLEAN']);
+const strategicBillingColumns=new Set([...strategicColumns,'CODIGO_CLIENTE','RAZAO_SOCIAL','REGIAO_UF','MICRO_REGIAO','DESCRICAO_ITEM','GRUPO_ITEM','SUBGRUPO','LINHA','TIPO','COLECAO','CLASSIFICACAO','ORIGEM','ORGAO','STATUS','FAMILIA']);
 export function buildProjection(area,{compact=false,only}={}){
   const columns=logicalColumns(area),names=Object.fromEntries(columns.map(c=>[c.legacy,c.name]));
   const projection=columns.filter(c=>only?only.has(c.legacy):!compact||!['abertos','emitidos','faturados'].includes(area)||c.legacy.endsWith('_CLEAN')||c.legacy.endsWith('_DATE')||['CODIGO_PEDIDO','CODIGO_CLIENTE','RAZAO_SOCIAL','CODIGO_CONSULTOR','CODIGO_ITEM','NOTAFISCAL','ENTREGA','CARGA','DESCRICAO_ITEM','DESCRICAO_CARGA',...DIMENSIONS,'ORIGEM','ORGAO','COR','FAMILIA'].includes(c.legacy)).map(c=>{
@@ -23,7 +23,7 @@ export function buildProjection(area,{compact=false,only}={}){
     const expression=c.legacy.endsWith('_DATE')?q(name)+'::date::text':q(name);
     return expression+' AS '+q(c.legacy);
   }).join(', ');
-  if(!compact&&['abertos','emitidos','faturados'].includes(area))return projection+`, btrim(COALESCE(${q(names.CODIGO_CLIENTE)}::text,'None')) || ' - ' || btrim(COALESCE(${q(names.RAZAO_SOCIAL)},'None')) AS "CLIENTE"`;
+  if((!compact||only===strategicBillingColumns)&&['abertos','emitidos','faturados'].includes(area))return projection+`, btrim(COALESCE(${q(names.CODIGO_CLIENTE)}::text,'None')) || ' - ' || btrim(COALESCE(${q(names.RAZAO_SOCIAL)},'None')) AS "CLIENTE"`;
   return projection;
 }
 export function buildWhere(area,filters={},referenceDate,{ignoreDates=false}={}){
@@ -91,9 +91,11 @@ export class PostgresRepository {
       try{await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
         const meta=(await client.query(latestSQL)).rows[0];if(!meta)throw new Error('Nenhuma carga Hop publicada.');
         const snapshot={version:meta.id,publishedAt:meta.fim,source:'firebird/apache-hop',frames:{}};
-        const areas=requestedArea==='strategic'?['emitidos','faturados']:requestedArea==='abertos'?['abertos']:[requestedArea,'carteira','metas'];
+        const strategic=['strategic','strategic-analysis'].includes(requestedArea);
+        const areas=strategic?['emitidos','faturados']:requestedArea==='abertos'?['abertos']:[requestedArea,'carteira','metas'];
         for(const area of areas){
-          const projection=buildProjection(area,{compact:true,only:requestedArea==='strategic'?strategicColumns:undefined}),where=buildWhere(area,{},referenceDate);
+          const only=requestedArea==='strategic-analysis'&&area==='faturados'?strategicBillingColumns:strategic?strategicColumns:undefined;
+          const projection=buildProjection(area,{compact:true,only}),where=buildWhere(area,{},referenceDate);
           const order=['abertos','emitidos','faturados'].includes(area)?' ORDER BY registro_id':'';
           const result=await client.query(`SELECT * FROM (SELECT ${projection}${order?', registro_id':''} FROM dw.${views[area]}) base${where.text}${order}`,where.values);
           for(const row of result.rows)delete row.registro_id;
@@ -158,7 +160,11 @@ export class PostgresRepository {
       const snapshot=await this.snapshot(context.referenceDate,context.area);
       const rows=snapshot.frames[context.area],dimensions={};
       for(const key of DIMENSIONS)dimensions[key]=[...new Set(rows.map(r=>r[key]).filter(v=>v!=null&&v!==''))].sort();
-      const ranges={};for(const [name,column] of [['emission','DATA_EMISSAO_PEDIDO_DATE'],['billing','DT_FATURA_DATE']]){const dates=rows.map(r=>r[column]).filter(Boolean).sort();ranges[name]=dates.length?[dates[0],dates.at(-1)]:[];}
+      const ranges={};for(const [name,column] of [['emission','DATA_EMISSAO_PEDIDO_DATE'],['billing','DT_FATURA_DATE']]){
+        let earliest,latest;
+        for(const row of rows){const date=row[column];if(!date)continue;if(!earliest||date<earliest)earliest=date;if(!latest||date>latest)latest=date;}
+        ranges[name]=earliest?[earliest,latest]:[];
+      }
       return {dataVersion:snapshot.version,dimensions,dates:ranges};
     });
   }

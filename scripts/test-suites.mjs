@@ -3,7 +3,7 @@ const publicFiles=new Set([
  'dw-treatment.test.js','etl-organization.test.js','geolocation.test.js','logistics-filter-draft.test.js',
  'logistics-filters.test.js','logistics-repository.test.js','logistics-selection.test.js',
  'python-runtime.test.js','repository-policy.test.js','settings.test.js','strategic-navigation.test.js',
- 'strategic.test.js','posvenda.test.js','performance-repositories.test.js','test-suites.test.js',
+ 'strategic.test.js','open-late-dimensions.test.js','posvenda.test.js','performance-repositories.test.js','test-suites.test.js','demo.test.js',
 ]);
 const realFiles=new Set([
  'abertos-equivalence.test.js','abertos-payload.test.js','comercial.test.js','customers.test.js',

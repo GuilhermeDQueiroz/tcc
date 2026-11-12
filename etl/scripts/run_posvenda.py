@@ -29,7 +29,7 @@ def main():
     if (bundled/'lib/core').is_dir(): env.setdefault('HOP_HOME',str(bundled))
     for key in ['FIREBIRD_USER','FIREBIRD_PASSWORD','PG_USER','PG_PASSWORD']:
         if not env.get(key): raise SystemExit('Credencial ausente no ambiente: '+key)
-    env.update(FIREBIRD_HOST='localhost',FIREBIRD_PORT=env.get('FIREBIRD_PORT','3050'),FIREBIRD_DATABASE=str(source),
+    env.update(FIREBIRD_HOST=env.get('FIREBIRD_HOST','localhost'),FIREBIRD_PORT=env.get('FIREBIRD_PORT','3050'),FIREBIRD_DATABASE=str(source),
                AFTERSALES_START_DATE=start.isoformat(),AFTERSALES_REFERENCE_DATE=reference.isoformat())
     env, command, hop_home = prepare_runtime(env)
     run_id = str(uuid.uuid4()); env['ETL_RUN_ID']=run_id

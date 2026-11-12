@@ -4,21 +4,24 @@ test.use({baseURL:'http://127.0.0.1:3002'})
 test.setTimeout(240_000)
 
 const sections=[
- {path:'/estrategico',title:'Visão Estratégica',tabs:2},
- {path:'/abertos',title:'Análise de Pedidos em Aberto',tabs:5},
- {path:'/faturados',title:'Análise Logística dos Pedidos Faturados',tabs:5},
+ {path:'/estrategico',title:'Visão estratégica',tabs:2},
+ {path:'/abertos',title:'Pedidos em Aberto',tabs:5},
+ {path:'/faturados',title:'Pedidos Faturados',tabs:5},
  {path:'/cargas',title:'Formação de Cargas',tabs:5},
- {path:'/assistencias',title:'Assistências',tabs:3},
- {path:'/cancelamentos',title:'Cancelamentos de venda',tabs:3},
- {path:'/devolucoes',title:'Devoluções',tabs:3}
+ {path:'/assistencias',title:'Assistências em Aberto',tabs:3},
+ {path:'/cancelamentos?kind=Venda',title:'Pedidos Cancelados',tabs:3},
+ {path:'/devolucoes?kind=Venda',title:'Pedidos Devolvidos',tabs:3}
 ]
 
 test('every sidebar destination has the correct header and the shared filter keyboard behavior',async({page})=>{
  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message))
  await page.goto('/cargas')
  for(const section of sections){
+  if(!await page.locator(`.sidebar nav a[href="${section.path}"]`).isVisible()){
+   await page.getByRole('button',{name:section.path==='/assistencias'?'Assistências':['/estrategico','/cargas'].includes(section.path)?'Logística':'Pedidos de venda',exact:true}).click()
+  }
   await page.locator(`.sidebar nav a[href="${section.path}"]`).click()
-  await expect(page).toHaveURL(new RegExp(section.path+'$'))
+  await expect(page).toHaveURL('http://127.0.0.1:3002'+section.path)
   await expect(page.locator('.sidebar nav a[aria-current="page"]')).toHaveCount(1)
   await expect(page.locator('.app-header h1')).toHaveText(section.title)
   await expect(page.locator('.loading-screen')).toHaveCount(0,{timeout:60_000})
@@ -58,7 +61,7 @@ test('route changes dismiss old filters and post-sale filter drafts remain local
  await page.getByRole('button',{name:'Filtros',exact:true}).click()
  await expect(dialog.getByLabel('Data inicial',{exact:true})).toHaveValue('')
  await dialog.getByRole('button',{name:'Cancelar',exact:true}).click()
- await page.locator('.sidebar a[href="/cancelamentos"]').click()
+ await page.locator('.sidebar a[href="/cancelamentos?kind=Venda"]').click()
  await page.getByRole('button',{name:'Filtros',exact:true}).click()
  await page.goBack()
  await expect(page).toHaveURL(/\/assistencias$/)
@@ -79,6 +82,7 @@ test('header filter and centered sidebar stay usable on narrow screens and colla
  expect(centered).toBe('center')
  await page.getByRole('button',{name:'Recolher menu',exact:true}).click()
  await expect(page.locator('.sidebar')).toHaveCSS('width','72px')
+ await page.getByRole('button',{name:'Pedidos de venda',exact:true}).click()
  const first=page.locator('.sidebar nav a').first();await first.focus();await first.press('End')
  await expect(page.locator('.sidebar nav a').last()).toBeFocused()
  await page.getByRole('button',{name:'Expandir menu',exact:true}).click()

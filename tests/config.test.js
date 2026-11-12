@@ -10,6 +10,7 @@ test('PostgreSQL driver receives warm-connection retention and a longer cold han
     assert.equal(pool.options.idleTimeoutMillis,0,'do not reopen connections during long analytical sessions');
     assert.equal(pool.options.connectionTimeoutMillis,30000,'cold handshake gets thirty seconds');
     assert.equal(pool.options.max,4);assert.equal(pool.options.statement_timeout,60000);
+    assert.equal(config.port,3003,'the project API must not claim the unrelated service on port 3002');
     assert.equal(pool.totalCount,0,'minimum retention does not create connections before the first request');
   }finally{await pool.end();}
 });

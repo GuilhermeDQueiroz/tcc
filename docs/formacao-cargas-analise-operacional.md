@@ -87,7 +87,7 @@ A seleção é única e reversível:
 - **Pedido sem carga:** a tabela de cargas fica vazia, com mensagem explícita. O pedido continua disponível no mapa e na consulta de destinos.
 - **Troca e limpeza:** clicar em outra entidade substitui a seleção; clicar novamente na entidade ou em “Limpar seleção” restaura o recorte. Aplicar filtros ou atualizar os dados também limpa a seleção, para evitar manter vínculos de uma publicação anterior.
 
-O mapa acompanha a seleção. Os indicadores superiores continuam representando os filtros aplicados, conforme aviso visível no painel. O estado clicado restringe a consulta local de cidades; clicar em uma cidade aplica UF e cidade nos filtros da análise. Pontos de pedidos são clicáveis e seus detalhes apresentam cliente, destino, valor, peso e cubagem. Há zoom, deslocamento e restauração da visão do Brasil. A lista de cidades fica em uma seção expansível para priorizar a visualização simultânea do mapa e das tabelas.
+O mapa e os indicadores superiores acompanham a seleção. Para uma carga, os cards mostram pedidos distintos e medidas apenas das parcelas dessa carga. Para um pedido, mostram o saldo completo e suas cargas vinculadas. O estado clicado restringe a consulta local de cidades; clicar em uma cidade aplica UF e cidade nos filtros da análise. Pontos de pedidos são clicáveis e seus detalhes apresentam cliente, destino, valor, peso e cubagem. Há zoom, deslocamento e restauração da visão do Brasil.
 
 ### Coordenadas e cobertura
 
@@ -108,9 +108,15 @@ A interface foi simplificada conforme a orientação de aproveitar a área da te
 
 Os doze indicadores ficam sempre visíveis, em uma grade responsiva, sem recolhimento. Valores monetários nos cards são abreviados em mil, mi ou bi com duas casas decimais; o valor exato permanece no título e na ajuda do indicador. A API e os cálculos não foram modificados.
 
-Os blocos explicativos, o texto permanente de ausência de seleção, a barra de saldo aberto e os avisos extensos foram retirados da composição principal. Regras de recorte, alocação, cobertura geográfica e previsão continuam disponíveis na ajuda da formação de cargas. A seleção ativa é apresentada em uma etiqueta compacta com botão para limpar.
+Os blocos explicativos, o texto permanente de ausência de seleção, a barra de saldo aberto e os avisos extensos foram retirados da composição principal. Regras de recorte, alocação, cobertura geográfica e previsão continuam disponíveis na ajuda da formação de cargas. A seleção ativa é apresentada em um resumo compacto com botão para limpar.
 
-A consulta de destinos ocupa uma seção permanente de largura integral abaixo do mapa e das duas tabelas. As UFs são os primeiros níveis e se expandem em cidades, com medidas agregadas por estado e total geral sem duplicar pedidos. Cargas, pedidos e destinos não têm paginação: todos os registros do recorte ficam disponíveis na rolagem interna. A tabela de cargas mostra as 58 cargas com saldo aberto da publicação sem filtros; uma seleção de pedido restringe suas cargas como antes. Os títulos de cargas e pedidos foram ocultados, mantendo acesso às configurações e exportação.
+A consulta de destinos ocupa uma seção permanente de largura integral abaixo do mapa e das duas tabelas. As UFs são os primeiros níveis e se expandem em cidades, com medidas agregadas por estado e total geral sem duplicar pedidos. Cargas, pedidos e destinos não têm paginação: todos os registros do recorte ficam disponíveis na rolagem interna. A tabela de cargas mostra as 58 cargas com saldo aberto da publicação sem filtros; uma seleção de pedido restringe suas cargas como antes. Os títulos identificam cada tabela, mantendo acesso às configurações e exportação.
+
+### Detalhamento de cargas e pedidos — 10/11/2026
+
+A tabela de cargas expande **carga → grupo de cliente → pedido → produto/cor**. A tabela de pedidos expande **pedido → produto/cor**. Cada folha identifica `código do item - descrição do item · código da cor - descrição da cor`, com aviso quando o cadastro não contém a cor. Grupo, descrição e cor provêm da mesma cópia Firebird anonimizada, extraídos pelo Hop e publicados em `logistica.item_pedido`; sem esses campos na publicação, os rótulos mostram a ausência em vez de inventar valores.
+
+Ao selecionar uma carga ou um pedido em qualquer das duas tabelas, os cards passam a refletir essa seleção. Na carga, aparecem apenas os indicadores aplicáveis às parcelas alocadas: pedidos distintos, uma carga, valor, peso e cubagem em carga. No pedido, os doze cards mostram sua posição completa, inclusive quantidade e valor sem carga. Selecionar novamente a mesma linha ou usar “Limpar seleção” restaura o recorte filtrado. O pedido dentro de uma carga exibe sua menor previsão efetiva entre os vínculos daquela carga, sem substituir a previsão original do pedido na tabela geral.
 
 A regressão visual verifica sidebar aberta/recolhida, destinos visíveis e larguras de 1.100, 1.440 e 1.850 pixels. Além dos limites das colunas, confere os limites internos de corpo, viewport, rolagem e rodapé, evitando sobreposição vertical entre cargas e pedidos. A altura é estável nas seleções e atualizações; em celular os painéis são empilhados.
 

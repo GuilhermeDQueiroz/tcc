@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, shallowRef, computed } from 'vue'
 import { request, download } from '../api/client'
+import {toggleCrossFilter} from '../../shared/cross-filter.js'
 import { tabs, type Area, type Tab, type Filters, type DashboardPayload, type DimensionsPayload, type DetailsPayload, type Column, type Preset, type Goals } from '../types/analytics'
 
 export const useAnalyticsStore = defineStore('analytics', () => {
@@ -80,7 +81,7 @@ export const useAnalyticsStore = defineStore('analytics', () => {
   }
   function setArea(value: Area) { if (area.value === value) return; area.value = value; tab.value = tabs[value][0]!.id; filters.value = {}; forecastDate.value = ''; year.value = undefined; month.value = undefined; dimensions.value = null; dimension.value = 'UF'; hierarchy.value=[]; metric.value=value==='faturados'?'weightKg':'value'; heatmapDimension.value=value==='faturados'?'UF':'CONSULTOR'; resetDetails(true) }
   function applyFilters(value: Filters) { filters.value = JSON.parse(JSON.stringify(value)); page.value = 1; void load() }
-  function drillDown(key: string, value: unknown) { if (!key || value == null) return; applyFilters({ ...filters.value, dimensions: { ...filters.value.dimensions, [key]: [String(value)] } }) }
+  function drillDown(key: string, value: unknown) { const next=toggleCrossFilter(filters.value,key,value);if(next!==filters.value)applyFilters(next) }
   async function exportDetails() { try { await download(`/bi/${area.value}/detalhes?${query({ export: 'csv', sort: sort.value, direction: direction.value, columns: columns.value.join(',') })}`, `${area.value}-pedidos.csv`) } catch (cause) { detailsError.value = String(cause instanceof Error ? cause.message : cause) } }
   async function loadSettings() { const [savedPresets, savedGoals] = await Promise.all([request<Preset[] | { presets: Preset[] }>('/settings/presets'), request<Goals>('/settings/metas')]); presets.value = Array.isArray(savedPresets) ? savedPresets : savedPresets.presets; goals.value = savedGoals }
   async function savePreset(name: string, presetFilters: Filters = filters.value) { await request('/settings/presets', { method: 'POST', body: JSON.stringify({ name, area: area.value, filters: presetFilters }) }); await loadSettings() }

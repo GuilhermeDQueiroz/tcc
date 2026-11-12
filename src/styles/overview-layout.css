@@ -1,6 +1,12 @@
 /* Composition traced to legacy/views/pedidos_em_aberto.py:472-886. */
 .open-overview{display:grid;gap:20px;min-width:0}
 .overview-metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px;align-items:stretch}
+@media(min-width:1500px){
+ .open-overview>.overview-metrics{display:flex;flex-wrap:wrap;gap:13px}
+ .open-overview>.overview-metrics>*{flex:1 1 calc((100% - 52px)/5);min-width:0}
+ .open-overview>.overview-metrics>:nth-child(n+6){flex-basis:calc((100% - 65px)/6)}
+ .open-overview>.overview-metrics>.metric-card[data-format]>strong{font-size:24px}
+}
 .overview-metrics>.metric-card,.backlog-combined{min-height:122px;padding:14px 14px;border-radius:16px;box-shadow:0 4px 12px #00000008}
 .overview-metrics .metric-card>strong{font-size:26px;line-height:1.2;font-weight:800;color:#0f172a;white-space:nowrap;overflow-wrap:normal}
 .overview-metrics .metric-card[data-format=currency]>strong{font-size:26px}

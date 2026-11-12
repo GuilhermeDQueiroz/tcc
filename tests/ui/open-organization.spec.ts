@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test'
 test('resumo organiza indicadores, calendário, entregas, mapa e uma tabela por dimensão',async({page})=>{
   await page.goto('/abertos')
   await expect(page.locator('.open-overview')).toBeVisible()
-  await expect(page.locator('.overview-metrics > *')).toHaveCount(10)
+  await expect(page.locator('.overview-metrics > *')).toHaveCount(11)
   await expect(page.locator('[data-section="forecast"] .forecast-calendar')).toBeVisible()
   await expect(page.locator('[data-section="delivery-metrics"] [data-testid="metric-card"]')).toHaveCount(2)
   await expect(page.locator('[data-section="geography"] [data-series-id="abertos.resumo.UF"]')).toBeVisible()

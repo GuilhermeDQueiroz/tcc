@@ -32,7 +32,7 @@ function drillChart(series: Series, key: string, value: unknown) {
  const row = series.rows.find(row => String(row[key]) === String(value))
  const originals = row?.filterValues
  if (props.area === 'faturados' && Array.isArray(originals) && originals.length) {
-  store.applyFilters({ ...store.filters, dimensions: { ...store.filters.dimensions, [key]: originals.map(String) } })
+  store.drillDown(key,originals)
  } else store.drillDown(key,value)
 }
 function changeTab(tab: Tab) { void router.replace({ query:{ ...route.query,tab } }) }
@@ -51,7 +51,6 @@ onBeforeUnmount(() => { searching.value=false; store.cancel() })
 <template><div class="analytics-page" :class="{'billing-logistics':area==='faturados'}">
 <section v-if="area==='faturados'" class="panel billing-context" aria-label="Objetivo logístico do painel">
  <div><strong>Do pedido emitido ao faturamento</strong><p>Peso, cubagem, tempo de atendimento e destinos para apoiar o planejamento logístico.</p></div>
- <RouterLink to="/estrategico#conversao-safra">Conversão por safra <span aria-hidden="true">↗</span></RouterLink>
  <p class="billing-definition">O faturamento é o marco observado. Lead time e pontualidade não comprovam expedição ou entrega ao cliente.</p>
  <p v-if="billingPeriod" class="billing-period">Faturamentos de {{ billingPeriod }} · sujeitos aos filtros ativos</p>
 </section><nav v-if="area!=='abertos'" class="analysis-tabs" role="tablist" :aria-label="`Análises de ${pageInfo.label}`"><button v-for="tab in tabs[area]" :key="tab.id" role="tab" :aria-selected="selectedTab===tab.id" :class="{selected:selectedTab===tab.id}" @click="changeTab(tab.id)">{{ tab.label }}</button></nav><ActiveFilterChips />

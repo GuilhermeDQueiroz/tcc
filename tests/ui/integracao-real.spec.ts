@@ -47,7 +47,7 @@ test.describe('API PostgreSQL real publicada pelo Hop', () => {
           else await expect(page.locator(`[data-series-id="${series.id}"]`)).toBeVisible()
         }
         if(organizedOverview){
-          await expect(page.locator('.overview-metrics > *')).toHaveCount(10)
+          await expect(page.locator('.overview-metrics > *')).toHaveCount(11)
           await expect(page.locator('[data-table-id="abertos.dimensoes.Mes_Grupo"]')).toBeVisible()
           await expect(page.locator('.overview-dimensions .analytic-table')).toHaveCount(1)
         }else for (const table of payload.tables) await expect(page.locator(`[data-table-id="${table.id}"]`)).toBeVisible()

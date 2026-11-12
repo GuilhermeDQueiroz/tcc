@@ -37,7 +37,9 @@ export function addOperations(dashboard,{items,links,allOrders,orders}){
   order.regiao=regions[order.uf]||'Não informada';
   for(const child of order.children){
    Object.assign(child,Object.fromEntries(Object.entries(measurements.get(child.item_id)).map(([key,value])=>[key,value==null?unavailable:value])));
-   const source=byItem.get(child.item_id);child.identificacao='Item '+child.item_id+' · '+(source.produto||'Produto '+child.produto_id);
+   const source=byItem.get(child.item_id),product=source.produto||'Descrição não informada';
+   const color=source.cor_codigo==null?'Cor não informada':String(source.cor_codigo)+' - '+(source.cor_descricao||'Sem descrição');
+   child.identificacao=child.produto_id+' - '+product+' · '+color;child.produto=product;
    for(const key of ['cliente','cidade','uf','tipo_entrega','status_erp'])child[key]=order[key];
   }
   for(const key of Object.keys(summary)){const total=aggregate(order.children.map(item=>item.item_id),key);order[key]=total.missing?unavailable:total.value;}
@@ -62,7 +64,8 @@ export function addOperations(dashboard,{items,links,allOrders,orders}){
   Object.assign(child,{...sourceChild,id:child.id,carga_id:String(link.carga_id),quantidade_aberta:Number(link.quantidade_aberta),quantidade_alocada:Number(link.quantidade_aberta),quantidade_sem_carga:0,cargas:String(link.carga_id),situacao:'Em carga',previsao:link.previsao_faturamento,
    valor_aberto:measurable(Number(link.quantidade_aberta),n(source.valor_unitario))??unavailable,
    peso_aberto:measurable(Number(link.quantidade_aberta),n(source.peso_unitario))??unavailable,valor_sem_carga:0,peso_sem_carga:0,cubagem_sem_carga:0});
-  for(const key of ['cliente','cidade','uf','tipo_entrega','status_erp','emissao','idade'])order[key]=sourceOrder[key];
+  for(const key of ['cliente','grupo_cliente','cidade','uf','tipo_entrega','status_erp','emissao','idade'])order[key]=sourceOrder[key];
+  if(link.previsao_faturamento&&(!order.previsao||link.previsao_faturamento<order.previsao))order.previsao=link.previsao_faturamento;
   if(link.previsao_faturamento&&(!load.previsao||link.previsao_faturamento<load.previsao))load.previsao=link.previsao_faturamento;
   for(const [kind,unit] of [['valor','valor_unitario'],['peso','peso_unitario'],['cubagem','cubagem_unitaria']]){
    const key=kind+'_em_carga',value=measurable(Number(link.quantidade_aberta),n(source[unit]));child[key]=value==null?unavailable:value;
@@ -70,6 +73,8 @@ export function addOperations(dashboard,{items,links,allOrders,orders}){
   }
  }
  dashboard.tables[1].columns.splice(1,0,{key:'descricao',label:'Descrição da carga',format:'text'});
+ dashboard.tables[0].columns.splice(1,0,{key:'produto',label:'Produto',format:'text'});
+ dashboard.tables[1].columns.splice(2,0,{key:'produto',label:'Produto',format:'text'});
  dashboard.tables[1].columns.push({key:'pedido_id',label:'Pedido',format:'text'},{key:'cliente',label:'Cliente',format:'text'},{key:'cidade',label:'Cidade',format:'text'},{key:'uf',label:'UF',format:'text'});
  dashboard.tables[1].columns.splice(7,0,{key:'valor_em_carga',label:'Valor aberto em carga',format:'currency'},{key:'peso_em_carga',label:'Peso em carga (t)',format:'weight64'},{key:'cubagem_em_carga',label:'Cubagem em carga',format:'volume'},{key:'previsao',label:'Próxima previsão de faturamento',format:'date'});
  for(const kind of fields){const key=kind+'_em_carga';dashboard.tables[1].total[key]=summary[key].missing?unavailable:summary[key].value;}

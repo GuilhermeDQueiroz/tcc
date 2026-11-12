@@ -1,6 +1,12 @@
 <script setup lang="ts">
 withDefaults(defineProps<{name?:string}>(),{name:'chart'})
 const paths:Record<string,string[]>={
+ home:['M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3z'],
+ overview:['M3 3v18h18','M6 16l4-4 3 2 5-7','M16 7h2v2'],
+ document:['M5 3h10l4 4v14H5z','M15 3v4h4','M8 11h8M8 15h8M8 19h5'],
+ wrench:['M14.7 6.3a5 5 0 0 0-6.4 6.4l-5.8 5.8a2 2 0 0 0 2.8 2.8l5.8-5.8a5 5 0 0 0 6.4-6.4L14 12l-2-2 2.7-3.7z'],
+ 'cancel-circle':['M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18','M9 9l6 6M15 9l-6 6'],
+ 'return-arrow':['M9 4 4 9l5 5','M4 9h10a6 6 0 0 1 0 12h-2'],
  hourglass:['M6 3h12M6 21h12M7 3v4l5 5 5-5V3M7 21v-4l5-5 5 5v4'],
  cart:['M3 3h2l2.4 12h11.2l2-8H6','M9 20h.01M18 20h.01'],
  receipt:['M5 3v18l3-2 4 2 4-2 3 2V3l-3 2-4-2-4 2-3-2','M8 9h8M8 13h8'],
@@ -33,6 +39,7 @@ const paths:Record<string,string[]>={
  filter:['M3 3h18l-7 9v7l-4 2V12z'],
  target:['M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18M12 7a5 5 0 1 0 0 10 5 5 0 1 0 0-10M12 11v2'],
  currency:['M12 2v20M17 6c-2-3-10-3-10 1s10 3 10 7-8 5-11 1'],
+ eye:['M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z','M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z'],
  help:['M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18','M9.5 9a2.5 2.5 0 0 1 5 .5c0 2-2.5 2-2.5 4','M12 17h.01'],
  weight:['M4 8h16l2 13H2zM9 8V5a3 3 0 0 1 6 0v3'],
  table:['M3 4h18v16H3zM3 9h18M3 14h18M9 4v16'],

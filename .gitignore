@@ -14,6 +14,7 @@ htmlcov/
 .pgpass
 pgpass.conf
 .local/
+.vercel/
 *.log
 *.pid
 *.pid.lock

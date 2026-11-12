@@ -1,0 +1,158 @@
+import {test,expect,type Page} from '@playwright/test'
+async function ready(page:Page){
+ await expect(page.locator('.metric-card').first()).toBeVisible({timeout:60_000})
+ await expect(page.locator('.loading-screen')).toHaveCount(0,{timeout:60_000})
+ await expect(page.locator('.error-box,.logistics-error,.strategic-error')).toHaveCount(0)
+}
+test.beforeEach(async({context})=>{
+ // The presentation must work without third-party fonts or an API.
+ await context.route('**/*',route=>new URL(route.request().url()).hostname==='127.0.0.1'?route.continue():route.abort())
+})
+
+test('sidebar parent stays selected and expanded while a child route is active',async({page})=>{
+ await page.goto('/assistencias?view=emitidas');await ready(page)
+ const assistance=page.getByRole('button',{name:'Assistências',exact:true})
+ const logistics=page.getByRole('button',{name:'Logística',exact:true})
+ await expect(assistance).toHaveClass(/nav-active/)
+ await expect(assistance).toHaveAttribute('aria-expanded','true')
+ await expect(page.getByRole('link',{name:'Assistências Emitidas',exact:true})).toBeVisible()
+ const selectedColor=await page.getByRole('link',{name:'Assistências Emitidas',exact:true}).evaluate(element=>getComputedStyle(element).backgroundColor)
+ await expect(assistance).toHaveCSS('background-color',selectedColor)
+ await assistance.click()
+ await expect(assistance).toHaveAttribute('aria-expanded','true')
+ await logistics.click()
+ await expect(assistance).toHaveAttribute('aria-expanded','true')
+ await expect(logistics).toHaveAttribute('aria-expanded','true')
+ await page.getByRole('link',{name:'Visão estratégica',exact:true}).click()
+ await expect(logistics).toHaveClass(/nav-active/)
+ await expect(logistics).toHaveAttribute('aria-expanded','true')
+ await expect(page.locator('.strategic-chart-slot .panel-heading h2').first()).toHaveCSS('font-size','14px')
+ await logistics.click()
+ await expect(logistics).toHaveAttribute('aria-expanded','true')
+ const sales=page.getByRole('button',{name:'Pedidos de venda',exact:true})
+ await sales.click()
+ await expect(logistics).toHaveAttribute('aria-expanded','true')
+ await page.getByRole('link',{name:'Pedidos em Aberto',exact:true}).click()
+ await expect(sales).toHaveClass(/nav-active/)
+ await expect(sales).toHaveAttribute('aria-expanded','true')
+ await sales.click()
+ await expect(sales).toHaveAttribute('aria-expanded','true')
+ await expect(page.locator('.sidebar-footer button')).toHaveCount(1)
+ await expect(page.getByRole('button',{name:'Filtros Avançados',exact:true})).toHaveCount(0)
+ await expect(page.getByRole('button',{name:'Atualizar dados',exact:true})).toHaveCount(0)
+})
+test('Home opens the available analyses without loading an API',async({page})=>{
+ const apiRequests:string[]=[]
+ page.on('request',request=>{if(new URL(request.url()).pathname.startsWith('/api/'))apiRequests.push(request.url())})
+ await page.goto('/')
+ await expect(page.getByRole('heading',{name:'Bem-vindo ao painel'})).toBeVisible()
+ await expect(page.locator('.home-date')).toBeVisible()
+ await expect(page.locator('.home-card')).toHaveCount(14)
+ await expect(page.locator('.home-section')).toHaveCount(0)
+ await expect(page.locator('.home-card-title')).toHaveText([
+  'Visão Geral de Pedidos de Venda','Pedidos em Aberto','Pedidos Emitidos','Pedidos Faturados','Pedidos Cancelados','Pedidos Devolvidos',
+  'Visão Geral de Assistências','Assistências em Aberto','Assistências Emitidas','Assistências Faturadas','Assistências Canceladas','Assistências Devolvidas',
+  'Visão estratégica','Formação de Cargas'
+ ])
+ await expect(page.locator('.demo-banner')).toHaveCount(0)
+ await page.getByRole('button',{name:'Sobre os indicadores'}).click()
+ await expect(page.getByRole('dialog',{name:'Sobre os indicadores'})).toContainText('Demonstração')
+ await expect(page.getByRole('button',{name:'Sobre os indicadores'})).toHaveText('')
+ await page.getByRole('button',{name:'Fechar informações'}).click()
+ await expect(page.getByRole('link',{name:'Home',exact:true})).toHaveClass(/nav-active/)
+ await expect(page.locator('.home-card').filter({hasText:'Assistências Faturadas'})).toBeVisible()
+ await expect(page.locator('.home-card').filter({hasText:'Assistências Canceladas'})).toBeVisible()
+ await page.setViewportSize({width:1440,height:900})
+ expect(await page.evaluate(()=>document.querySelector('.main-shell main')!.scrollHeight<=document.querySelector('.main-shell main')!.clientHeight+2)).toBe(true)
+ expect(await page.evaluate(()=>{
+  const grid=document.querySelector('.home-grid')!.getBoundingClientRect(),cards=[...document.querySelectorAll('.home-card')]
+  const lastRow=cards.filter(card=>Math.abs(card.getBoundingClientRect().top-cards.at(-1)!.getBoundingClientRect().top)<2)
+  return Math.abs((lastRow[0]!.getBoundingClientRect().left+lastRow.at(-1)!.getBoundingClientRect().right)/2-(grid.left+grid.right)/2)<2
+ })).toBe(true)
+ expect(apiRequests).toEqual([])
+})
+test('aftersales menu routes open directly without backend requests or generated data',async({page})=>{
+ const errors:string[]=[],requests:string[]=[]
+ page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(new URL(request.url()).pathname.startsWith('/api/'))requests.push(request.url())})
+ for(const route of ['/assistencias','/assistencias?view=emitidas','/assistencias?view=faturadas','/cancelamentos?kind=Venda','/cancelamentos?kind=Assist%C3%AAncia','/devolucoes?kind=Venda','/devolucoes?kind=Assist%C3%AAncia']){
+  await page.goto(route);await ready(page)
+  await expect(page.getByRole('region',{name:'Modo de demonstração'})).toHaveCount(0)
+  await page.getByRole('button',{name:'Sobre os indicadores'}).click()
+  await expect(page.getByRole('dialog',{name:'Sobre os indicadores'})).toContainText('Demonstração')
+  await expect(page.getByRole('dialog',{name:'Sobre os indicadores'})).toContainText('Posição da base')
+  await page.getByRole('button',{name:'Fechar informações'}).click()
+  await expect(page.locator('canvas').first()).toBeVisible()
+  if(route==='/devolucoes?kind=Venda'){
+   await expect(page.getByRole('link',{name:'Pedidos Devolvidos',exact:true})).toHaveClass(/nav-active/)
+   await expect(page.locator('.app-header h1')).toHaveText('Pedidos Devolvidos')
+  }
+  if(route==='/devolucoes?kind=Assist%C3%AAncia'){
+   await expect(page.getByRole('link',{name:'Assistências Devolvidas'})).toHaveClass(/nav-active/)
+   await expect(page.getByRole('heading',{name:'Assistências Devolvidas'})).toBeVisible()
+  }
+  if(route==='/assistencias?view=faturadas'){
+   await expect(page.getByRole('link',{name:'Assistências Faturadas'})).toHaveClass(/nav-active/)
+   await expect(page.locator('.app-header h1')).toHaveText('Assistências Faturadas')
+  }
+  if(route==='/cancelamentos?kind=Assist%C3%AAncia'){
+   await expect(page.getByRole('link',{name:'Assistências Canceladas'})).toHaveClass(/nav-active/)
+   await expect(page.getByRole('heading',{name:'Assistências Canceladas'})).toBeVisible()
+  }
+  if(route==='/cancelamentos?kind=Venda'){
+   await expect(page.locator('.aftersales-metrics .metric-card')).toHaveCount(9)
+   await expect(page.locator('[data-metric-id="posvenda.orders30"]')).toContainText('Pedidos > 30 dias')
+   await page.getByRole('button',{name:'Configurar Cancelamentos por mês',exact:true}).click()
+   const menu=page.getByRole('region',{name:'Configurações de Cancelamentos por mês'})
+   await menu.getByRole('radio',{name:'Quantidade de pedidos',exact:true}).check()
+   await expect(menu.getByRole('radio',{name:'Quantidade de pedidos',exact:true})).toBeChecked()
+  }
+ }
+ await page.setViewportSize({width:390,height:844});await page.goto('/assistencias');await ready(page)
+ await page.setViewportSize({width:320,height:760})
+ await expect(page.locator('.app-header .module-icon')).toBeVisible()
+ await expect(page.locator('.app-header .header-filter-btn')).toHaveText('')
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+2)).toBe(true)
+ expect(requests).toEqual([]);expect(errors).toEqual([])
+})
+test('worker filters actual assistance, changes grain and analysis, paginates and exports full CSV',async({page})=>{
+ const errors:string[]=[],requests:string[]=[]
+ page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(new URL(request.url()).pathname.startsWith('/api/'))requests.push(request.url())})
+ await page.goto('/assistencias');await ready(page)
+ await expect(page.locator('.aftersales-metrics .metric-card')).toHaveCount(9)
+ await expect(page.locator('[data-metric-id="posvenda.aged"]')).toContainText('Assistências > 30 dias')
+ await page.getByRole('button',{name:'Configurar Saldo por mês de emissão',exact:true}).click()
+ const menu=page.getByRole('region',{name:'Configurações de Saldo por mês de emissão'})
+ await menu.getByRole('radio',{name:'Valor (R$)',exact:true}).check()
+ await menu.getByRole('radio',{name:'Tabela',exact:true}).check()
+ await expect(page.locator('[data-series-id="posvenda.monthly"] table')).toContainText('Valor (R$)')
+ await menu.getByRole('radio',{name:'Evolução mensal',exact:true}).check()
+ await menu.getByRole('button',{name:'Fechar configurações'}).click()
+ await page.getByRole('button',{name:'Configurar Cronograma de previsão das assistências',exact:true}).click()
+ const calendarMenu=page.getByRole('region',{name:'Configurações de Cronograma de previsão das assistências'})
+ await calendarMenu.getByRole('radio',{name:'Peso',exact:true}).check()
+ const [calendarCsv]=await Promise.all([page.waitForEvent('download'),calendarMenu.getByRole('button',{name:'Exportar CSV',exact:true}).click()])
+ expect(calendarCsv.suggestedFilename()).toBe('previsao-diaria.csv')
+ await calendarMenu.getByRole('button',{name:'Fechar configurações'}).click()
+ await page.getByRole('group',{name:'Granularidade da evolução'}).getByRole('button',{name:'Semanas',exact:true}).click()
+ await expect(page.locator('[data-series-id="posvenda.monthly"]')).toContainText('Saldo por semana de emissão',{timeout:60_000})
+ const dimensions=page.getByRole('navigation',{name:'Dimensões de pós-venda'})
+ await dimensions.getByRole('button',{name:'UF',exact:true}).click()
+ await expect(page.locator('[data-table-id="posvenda.analysis.uf"]')).toBeVisible()
+ await page.getByRole('link',{name:'Assistências Emitidas'}).click();await ready(page)
+ await expect(page).toHaveURL(/\/assistencias\?view=emitidas$/)
+ await expect(page.getByRole('link',{name:'Assistências Emitidas'})).toHaveClass(/nav-active/)
+ await expect(page.locator('[data-metric-id="posvenda.documents"]')).toContainText('Assistências emitidas')
+ await dimensions.getByRole('button',{name:'Pesquisa de documentos',exact:true}).click()
+ await page.getByRole('button',{name:'Próxima página',exact:true}).click()
+ await expect(page.locator('.table-footer')).toContainText('21–40')
+ await page.getByRole('button',{name:'Filtros',exact:true}).click()
+ const dialog=page.getByRole('dialog');await dialog.getByRole('tab',{name:'Localização',exact:true}).click()
+ await dialog.getByLabel('Estado (UF)',{exact:true}).selectOption('MG')
+ await dialog.getByRole('button',{name:'Aplicar filtros',exact:true}).click();await ready(page)
+ await expect(page.locator('.aftersales-active')).toContainText('MG')
+ await page.getByRole('button',{name:'Configurar Análise por dimensão',exact:true}).click()
+ const [download]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'Exportar CSV',exact:true}).click()])
+ expect(download.suggestedFilename()).toBe('assistencias.csv')
+ expect(await download.failure()).toBeNull()
+ expect(errors).toEqual([]);expect(requests).toEqual([])
+})

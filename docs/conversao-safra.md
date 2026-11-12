@@ -1,6 +1,6 @@
 # Conversão da safra de pedidos
 
-Implementação de 06/10/2026 na Visão Estratégica, em `/estrategico`, abaixo das prioridades da carteira. A análise relaciona a demanda emitida com suas parcelas faturadas. Não mede entrega ao cliente.
+Registro da implementação de 06/10/2026. Em 09/11/2026, a interface foi reduzida ao gráfico de linha por mês de emissão, com alternância de medida. Cards, tabela comparativa e textos do painel foram removidos por solicitação do autor; este documento preserva o contrato de cálculo. A análise relaciona a demanda emitida com suas parcelas faturadas. Não mede entrega ao cliente.
 
 ## Duas perguntas diferentes
 

@@ -3,7 +3,7 @@ import {test,expect} from '@playwright/test'
 test('faturados apresenta o fluxo logístico e permite detalhar peso, cubagem e destinos',async({page})=>{
  test.setTimeout(180000)
  await page.goto('/faturados')
- await expect(page.getByRole('heading',{name:'Análise Logística dos Pedidos Faturados',exact:true})).toBeVisible()
+ await expect(page.getByRole('heading',{name:'Pedidos Faturados',exact:true})).toBeVisible()
  await expect(page.getByRole('tab',{name:'Mensal',exact:true})).toHaveAttribute('aria-selected','true')
  await expect(page.getByRole('tab',{name:'Carteira de Clientes',exact:true})).toHaveCount(0)
  await expect(page.getByRole('button',{name:'Metas',exact:true})).toHaveCount(0)
@@ -12,7 +12,6 @@ test('faturados apresenta o fluxo logístico e permite detalhar peso, cubagem e 
  await expect(page.getByText('Fluxo faturado por dia',{exact:true})).toBeVisible()
  await expect(page.getByText('Entrega e retirada • modalidade cadastrada',{exact:true})).toBeVisible()
  await expect(page.getByText('Meta Financeira',{exact:true})).toHaveCount(0)
- await expect(page.getByRole('link',{name:'Conversão por safra'})).toHaveAttribute('href','/estrategico#conversao-safra')
  await page.getByRole('tab',{name:'Destinos',exact:true}).click()
  await expect(page.getByText('Distribuição por UF • Peso faturado',{exact:true})).toBeVisible({timeout:60000})
  await page.getByLabel('Métrica',{exact:true}).selectOption('volumeM3')
@@ -21,6 +20,4 @@ test('faturados apresenta o fluxo logístico e permite detalhar peso, cubagem e 
  await expect(page.getByText('Evolução mensal por dimensão • Cubagem faturada',{exact:true})).toBeVisible({timeout:60000})
  await page.getByRole('tab',{name:'Pesquisa',exact:true}).click()
  await expect(page.getByLabel('Pesquisar pedidos')).toBeVisible()
- await page.getByRole('link',{name:'Conversão por safra'}).click()
- await expect(page.locator('#conversao-safra')).toBeInViewport({timeout:60000})
 })

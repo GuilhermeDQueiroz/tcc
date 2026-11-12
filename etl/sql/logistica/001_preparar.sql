@@ -20,11 +20,12 @@ ALTER TABLE logistica_stage.documento_item ADD COLUMN IF NOT EXISTS autoinc_doci
 ALTER TABLE logistica_stage.documento_item ADD COLUMN IF NOT EXISTS documento_docitem bigint;
 ALTER TABLE logistica_stage.documento_item ADD COLUMN IF NOT EXISTS composicaoitem_docitem bigint;
 ALTER TABLE logistica_stage.documento_item ADD COLUMN IF NOT EXISTS tipo_docitem smallint;
-CREATE TABLE IF NOT EXISTS logistica_stage.documento_item_detalhe (autoinc_docitemdet bigint, autoincitem_docitemdet bigint, documento_docitemdet bigint, item_docitemdet integer, qtdechapas_docitemdet numeric(18,4), qtdeaberta_docitemdet numeric(18,4), qtdefaturado_docitemdet numeric(18,4), qtdecancelado_docitemdet numeric(18,4), qtdecarga_docitemdet numeric(18,4), qtdecargafat_docitemdet numeric(18,4), vlrbrutoliquido_docitemdet numeric(18,2), autoincitemdetalhe_docitemdet integer, PRIMARY KEY (autoinc_docitemdet));
+CREATE TABLE IF NOT EXISTS logistica_stage.documento_item_detalhe (autoinc_docitemdet bigint, autoincitem_docitemdet bigint, documento_docitemdet bigint, item_docitemdet integer, cor_docitemdet integer, qtdechapas_docitemdet numeric(18,4), qtdeaberta_docitemdet numeric(18,4), qtdefaturado_docitemdet numeric(18,4), qtdecancelado_docitemdet numeric(18,4), qtdecarga_docitemdet numeric(18,4), qtdecargafat_docitemdet numeric(18,4), vlrbrutoliquido_docitemdet numeric(18,2), autoincitemdetalhe_docitemdet integer, PRIMARY KEY (autoinc_docitemdet));
 ALTER TABLE logistica_stage.documento_item_detalhe ADD COLUMN IF NOT EXISTS autoinc_docitemdet bigint;
 ALTER TABLE logistica_stage.documento_item_detalhe ADD COLUMN IF NOT EXISTS autoincitem_docitemdet bigint;
 ALTER TABLE logistica_stage.documento_item_detalhe ADD COLUMN IF NOT EXISTS documento_docitemdet bigint;
 ALTER TABLE logistica_stage.documento_item_detalhe ADD COLUMN IF NOT EXISTS item_docitemdet integer;
+ALTER TABLE logistica_stage.documento_item_detalhe ADD COLUMN IF NOT EXISTS cor_docitemdet integer;
 ALTER TABLE logistica_stage.documento_item_detalhe ADD COLUMN IF NOT EXISTS qtdechapas_docitemdet numeric(18,4);
 ALTER TABLE logistica_stage.documento_item_detalhe ADD COLUMN IF NOT EXISTS qtdeaberta_docitemdet numeric(18,4);
 ALTER TABLE logistica_stage.documento_item_detalhe ADD COLUMN IF NOT EXISTS qtdefaturado_docitemdet numeric(18,4);
@@ -70,9 +71,16 @@ CREATE TABLE IF NOT EXISTS logistica_stage.item_detalhe (autoinc_item_detalhe in
 ALTER TABLE logistica_stage.item_detalhe ADD COLUMN IF NOT EXISTS autoinc_item_detalhe integer;
 ALTER TABLE logistica_stage.item_detalhe ADD COLUMN IF NOT EXISTS pesobruto_item_detalhe numeric(18,3);
 ALTER TABLE logistica_stage.item_detalhe ADD COLUMN IF NOT EXISTS volumem3_item_detalhe numeric(18,4);
-CREATE TABLE IF NOT EXISTS logistica_stage.pessoa (codigo_pessoa integer, razaosocial_pessoa text, PRIMARY KEY (codigo_pessoa));
+CREATE TABLE IF NOT EXISTS logistica_stage.pessoa (codigo_pessoa integer, razaosocial_pessoa text, grupo_pessoa integer, PRIMARY KEY (codigo_pessoa));
 ALTER TABLE logistica_stage.pessoa ADD COLUMN IF NOT EXISTS codigo_pessoa integer;
 ALTER TABLE logistica_stage.pessoa ADD COLUMN IF NOT EXISTS razaosocial_pessoa text;
+ALTER TABLE logistica_stage.pessoa ADD COLUMN IF NOT EXISTS grupo_pessoa integer;
+CREATE TABLE IF NOT EXISTS logistica_stage.grupo (codigo_grupo integer, descricao_grupo text, PRIMARY KEY (codigo_grupo));
+ALTER TABLE logistica_stage.grupo ADD COLUMN IF NOT EXISTS codigo_grupo integer;
+ALTER TABLE logistica_stage.grupo ADD COLUMN IF NOT EXISTS descricao_grupo text;
+CREATE TABLE IF NOT EXISTS logistica_stage.cor (codigo_cor integer, descricao_cor text, PRIMARY KEY (codigo_cor));
+ALTER TABLE logistica_stage.cor ADD COLUMN IF NOT EXISTS codigo_cor integer;
+ALTER TABLE logistica_stage.cor ADD COLUMN IF NOT EXISTS descricao_cor text;
 CREATE TABLE IF NOT EXISTS logistica_stage.pessoa_endereco (autoinc_pessoa_end integer, cidade_pessoa_end integer, cep_pessoa_end text, latitude_pessoa_end numeric(18,7), longitude_pessoa_end numeric(18,7), PRIMARY KEY (autoinc_pessoa_end));
 ALTER TABLE logistica_stage.pessoa_endereco ADD COLUMN IF NOT EXISTS autoinc_pessoa_end integer;
 ALTER TABLE logistica_stage.pessoa_endereco ADD COLUMN IF NOT EXISTS cidade_pessoa_end integer;
@@ -91,4 +99,4 @@ CREATE TABLE IF NOT EXISTS logistica_stage.status (codigo_status integer, descri
 ALTER TABLE logistica_stage.status ADD COLUMN IF NOT EXISTS codigo_status integer;
 ALTER TABLE logistica_stage.status ADD COLUMN IF NOT EXISTS descricao_status text;
 INSERT INTO logistica.execucao(id,status,data_inicio,data_referencia,origem) VALUES ('${ETL_RUN_ID}','executando','${LOGISTICS_START_DATE}','${LOGISTICS_REFERENCE_DATE}','Cópia local anonimizada / Apache Hop');
-TRUNCATE logistica_stage.documento_fatura, logistica_stage.documento_item, logistica_stage.documento_item_detalhe, logistica_stage.documento_pedido, logistica_stage.carga_itens, logistica_stage.carga_documentos, logistica_stage.carga, logistica_stage.item, logistica_stage.item_detalhe, logistica_stage.pessoa, logistica_stage.pessoa_endereco, logistica_stage.cidade, logistica_stage.uf, logistica_stage.status;
+TRUNCATE logistica_stage.documento_fatura, logistica_stage.documento_item, logistica_stage.documento_item_detalhe, logistica_stage.documento_pedido, logistica_stage.carga_itens, logistica_stage.carga_documentos, logistica_stage.carga, logistica_stage.item, logistica_stage.item_detalhe, logistica_stage.pessoa, logistica_stage.grupo, logistica_stage.cor, logistica_stage.pessoa_endereco, logistica_stage.cidade, logistica_stage.uf, logistica_stage.status;

@@ -4,6 +4,39 @@ import {PostgresRepository} from '../api-server/repositories/postgres.js';
 import {StrategicRepository} from '../api-server/repositories/strategic.js';
 import {AftersalesRepository} from '../api-server/repositories/posvenda.js';
 import {logisticsPayload} from '../api-server/presentation/logistics.js';
+import {filterRows} from '../api-server/domain/filters.js';
+
+test('unfiltered rows keep their population and array isolation, including date-ignored analyses',()=>{
+ const rows=[{UF:'MG',DT_FATURA_DATE:'2026-01-01'},{UF:'SP',DT_FATURA_DATE:'2026-09-01'}];
+ const plain=filterRows(rows);
+ assert.deepEqual(plain,rows);assert.notEqual(plain,rows);
+ assert.deepEqual(filterRows(rows,{dimensions:{UF:[]},billingRange:['2026-08-01','2026-08-31']},{ignoreDates:true}),rows);
+ assert.deepEqual(filterRows(rows,{billingRange:['2026-08-01','2026-09-30']}),[rows[1]]);
+});
+
+test('prepared row filters retain combined dimension, date, amount and search conditions',()=>{
+ const rows=[
+  {UF:'MG',DT_FATURA_DATE:'2026-08-15',VALOR_FATURADO_CLEAN:120,CLIENTE:'Cliente Azul'},
+  {UF:'MG',DT_FATURA_DATE:'2026-07-15',VALOR_FATURADO_CLEAN:120,CLIENTE:'Cliente Azul'},
+  {UF:'MG',DT_FATURA_DATE:'2026-08-15',VALOR_FATURADO_CLEAN:50,CLIENTE:'Cliente Azul'},
+  {UF:'SP',DT_FATURA_DATE:'2026-08-15',VALOR_FATURADO_CLEAN:120,CLIENTE:'Cliente Azul'},
+ ];
+ assert.deepEqual(filterRows(rows,{dimensions:{UF:['MG']},billingRange:['2026-08-01','2026-08-31'],value:{operator:'>=',value:100},search:'azul'}),[rows[0]]);
+});
+
+test('dimension date ranges use the earliest and latest valid dates without sorting the population',async()=>{
+ const rows=[
+  {DATA_EMISSAO_PEDIDO_DATE:'2026-08-15',DT_FATURA_DATE:'2026-09-10'},
+  {DATA_EMISSAO_PEDIDO_DATE:'2026-01-03',DT_FATURA_DATE:null},
+  {DATA_EMISSAO_PEDIDO_DATE:null,DT_FATURA_DATE:'2026-02-20'},
+  {DATA_EMISSAO_PEDIDO_DATE:'2026-07-01',DT_FATURA_DATE:'2026-11-01'},
+ ];
+ const repository=new PostgresRepository(null);
+ repository.getVersion=async()=> 'v1';
+ repository.snapshot=async()=>({version:'v1',frames:{faturados:rows}});
+ const result=await repository.getDimensions({area:'faturados',referenceDate:'2026-11-09'});
+ assert.deepEqual(result.dates,{emission:['2026-01-03','2026-08-15'],billing:['2026-02-20','2026-11-01']});
+});
 
 test('derived commercial payloads and dimensions survive raw snapshot eviction but never hide an outage',async()=>{
  let version='a',loads=0,available=true;

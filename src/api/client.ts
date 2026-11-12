@@ -1,4 +1,5 @@
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  if (import.meta.env.MODE === 'demo') return (await import('../demo/client')).demoRequest<T>(path, options)
   const response = await fetch(`/api/v1${path}`, { ...options, headers: { 'Content-Type': 'application/json', ...options.headers } })
   if (!response.ok) {
     const payload = await response.json().catch(() => ({}))
@@ -8,6 +9,11 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
   return response.json()
 }
 export async function download(path: string, filename: string) {
+  if (import.meta.env.MODE === 'demo') {
+    const csv = await (await import('../demo/client')).demoRequest<string>(path)
+    saveBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), filename)
+    return
+  }
   const response = await fetch(`/api/v1${path}`)
   if (!response.ok) throw new Error(`Não foi possível exportar os dados (${response.status}).`)
   saveBlob(await response.blob(), filename)

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 test('abertos apresenta navegação e calendário real/geral com mês navegável', async ({ page }) => {
   await page.goto('/abertos').catch(() => undefined)
-  await expect(page.getByRole('heading', { name: 'Análise de Pedidos em Aberto', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Pedidos em Aberto', exact: true })).toBeVisible()
   await expect(page.locator('.analytics-page > nav[role="tablist"]')).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Mês anterior no resumo' })).toBeVisible()
   const before = await page.getByTestId('calendar-month').textContent()

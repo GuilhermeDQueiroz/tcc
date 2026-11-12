@@ -33,10 +33,10 @@ export function buildLogisticsDashboard({execution,items,allocations,filters={},
     if(!grouped.has(key))grouped.set(key,{id:'pedido-'+key,pedido_id:key,identificacao:'Pedido '+key,empresa:String(item.empresa_id),emissao:item.emissao,previsao:item.previsao_faturamento,
       quantidade_aberta:0,quantidade_alocada:0,quantidade_sem_carga:0,valor_aberto:0,valor_incompleto:false,children:[],loadIds:new Set()});
     const order=grouped.get(key);
-    Object.assign(order,{cliente:item.cliente||'Não informado',uf:item.uf?.trim()||'Não informado',cidade:item.cidade||'Não informado',cep:item.cep||null,geo_origin:item.geo_origin||null,latitude:item.latitude==null?null:number(item.latitude),longitude:item.longitude==null?null:number(item.longitude),status_erp:item.status_erp||'Não informado',tipo_entrega:item.tipo_entrega||'Não informado'});
+    Object.assign(order,{cliente:item.cliente||'Não informado',grupo_cliente:item.grupo_cliente||'Não informado',uf:item.uf?.trim()||'Não informado',cidade:item.cidade||'Não informado',cep:item.cep||null,geo_origin:item.geo_origin||null,latitude:item.latitude==null?null:number(item.latitude),longitude:item.longitude==null?null:number(item.longitude),status_erp:item.status_erp||'Não informado',tipo_entrega:item.tipo_entrega||'Não informado'});
     for(const field of ['quantidade_aberta','quantidade_alocada','quantidade_sem_carga'])order[field]+=item[field];
     if(item.valor_aberto==null)order.valor_incompleto=true;else order.valor_aberto+=item.valor_aberto;
-    order.children.push({id:'item-'+item.item_id,item_id:String(item.item_id),pedido_id:key,produto_id:String(item.produto_id),identificacao:'Item '+item.item_id+' · Produto '+item.produto_id,
+    order.children.push({id:'item-'+item.item_id,item_id:String(item.item_id),pedido_id:key,produto_id:String(item.produto_id),cor_codigo:item.cor_codigo,cor_descricao:item.cor_descricao,identificacao:'Item '+item.item_id+' · Produto '+item.produto_id,
       empresa:String(item.empresa_id),emissao:item.emissao,previsao:item.previsao_faturamento,quantidade_aberta:item.quantidade_aberta,quantidade_alocada:item.quantidade_alocada,quantidade_sem_carga:item.quantidade_sem_carga,
       valor_aberto:item.valor_aberto==null?'Não disponível':item.valor_aberto,valor_unitario:item.valor_unitario,alocacao:allocationStatus(item.quantidade_aberta,item.quantidade_alocada),
       situacao:allocationLabels[allocationStatus(item.quantidade_aberta,item.quantidade_alocada)],cargas:'—'});
@@ -110,7 +110,7 @@ export function buildLogisticsDashboard({execution,items,allocations,filters={},
     {id:'logistica.none',label:'Pedidos sem carga',value:counts.none,format:'integer',help:'Nenhuma quantidade em aberto do pedido está vinculada a uma carga ativa.'},
     {id:'logistica.partial',label:'Parcialmente alocados',value:counts.partial,format:'integer',help:'Uma parte do saldo do pedido está em carga e outra parte continua sem carga. Inclui pedidos com itens em situações diferentes.'},
     {id:'logistica.full',label:'Totalmente alocados',value:counts.full,format:'integer',help:'Todo o saldo aberto do pedido está vinculado a cargas. Alocação não comprova faturamento ou saída física.'},
-    {id:'logistica.loads',label:'Cargas com saldo',value:loadRows.length,format:'integer',help:'Cargas distintas com quantidade ainda aberta dos pedidos selecionados. Um pedido pode participar de várias cargas.'},
+    {id:'logistica.loads',label:'Cargas em aberto',value:loadRows.length,format:'integer',help:'Cargas distintas com saldo aberto vinculado aos pedidos selecionados, contadas uma vez mesmo com vários pedidos ou itens. Um pedido pode participar de várias cargas. Não confirma saída física.'},
     {id:'logistica.free',label:'Quantidade sem carga',value:totals.quantidade_sem_carga,format:'quantity4',help:'Quantidade aberta menos a soma das quantidades abertas dos vínculos em CARGA_ITENS. Não representa disponibilidade de estoque.'},
   ],tables:[
     {id:'logistica-pedidos',title:'Pedidos e saldo para formação de cargas',columns:columns(),rows:cleanOrders,tree:cleanOrders,total:{identificacao:'Total do recorte',...totals}},

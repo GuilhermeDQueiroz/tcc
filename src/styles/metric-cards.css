@@ -99,6 +99,17 @@
 }
 .metric-tip > button::before { content: none; }
 .metric-tip > button .app-icon { width: 16px; height: 16px; stroke-width: 1.8; }
+/* Match the open-orders help inset even when logistics cards have different
+   content heights. Keep .metric-tip static so its tooltip stays card-relative. */
+.logistics-metrics .metric-card .metric-label,
+.strategic-metrics .metric-card .metric-label { padding-right: 24px; }
+.logistics-metrics .metric-tip > button,
+.strategic-metrics .metric-tip > button {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  margin-top: 0;
+}
 .metric-tip > button:hover, .metric-tip > button:focus-visible { color: #006a3a; border-color: #8bc53f; background: #eaf3e4; }
 .metric-card .metric-tip-text, .backlog-combined .metric-tip-text,
 .overview-metrics > .metric-card:nth-child(5n+1) .metric-tip-text,
@@ -128,6 +139,8 @@
 .backlog-combined.warning > .metric-watermark { color: #b45309; }
 .overview-deliveries > .metric-card > .metric-watermark { width: 64px; height: 64px; bottom: 10px; }
 @media(max-width:767px) {
+  .logistics-metrics .metric-tip > button,
+  .strategic-metrics .metric-tip > button { right: 12px; }
   .overview-metrics > .metric-card[data-format=currency] {grid-column:span 2;}
   .metric-card > strong, .overview-metrics .metric-card > strong, .backlog-values > span { font-size: clamp(24px, 15cqi, 30px); }
   .metric-card[data-format=weight] > strong, .metric-card[data-format=volume] > strong,

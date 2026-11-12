@@ -1,10 +1,9 @@
 /* Area-specific geometry; cards, charts, tables and loading use shared styles. */
 .aftersales-dashboard{min-width:0;container-type:inline-size}
-.aftersales-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;min-width:0}
-.aftersales-tabs{width:auto;flex:none;min-width:230px}
-.aftersales-tabs button{flex:1}
-.aftersales-context{display:flex;gap:6px 18px;flex-wrap:wrap;margin-left:auto;color:#64748b;font-size:12px;line-height:1.5}
-.aftersales-metrics{grid-template-columns:repeat(var(--card-count,4),minmax(0,1fr))}
+.aftersales-tabs{justify-content:center}
+.aftersales-tabs button{flex:0 1 auto;min-width:112px}
+.aftersales-metrics:not(.aftersales-overview-metrics){grid-template-columns:repeat(var(--card-count,4),minmax(0,1fr))}
+.aftersales-metrics :deep([data-metric-id="posvenda.orders"] .metric-details dt){display:block}
 .aftersales-charts{display:grid;gap:20px;min-width:0}
 .aftersales-charts .overview-row>*{min-width:0;max-width:100%}
 .aftersales-dashboard :deep(.panel-heading){flex-wrap:wrap;gap:8px 12px}
@@ -18,12 +17,9 @@
 .aftersales-search{display:flex;align-items:flex-end;gap:12px;margin:0 0 16px;min-width:0}
 .aftersales-search label{flex:1;min-width:0}
 .aftersales-search input{width:100%}
-.aftersales-definitions{border-top:1px solid #e5e7e6;color:#64748b;font-size:12px;line-height:1.65}
-.aftersales-definitions p{margin:0 0 10px;max-width:100ch}
-@container(max-width:900px){.aftersales-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.aftersales-charts .overview-row{grid-template-columns:minmax(0,1fr)}}
+@container(max-width:900px){.aftersales-metrics:not(.aftersales-overview-metrics){grid-template-columns:repeat(2,minmax(0,1fr))}.aftersales-charts .overview-row{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:560px){
- .aftersales-tabs{width:100%;min-width:0}
- .aftersales-context{margin-left:0;font-size:11px}
+ .aftersales-tabs button{min-width:0}
  .aftersales-search{align-items:stretch;flex-direction:column;gap:8px}
  .aftersales-grain{justify-content:flex-start;margin:0}
 }

@@ -20,7 +20,7 @@ test('repository rejects generated runtimes and local database artifacts while p
   'coverage/report.json','htmlcov/index.html','blob-report/report.zip','.coverage','.coverage.machine',
   'etl/HopLauncher.class','src/tsconfig.tsbuildinfo','runtime/api.pid','runtime/api.pid.lock',
   'cache.sqlite','cache.sqlite-wal','cache.sqlite3','cache.sqlite3-shm','database.dmp',
-  '.envrc','nested/.pgpass','pgpass.conf'])
+  '.envrc','nested/.pgpass','pgpass.conf','.vercel/anonymous.json','presentation/.vercel/project.json'])
   assert.ok(inspect(file,'local').length>0,file);
  for(const file of ['AGENTS.md','shared/analysis-dimensions.json','etl/sql/posvenda/003_dimensoes.sql',
   'etl/workflows/posvenda_dimensoes_local.hwf','docs/dimensoes-posvenda.md'])

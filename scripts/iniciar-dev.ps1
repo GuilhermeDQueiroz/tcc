@@ -23,7 +23,7 @@ function Iniciar-ProcessoProjeto([string]$NomeProjeto, [string[]]$ArgumentosProj
     return @{ name=$NomeProjeto; pid=$ProcessoProjeto.Id; startedAt=$ProcessoProjeto.StartTime.ToUniversalTime().ToString('o'); executable=$NodeProjeto }
 }
 try {
-    Testar-PortaLivre 3002
+    Testar-PortaLivre 3003
     if (-not $SemInterface) { Testar-PortaLivre 5173 }
     if ($BancoJaIniciado) {
         $ConexaoBancoProjeto = [Net.Sockets.TcpClient]::new()
@@ -32,7 +32,7 @@ try {
     } else {
         & (Join-Path $RaizProjeto 'banco/scripts/iniciar.ps1')
     }
-    $env:PG_HOST='localhost'; $env:PG_PORT='5434'; $env:PG_DATABASE='dados'; $env:API_PORT='3002'
+    $env:PG_HOST='localhost'; $env:PG_PORT='5434'; $env:PG_DATABASE='dados'; $env:API_PORT='3003'
     if (-not $env:PG_USER) { $env:PG_USER = Read-Host 'Usuário PostgreSQL [API]'; if (-not $env:PG_USER) { $env:PG_USER='API' } }
     if (-not $env:PG_PASSWORD) {
         $SenhaProjeto = Read-Host 'Senha PostgreSQL' -AsSecureString
@@ -45,7 +45,7 @@ try {
     $ApiPronta = $false
     for ($TentativaProjeto=0; $TentativaProjeto -lt 60; $TentativaProjeto++) {
         try {
-            $SaudeProjeto = Invoke-RestMethod 'http://127.0.0.1:3002/api/v1/health' -TimeoutSec 2
+            $SaudeProjeto = Invoke-RestMethod 'http://127.0.0.1:3003/api/v1/health' -TimeoutSec 2
             if ($SaudeProjeto.dataVersion) { $ApiPronta=$true; break }
         } catch { }
         if (-not (Get-Process -Id $ProcessosIniciados[0].pid -ErrorAction SilentlyContinue)) { break }
@@ -54,7 +54,7 @@ try {
     if (-not $ApiPronta) { throw 'A API não conectou à carga publicada. Confira .local/runtime/api.err.log e as credenciais.' }
     if (-not $SemInterface) { $ProcessosIniciados += Iniciar-ProcessoProjeto 'interface' @('node_modules/vite/bin/vite.js','--host','127.0.0.1') }
     @{ root=$RaizProjeto; processes=@($ProcessosIniciados) } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $RuntimeProjeto 'processos.json') -Encoding UTF8
-    Write-Host 'Aplicação compilada: http://127.0.0.1:3002'
+    Write-Host 'Aplicação compilada: http://127.0.0.1:3003'
     if (-not $SemInterface) { Write-Host 'Interface de desenvolvimento: http://127.0.0.1:5173' }
 } catch {
     foreach ($RegistroProjeto in $ProcessosIniciados) {

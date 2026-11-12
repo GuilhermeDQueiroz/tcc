@@ -12,7 +12,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
 .sidebar nav{display:flex;flex-direction:column;gap:4px;padding:0 10px 8px 22px;overflow:auto;min-height:0}
 .sidebar nav a{min-height:38px;padding:8px 12px;gap:10px;border-left:4px solid transparent;border-radius:10px;color:#475569;font-size:13.12px;font-weight:500}
 .sidebar nav a span{font-size:inherit;width:auto;text-align:left;font-weight:inherit}
-.sidebar nav a.router-link-active{background:#E2F2D9;border-left:4px solid #006A3A;color:#006A3A;padding-left:12px;font-weight:700;box-shadow:0 2px 6px rgba(0,106,58,.06)}
+.sidebar nav a.nav-active{background:#E2F2D9;border-left:4px solid #006A3A;color:#006A3A;padding-left:12px;font-weight:700;box-shadow:0 2px 6px rgba(0,106,58,.06)}
 .sidebar nav a:hover{background:#EDF7E7;color:#006A3A}
 .sidebar-footer{padding:10px;margin-top:auto;border-top:1px solid #E5E7E6;display:grid;gap:6px}
 .sidebar-footer button{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;min-height:36px;border:0;border-radius:10px;color:#64748b;background:transparent}
@@ -52,7 +52,7 @@ svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-lin
  .sidebar.mobile-open{transform:translateX(0)}.menu-backdrop{z-index:85}.close-mobile-menu{display:block;border:0;background:transparent;font-size:24px;padding:5px;color:#94A3B8}.brand{min-width:0}
  .sidebar-collapsed .sidebar{width:256px;flex-basis:256px}.sidebar-collapsed .sidebar-caption,.sidebar-collapsed .sidebar-group span,.sidebar-collapsed .nav-label,.sidebar-collapsed .sidebar-footer span{display:initial}
  .sidebar-collapsed .sidebar nav{padding:0 10px 8px 22px}.sidebar-collapsed .sidebar nav a{justify-content:flex-start;padding:8px 12px}.collapse-menu{display:none!important}
- .main-shell{margin:0;width:100%;padding:0}.app-header{height:56px;min-height:56px;padding:0 10px;gap:8px}.mobile-menu{display:block;font-size:20px;padding:5px;color:#006A3A}.module-icon{display:none}.header-context{font-size:11px;gap:6px}.header-actions{gap:4px}.header-actions button{font-size:10px;padding:8px 7px}
+ .main-shell{margin:0;width:100%;padding:0}.app-header{height:56px;min-height:56px;padding:0 10px;gap:8px}.mobile-menu{display:block;font-size:20px;padding:5px;color:#006A3A}.module-icon{display:flex;flex-basis:30px;width:30px;height:30px}.header-context{font-size:11px;gap:6px}.header-actions{gap:4px}.header-actions button{font-size:10px;padding:8px 7px}
  .main-shell main{padding:10px 0}.analytics-page{gap:12px}.page-intro{display:block}.page-intro h1{font-size:17px}.data-stamp{margin-top:6px;max-width:none}.analysis-tabs{padding:5px 8px;border-radius:10px;min-height:46px}.analysis-tabs button{font-size:12px;min-height:34px;padding:6px 10px;flex:none}
  .metric-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.metric-card{padding:14px 12px}.metric-card>strong{font-size:20px}.metric-label{font-size:10px;min-height:0}.metric-details{font-size:10px}.metric-details small{font-size:9px}.metric-subtitle{font-size:10px}
 }

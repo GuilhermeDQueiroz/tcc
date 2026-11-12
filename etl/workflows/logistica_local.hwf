@@ -146,10 +146,34 @@
       <exec_per_row>N</exec_per_row>
     </action>
     <action>
-      <name>Extrair PESSOA_ENDERECO</name>
+      <name>Extrair GRUPO</name>
       <type>PIPELINE</type>
       <parallel>N</parallel>
       <xloc>2240</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_grupo.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair COR</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>2420</xloc>
+      <yloc>160</yloc>
+      <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_cor.hpl</filename>
+      <run_configuration>local</run_configuration>
+      <wait_until_finished>Y</wait_until_finished>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+    </action>
+    <action>
+      <name>Extrair PESSOA_ENDERECO</name>
+      <type>PIPELINE</type>
+      <parallel>N</parallel>
+      <xloc>2600</xloc>
       <yloc>160</yloc>
       <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_pessoa_endereco.hpl</filename>
       <run_configuration>local</run_configuration>
@@ -161,7 +185,7 @@
       <name>Extrair CIDADE</name>
       <type>PIPELINE</type>
       <parallel>N</parallel>
-      <xloc>2420</xloc>
+      <xloc>2780</xloc>
       <yloc>160</yloc>
       <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_cidade.hpl</filename>
       <run_configuration>local</run_configuration>
@@ -173,7 +197,7 @@
       <name>Extrair UF</name>
       <type>PIPELINE</type>
       <parallel>N</parallel>
-      <xloc>2600</xloc>
+      <xloc>2960</xloc>
       <yloc>160</yloc>
       <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_uf.hpl</filename>
       <run_configuration>local</run_configuration>
@@ -185,7 +209,7 @@
       <name>Extrair STATUS</name>
       <type>PIPELINE</type>
       <parallel>N</parallel>
-      <xloc>2780</xloc>
+      <xloc>3140</xloc>
       <yloc>160</yloc>
       <filename>${PROJECT_HOME}/pipelines/logistica/ext_logistica_status.hpl</filename>
       <run_configuration>local</run_configuration>
@@ -197,7 +221,7 @@
       <name>Validar e publicar logística</name>
       <type>SQL</type>
       <parallel>N</parallel>
-      <xloc>2960</xloc>
+      <xloc>3320</xloc>
       <yloc>160</yloc>
       <connection>DW</connection>
       <sqlfromfile>Y</sqlfromfile>
@@ -210,14 +234,14 @@
       <name>Success</name>
       <type>SUCCESS</type>
       <parallel>N</parallel>
-      <xloc>3140</xloc>
+      <xloc>3500</xloc>
       <yloc>160</yloc>
     </action>
     <action>
       <name>Abortar</name>
       <type>ABORT</type>
       <parallel>N</parallel>
-      <xloc>3320</xloc>
+      <xloc>3680</xloc>
       <yloc>160</yloc>
       <message>Publicação logística interrompida. Versão anterior preservada.</message>
     </action>
@@ -372,13 +396,41 @@
     </hop>
     <hop>
       <from>Extrair PESSOA</from>
-      <to>Extrair PESSOA_ENDERECO</to>
+      <to>Extrair GRUPO</to>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>Extrair PESSOA</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair GRUPO</from>
+      <to>Extrair COR</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair GRUPO</from>
+      <to>Abortar</to>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair COR</from>
+      <to>Extrair PESSOA_ENDERECO</to>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Extrair COR</from>
       <to>Abortar</to>
       <enabled>Y</enabled>
       <evaluation>N</evaluation>

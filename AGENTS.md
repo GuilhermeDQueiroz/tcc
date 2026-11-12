@@ -13,7 +13,7 @@ Este repositório contém a aplicação de BI logístico de Guilherme Diniz Quei
 
 - O período aplicado filtra emissão/evento e é limitado à cobertura da publicação. No pós-venda, `meta.start/end` informa esse intervalo efetivo; `referenceDate` informa a posição da base.
 - Assistências em aberto representam saldo pendente na referência publicada, selecionado pela emissão. Filtrar um mês anterior não reconstrói o saldo ao fim daquele mês. Idade e situação da previsão usam a referência publicada. Para outra regra, defina o contrato e a fonte histórica antes de mudar cálculos.
-- A interface ainda usa os rótulos “Período” e “Referência”. A distinção está em `docs/paineis-posvenda.md`; sua melhoria textual permanece pendente.
+- No pós-venda, o modal “Sobre os indicadores” apresenta “Período filtrado” e “Posição da base”. As definições estão em `docs/paineis-posvenda.md`.
 - Não apresente faturamento como entrega física, valor de assistência como custo, ou devolução como recolhimento comprovado. Consulte o dicionário e as regras de negócio em `docs/`.
 - Volumetrias, tempos e resultados de avaliação precisam de fonte, recorte, método e data. Documentos antigos do workspace não bastam para afirmar ganhos gerenciais ou avaliação concluída. Testes técnicos e tempos HTTP não comprovam produtividade dos gestores.
 

@@ -35,6 +35,7 @@
       "AUTOINCITEM_DOCITEMDET": "bigint",
       "DOCUMENTO_DOCITEMDET": "bigint",
       "ITEM_DOCITEMDET": "integer",
+      "COR_DOCITEMDET": "integer",
       "QTDECHAPAS_DOCITEMDET": "numeric(18,4)",
       "QTDEABERTA_DOCITEMDET": "numeric(18,4)",
       "QTDEFATURADO_DOCITEMDET": "numeric(18,4)",
@@ -117,7 +118,24 @@
     "staging": "logistica_stage.pessoa",
     "columns": {
       "CODIGO_PESSOA": "integer",
-      "RAZAOSOCIAL_PESSOA": "text"
+      "RAZAOSOCIAL_PESSOA": "text",
+      "GRUPO_PESSOA": "integer"
+    }
+  },
+  {
+    "source": "GRUPO",
+    "staging": "logistica_stage.grupo",
+    "columns": {
+      "CODIGO_GRUPO": "integer",
+      "DESCRICAO_GRUPO": "text"
+    }
+  },
+  {
+    "source": "COR",
+    "staging": "logistica_stage.cor",
+    "columns": {
+      "CODIGO_COR": "integer",
+      "DESCRICAO_COR": "text"
     }
   },
   {
