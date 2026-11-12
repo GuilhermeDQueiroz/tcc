@@ -243,6 +243,7 @@ test('tonnage changes calendar grain without changing the population or totals',
  for(const granularity of ['month','week','day']){
   const data=build({...options,granularity});
   const tons=data.series.find(series=>series.id==='strategic.tonnage');
+  assert.equal(tons.type,granularity==='month'?'line':'bar');
   assert.ok(Math.abs(tons.rows.reduce((total,row)=>total+(row.value??0),0)-1)<.00001);
   assert.equal(metric(data,'strategic.serviceDays'),25);
  }

@@ -195,7 +195,7 @@ export function buildStrategicDashboard({logistics,billingRows,emissionRows=[],p
  const lightGreen='#8BC53F';
  const series=[
   {...trend('outflow','ESCOAMENTO POR MÊS','value','percent'),rows:flow.monthly.map(row=>({period:row.period,label:row.label,value:row.outflow,emittedValue:row.emittedValue,billedValue:row.billedValue})),color:lightGreen,singleColor:true,fillArea:true},
-  {id:'strategic.tonnage',title:'PESO POR '+({month:'MÊS',week:'SEMANA',day:'DIA'}[granularity]),type:'bar',x:'label',y:['value'],format:'decimal',labels:{value:'Toneladas'},icon:'weight',color:lightGreen,singleColor:true,overviewStyle:true,rows:grainRows},
+  {id:'strategic.tonnage',title:'PESO POR '+({month:'MÊS',week:'SEMANA',day:'DIA'}[granularity]),type:granularity==='month'?'line':'bar',x:'label',y:['value'],format:'decimal',labels:{value:'Toneladas'},icon:'weight',color:lightGreen,singleColor:true,overviewStyle:true,rows:grainRows},
   {...trend('ticket','TICKET MÉDIO POR MÊS','ticket','currency'),color:lightGreen,singleColor:true,fillArea:true,icon:'currency'},
   {...trend('quantity','QTD. ITENS POR MÊS','quantity','decimal'),color:lightGreen,singleColor:true,fillArea:true,icon:'layers'},
   {...trend('orders','QTD. PEDIDOS POR MÊS','orders','integer'),type:'bar',color:lightGreen,singleColor:true,icon:'cart'},

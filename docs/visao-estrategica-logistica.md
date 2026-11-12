@@ -66,7 +66,7 @@ O rodapé com definições de OTIF, Nível de Serviço, R$/kg e cobertura de pre
 - **GRUPOS ATENDIDOS POR MÊS:** grupos de cliente distintos por competência, em barras verticais verde-claras.
 - **NÍVEL DE SERVIÇO POR MÊS**, em dias.
 - **R$/TON POR MÊS:** valor faturado dividido pelo peso faturado em toneladas, exibido inicialmente em barras verticais verde-claras. Representa valor dos produtos por massa, não custo do frete.
-- **PESO POR MÊS / SEMANA / DIA**, escolhido em Configurações → Tipo de análise do próprio gráfico. A medida continua em toneladas. Semanas começam na segunda-feira; a alteração do agrupamento mantém a população e o total.
+- **PESO POR MÊS / SEMANA / DIA**, escolhido em Configurações → Tipo de análise do próprio gráfico. A visualização inicial do recorte mensal é evolução mensal; semana e dia mantêm barras verticais como padrão. A medida continua em toneladas. Semanas começam na segunda-feira; a alteração do agrupamento mantém a população e o total.
 - **OTIF POR MÊS**, exibido inicialmente em barras verticais verde-claras.
 - Distribuição do valor faturado por entrega e retirada, preservando categorias adicionais ou não informadas.
 

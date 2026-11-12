@@ -84,6 +84,10 @@ test('formation map displays approximate order markers without exposing delivery
 test('strategic and open cards keep the requested order and conversion aligns with outflow',async({page})=>{
  await page.setViewportSize({width:1920,height:1080})
  await page.goto('/estrategico');await ready(page)
+ const weightChart=page.locator('[data-series-id="strategic.tonnage"]')
+ await weightChart.getByRole('button',{name:'Configurar PESO POR MÊS'}).click()
+ await expect(page.getByRole('region',{name:'Configurações de PESO POR MÊS'}).getByRole('radio',{name:'Evolução mensal'})).toBeChecked()
+ await page.getByRole('button',{name:'Fechar configurações'}).click()
  const ids=await page.locator('.strategic-metrics [data-metric-id]').evaluateAll(elements=>elements.map(element=>element.getAttribute('data-metric-id')))
  expect(ids).toEqual(['strategic.portfolioValue','strategic.monthlyTonnage','strategic.monthlyVolume','strategic.monthlyQuantity','strategic.monthlyOrders','strategic.monthlyGroups','strategic.serviceDays','strategic.backlogReal','strategic.ticket','strategic.revenueTon','strategic.otif','strategic.sameMonthConversion','strategic.outflow'])
  const conversion=await page.locator('.strategic-chart-slot.evolution').boundingBox()

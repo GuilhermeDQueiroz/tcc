@@ -41,7 +41,7 @@ const orderedAnalyses=computed(()=>{
   const id=related[card];if(!id)continue
   if(id==='cohort'){result.push({id:'cohort.evolution',title:'',type:'line',rows:[]});continue}
   const chart=series.find(item=>item.id==='strategic.'+id)
-  if(chart){result.push(chart);used.add(chart.id)}
+  if(chart){result.push(id==='tonnage'&&store.granularity==='month'?{...chart,type:'line'}:chart);used.add(chart.id)}
  }
  return [...annual,...result,...series.filter(item=>!used.has(item.id)&&item.id!=='strategic.delivery')]
 })
