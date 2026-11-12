@@ -10,7 +10,7 @@ const store=useStrategicStore(),view=ref('table'),measure=ref('value'),monthlyTa
 const analysis=computed(()=>store.dashboard!.analysis)
 const crossDimension=computed(()=>['UF','CIDADE','TIPO_ENTREGA'].includes(store.dimension)?store.dimension:undefined)
 const displayTable=computed(()=>({...analysis.value.table,dimension:crossDimension.value,columns:analysis.value.table.columns.map(column=>({...column,label:column.key==='difference'?'Variação anual':column.key==='tonnes'?'Peso (t)':column.key==='revenueKg'?'R$/KG':column.label}))}))
-const defaultColumns=['label','value','difference','share','service','ticket','revenueKg','orders','quantity','tonnes','volume','groups','otif','conversion','outflow']
+const defaultColumns=['label','value','difference','share','service','ticket','revenueTon','orders','quantity','tonnes','volume','groups','otif','conversion','outflow']
 const widths=computed(()=>Object.fromEntries(analysis.value.table.columns.map((column,index)=>[column.key,index===0?260:column.key==='share'?145:column.format==='currency'?165:140])))
 const monthlyWidths={label:140,value:165,share:115,difference:220,ticket:140,revenueTon:140,orders:120,quantity:125,tonnes:135,volume:145,groups:150,service:145,otif:115,revenueKg:140,conversion:140,outflow:140}
 const series=computed<Series>(()=>({id:'strategic.dimensions.chart',title:analysis.value.table.title.toUpperCase(),type:view.value,x:'label',y:[measure.value],dimension:crossDimension.value,

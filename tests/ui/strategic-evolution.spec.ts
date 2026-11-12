@@ -31,7 +31,7 @@ test('strategic monthly measures reconcile the published period, dimension total
  await expect(page.locator('.strategic-metrics>.metric-card')).toHaveCount(13)
  await expect(page.locator('[data-metric-id="strategic.backlogReal"] .backlog-value')).toHaveCount(0)
  await expect(page.locator('[data-metric-id="strategic.portfolioValue"]')).toContainText('Carteira logística')
- for(const id of ['revenueKg','monthlyVolume','ticket','monthlyTonnage','monthlyQuantity','monthlyOrders','monthlyGroups']){
+ for(const id of ['revenueTon','monthlyVolume','ticket','monthlyTonnage','monthlyQuantity','monthlyOrders','monthlyGroups']){
   const card=page.locator(`[data-metric-id="strategic.${id}"]`)
   await expect(card).toBeVisible();await expect(card.locator(':scope>strong')).not.toHaveText('—')
  }
@@ -44,11 +44,11 @@ test('strategic monthly measures reconcile the published period, dimension total
  await expect(analysis.locator('[data-table-id="strategic.monthly"]')).toBeVisible()
  await expect(page.locator('[data-series-id="strategic.geography"] canvas').first()).toBeVisible()
  await expect(page.locator('[data-series-id="strategic.heatmap"]')).toHaveCount(0)
- for(const [id,title] of [['monthlyTonnage','Peso'],['monthlyQuantity','Qtd itens'],['monthlyOrders','Qtd pedidos'],['monthlyGroups','Grupos atendidos'],['revenueKg','R$/KG']])await expect(page.locator(`[data-metric-id="strategic.${id}"] .metric-label-title`)).toHaveText(title)
+ for(const [id,title] of [['monthlyTonnage','Peso'],['monthlyQuantity','Qtd itens'],['monthlyOrders','Qtd pedidos'],['monthlyGroups','Grupos atendidos'],['revenueTon','R$/TON']])await expect(page.locator(`[data-metric-id="strategic.${id}"] .metric-label-title`)).toHaveText(title)
  for(const title of await page.locator('.strategic-metrics .metric-label-title').allTextContents())expect(title.toLowerCase()).not.toContain('por mês')
  const chartIds=await page.locator('.strategic-charts [data-series-id]').evaluateAll(elements=>elements.map(element=>element.getAttribute('data-series-id')))
- expect(chartIds).toEqual(['strategic.annualMonthly','strategic.annualCumulative','strategic.annualRevenueTon','strategic.tonnage','strategic.quantity','strategic.orders','strategic.groups','strategic.service','strategic.ticket','strategic.otif','cohort.evolution','strategic.outflow','strategic.revenueKg','strategic.delivery'])
- for(const [id,title] of [['service','NÍVEL DE SERVIÇO POR MÊS'],['otif','OTIF POR MÊS'],['outflow','ESCOAMENTO POR MÊS'],['revenueKg','R$/KG POR MÊS']])await expect(page.locator(`[data-series-id="strategic.${id}"]`).getByRole('heading')).toHaveText(title)
+ expect(chartIds).toEqual(['strategic.annualMonthly','strategic.annualCumulative','strategic.annualRevenueTon','strategic.tonnage','strategic.quantity','strategic.orders','strategic.groups','strategic.service','strategic.ticket','strategic.revenueTon','strategic.otif','cohort.evolution','strategic.outflow','strategic.delivery'])
+ for(const [id,title] of [['service','NÍVEL DE SERVIÇO POR MÊS'],['otif','OTIF POR MÊS'],['outflow','ESCOAMENTO POR MÊS'],['revenueTon','R$/TON POR MÊS']])await expect(page.locator(`[data-series-id="strategic.${id}"]`).getByRole('heading')).toHaveText(title)
  await expect(page.locator('[data-series-id="cohort.evolution"]').getByRole('heading')).toHaveText('CONVERSÃO POR MÊS · VALOR')
  const monthly=page.locator('[data-table-id="strategic.monthly"]')
  await expect(monthly).toHaveClass(/report-table/)

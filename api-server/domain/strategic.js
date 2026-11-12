@@ -174,7 +174,7 @@ export function buildStrategicDashboard({logistics,billingRows,emissionRows=[],p
   metric('otif','OTIF',totals.otif,'percent',historyHelp+'Regra atual: proporção dos registros faturados até a previsão de faturamento. Sem previsão é contado como fora do prazo, conforme a regra existente. Não comprova entrega física nem atendimento integral. Registros com previsão: '+(coverage==null?'não disponível':coverage.toFixed(1).replace('.',',')+'%')+'.'),
   metric('sameMonthConversion','Conversão',flow.sameMonthConversion,'percent',conversionHelp+'Pedidos com algum faturamento no próprio mês de emissão ÷ todos os pedidos emitidos × 100, incluindo parciais. Média ponderada por pedidos, incluindo os sem faturamento, sem duplicar itens ou notas. Base: '+flow.convertedOrders.toLocaleString('pt-BR')+' com faturamento de '+flow.conversionOrders.toLocaleString('pt-BR')+' emitidos. Não é a janela de 30 dias nem comprova entrega física.'),
   metric('outflow','Escoamento',flow.outflow,'percent',flowHelp+'Média mensal do faturamento em R$ ÷ média mensal da entrada de pedidos em R$ × 100; equivale à razão entre os totais do mesmo período. Inclui faturamento de pedidos emitidos em meses anteriores. Acima de 100% significa faturamento superior à entrada; não confirma entrega nem, isoladamente, a variação da carteira. O filtro de emissão delimita o período comum, sem excluir do faturamento as safras anteriores.'),
-  metric('revenueKg','R$/KG',totals.revenueKg,'currency',historyHelp+'Valor faturado total ÷ peso faturado total em kg. Média ponderada pela massa; não é média simples das razões mensais nem custo de frete.'),
+  metric('revenueTon','R$/TON',totals.weight>0&&totals.value!=null?totals.value/(totals.weight/1000):null,'currency',historyHelp+'Valor faturado total ÷ peso faturado total em toneladas. Razão ponderada pela massa; não é média simples das razões mensais nem custo de frete.'),
   metric('monthlyVolume','Volume',monthlyAverage('volume'),'volume',averageHelp+'Volume faturado em m³ por mês. É média dos totais mensais, não cubagem média de um item.'),
   metric('ticket','Ticket médio',totals.ticket,'currency',historyHelp+'Faturamento total ÷ quantidade faturada de itens, conforme o legacy. É valor médio por unidade faturada, não por pedido nem média simples dos tickets mensais. Sem quantidade positiva, indisponível.'),
   metric('monthlyTonnage','Peso',monthlyAverage('weight')==null?null:monthlyAverage('weight')/1000,'decimal',averageHelp+'Soma dos pesos mensais em toneladas ÷ número de meses.'),
@@ -192,16 +192,17 @@ export function buildStrategicDashboard({logistics,billingRows,emissionRows=[],p
  const trend=(id,title,key,format)=>({id:'strategic.'+id,title,type:'line',x:'label',y:['value'],format,overviewStyle:true,labels:{value:title},rows:monthly.map(row=>({period:row.period,label:row.label,value:row[key],records:row.records,withForecast:row.withForecast}))});
  const deliveries=new Map();
  for(const row of selected){const type=String(row.TIPO_ENTREGA||'Não informado').trim();if(!deliveries.has(type))deliveries.set(type,[]);deliveries.get(type).push(row);}
+ const lightGreen='#8BC53F';
  const series=[
-  {...trend('outflow','ESCOAMENTO POR MÊS','value','percent'),rows:flow.monthly.map(row=>({period:row.period,label:row.label,value:row.outflow,emittedValue:row.emittedValue,billedValue:row.billedValue})),color:'#006A3A',fillArea:true},
-  {id:'strategic.tonnage',title:'PESO POR '+({month:'MÊS',week:'SEMANA',day:'DIA'}[granularity]),type:'bar',x:'label',y:['value'],format:'decimal',labels:{value:'Toneladas'},icon:'weight',color:'#8BC53F',overviewStyle:true,rows:grainRows},
-  {...trend('ticket','TICKET MÉDIO POR MÊS','ticket','currency'),color:'#006A3A',fillArea:true,icon:'currency'},
-  {...trend('quantity','QTD. ITENS POR MÊS','quantity','decimal'),color:'#C69214',fillArea:true,icon:'layers'},
-  {...trend('orders','QTD. PEDIDOS POR MÊS','orders','integer'),type:'bar',color:'#4E9D2D',icon:'cart'},
-  {...trend('groups','GRUPOS ATENDIDOS POR MÊS','groups','integer'),type:'bar',color:'#8BC53F',icon:'users'},
-  {...trend('service','NÍVEL DE SERVIÇO POR MÊS','service','days'),color:'#006A3A',fillArea:true,icon:'clock'},
-  {...trend('revenueKg','R$/KG POR MÊS','revenueKg','currency'),color:'#006A3A',fillArea:true,icon:'currency'},
-  {...trend('otif','OTIF POR MÊS','otif','percent'),color:'#4E9D2D',fillArea:true,icon:'target'},
+  {...trend('outflow','ESCOAMENTO POR MÊS','value','percent'),rows:flow.monthly.map(row=>({period:row.period,label:row.label,value:row.outflow,emittedValue:row.emittedValue,billedValue:row.billedValue})),color:lightGreen,singleColor:true,fillArea:true},
+  {id:'strategic.tonnage',title:'PESO POR '+({month:'MÊS',week:'SEMANA',day:'DIA'}[granularity]),type:'bar',x:'label',y:['value'],format:'decimal',labels:{value:'Toneladas'},icon:'weight',color:lightGreen,singleColor:true,overviewStyle:true,rows:grainRows},
+  {...trend('ticket','TICKET MÉDIO POR MÊS','ticket','currency'),color:lightGreen,singleColor:true,fillArea:true,icon:'currency'},
+  {...trend('quantity','QTD. ITENS POR MÊS','quantity','decimal'),color:lightGreen,singleColor:true,fillArea:true,icon:'layers'},
+  {...trend('orders','QTD. PEDIDOS POR MÊS','orders','integer'),type:'bar',color:lightGreen,singleColor:true,icon:'cart'},
+  {...trend('groups','GRUPOS ATENDIDOS POR MÊS','groups','integer'),type:'bar',color:lightGreen,singleColor:true,icon:'users'},
+  {...trend('service','NÍVEL DE SERVIÇO POR MÊS','service','days'),color:lightGreen,singleColor:true,fillArea:true,icon:'clock'},
+  {...trend('revenueTon','R$/TON POR MÊS','revenueKg','currency'),rows:monthly.map(row=>({period:row.period,label:row.label,value:row.weight>0&&row.value!=null?row.value/(row.weight/1000):null,records:row.records,withForecast:row.withForecast})),color:lightGreen,singleColor:true,fillArea:true,icon:'currency'},
+  {...trend('otif','OTIF POR MÊS','otif','percent'),color:lightGreen,singleColor:true,fillArea:true,icon:'target'},
   {id:'strategic.delivery',title:'TIPO DE ENTREGA',type:'donut',x:'type',dimension:'TIPO_ENTREGA',y:['value'],format:'currency',labels:{value:'Valor (R$)',weightKg:'Peso'},metricOptions:{value:'value',weightKg:'weightKg'},metricLabels:{value:'Valor (R$)',weightKg:'Peso'},metricFormats:{value:'currency',weightKg:'weight'},colorMap:{ENTREGA:'#8BC53F',RETIRA:'#4E9D2D'},compactDonut:true,overviewStyle:true,rows:[...deliveries].sort(([a],[b])=>a.localeCompare(b,'pt-BR')).map(([type,rows])=>{const t=summarize(rows);return {type,value:t.value,weightKg:t.weight};})},
  ];
  const {previousRows,previousCovered,annualComparison,...financial}=buildStrategicFinancial({history:valid.filter(row=>row.DT_FATURA_DATE<=publishedEnd),selected,monthly,totals,start,end,filters,heatmapDimension,heatmapMetric,flow});

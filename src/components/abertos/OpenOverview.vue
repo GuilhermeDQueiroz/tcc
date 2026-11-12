@@ -65,9 +65,9 @@ onBeforeUnmount(()=>{sequence++;abort?.abort()})
   <MetricCard :metric="secondMetrics[0]!"/>
   <MetricCard class="service-summary" :metric="secondMetrics[1]!"/>
   <BacklogCard :metric="metric('backlogGeneral')"/>
+  <MetricCard v-if="revenuePerTonMetric" :metric="revenuePerTonMetric"/>
   <MetricCard class="late-summary" :metric="secondMetrics[2]!" action-label="Analisar pedidos com mais de 60 dias por faixa de tempo" :action-disabled="store.loading" @activate="openAging"/>
   <MetricCard class="late-summary" :metric="secondMetrics[3]!" action-label="Analisar valor com mais de 60 dias por faixa de tempo" :action-disabled="store.loading" @activate="openAging"/>
-  <MetricCard v-if="revenuePerTonMetric" :metric="revenuePerTonMetric"/>
  </div>
  <div class="overview-row" data-section="evolution">
   <AnalyticChart :series="chart('Mes_Grupo','Evolução mensal do backlog')" @drilldown="store.drillDown"/>

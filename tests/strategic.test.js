@@ -122,7 +122,7 @@ test('monthly production averages include empty months and count invoices only o
  assert.equal(data.metrics.find(metric=>metric.id==='strategic.tonnage'),undefined);assert.equal(metric(data,'strategic.monthlyTonnage'),.5);
  assert.equal(metric(data,'strategic.monthlyQuantity'),2);
  assert.equal(metric(data,'strategic.monthlyOrders'),1);assert.equal(metric(data,'strategic.monthlyGroups'),1);
- assert.equal(metric(data,'strategic.revenueKg'),2.7,'the revenue-per-kg card weights mass instead of averaging 9 and 2');
+ assert.equal(metric(data,'strategic.revenueTon'),2700,'the revenue-per-ton card uses total billing divided by total tonnes');
  assert.equal(data.meta.history.months,2);
  assert.deepEqual(data.series.find(series=>series.id==='strategic.orders').rows.map(row=>row.value),[1,1]);
  const fullWindow=build({...options,billingRows:rows});
@@ -130,6 +130,19 @@ test('monthly production averages include empty months and count invoices only o
  assert.equal(metric(fullWindow,'strategic.monthlyQuantity'),4/12);
  const missing=build({...options,billingRows:rows.map(row=>({...row,GRUPO_CLIENTE:null,QUANTIDADE_FATURADA_CLEAN:null})),filters:{billingRange:['2026-08-01','2026-09-30']}});
  assert.equal(metric(missing,'strategic.monthlyQuantity'),null);assert.equal(metric(missing,'strategic.monthlyGroups'),null);
+});
+
+test('strategic evolutions use light green and revenue per tonne matches the monthly table',()=>{
+ const data=build({...options,filters:{billingRange:['2026-08-01','2026-09-30']}});
+ for(const id of ['service','otif','outflow','tonnage','quantity','orders','groups','ticket','revenueTon']){
+  const series=data.series.find(item=>item.id==='strategic.'+id);
+  assert.equal(series?.color,'#8BC53F',id);
+  assert.equal(series?.singleColor,true,id);
+ }
+ for(const id of ['annualMonthly','annualCumulative','annualRevenueTon'])assert.deepEqual(data.series.find(item=>item.id==='strategic.'+id)?.colors,['#C69214','#8BC53F']);
+ const monthly=data.financial.monthlyTable.rows;
+ assert.deepEqual(data.series.find(item=>item.id==='strategic.revenueTon').rows.map(row=>row.value),monthly.map(row=>row.revenueTon));
+ assert.equal(data.metrics.find(item=>item.id==='strategic.revenueTon').value,data.financial.monthlyTable.total.revenueTon);
 });
 
 test('dimension totals recompute distinct monthly counts and weighted ratios instead of adding overlapping groups',()=>{
@@ -142,7 +155,7 @@ test('dimension totals recompute distinct monthly counts and weighted ratios ins
  assert.equal(table.total.revenueKg,2.7);assert.equal(table.total.quantityMonthly,2);
  const byGroup=build({...options,billingRows:rows,dimension:'GRUPO_CLIENTE'});
  assert.equal(byGroup.analysis.dimension,'GRUPO_CLIENTE');assert.equal(byGroup.analysis.table.rows.length,1);
- assert.equal(byGroup.metrics.find(metric=>metric.id==='strategic.revenueKg').value,2.7);
+ assert.equal(byGroup.metrics.find(metric=>metric.id==='strategic.revenueTon').value,2700);
  assert.equal(byGroup.meta.history.totals.value,data.meta.history.totals.value);
 });
 
@@ -474,7 +487,7 @@ test('monthly tables show cohort conversion, outflow and kg revenue with a card-
  assert.deepEqual(table.rows.map(row=>row.conversion),[20,50]);
  assert.deepEqual(table.rows.map(row=>row.outflow),[160,100]);
  assert.equal(table.total.conversion,25);assert.equal(table.total.outflow,150);
- for(const [column,id] of [['tonnes','monthlyTonnage'],['volume','monthlyVolume'],['quantity','monthlyQuantity'],['orders','monthlyOrders'],['groups','monthlyGroups'],['service','serviceDays'],['otif','otif'],['ticket','ticket'],['revenueKg','revenueKg'],['conversion','sameMonthConversion'],['outflow','outflow']])assert.equal(summary[column],metric(data,'strategic.'+id),column);
+ for(const [column,id] of [['tonnes','monthlyTonnage'],['volume','monthlyVolume'],['quantity','monthlyQuantity'],['orders','monthlyOrders'],['groups','monthlyGroups'],['service','serviceDays'],['otif','otif'],['ticket','ticket'],['revenueTon','revenueTon'],['conversion','sameMonthConversion'],['outflow','outflow']])assert.equal(summary[column],metric(data,'strategic.'+id),column);
  const partial=build({...flowOptions,filters:{billingRange:['2026-07-15','2026-08-15']}});
  assert.ok(partial.financial.monthlyTable.rows.every(row=>row.conversion===null),'partial emission months do not become zero conversion');
  assert.equal(partial.financial.monthlyTable.total.conversion,null);

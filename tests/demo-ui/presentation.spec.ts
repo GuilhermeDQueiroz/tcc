@@ -81,6 +81,21 @@ test('formation map displays approximate order markers without exposing delivery
  await expect(page.locator('.logistics-map-panel canvas').first()).toBeVisible()
  await expect(page.locator('.logistics-map-panel')).not.toContainText('CEP aprox.')
 })
+test('strategic and open cards keep the requested order and conversion aligns with outflow',async({page})=>{
+ await page.setViewportSize({width:1920,height:1080})
+ await page.goto('/estrategico');await ready(page)
+ const ids=await page.locator('.strategic-metrics [data-metric-id]').evaluateAll(elements=>elements.map(element=>element.getAttribute('data-metric-id')))
+ expect(ids).toEqual(['strategic.portfolioValue','strategic.monthlyTonnage','strategic.monthlyVolume','strategic.monthlyQuantity','strategic.monthlyOrders','strategic.monthlyGroups','strategic.serviceDays','strategic.backlogReal','strategic.ticket','strategic.revenueTon','strategic.otif','strategic.sameMonthConversion','strategic.outflow'])
+ const conversion=await page.locator('.strategic-chart-slot.evolution').boundingBox()
+ const outflow=await page.locator('.strategic-chart-slot.outflow').boundingBox()
+ expect(conversion).not.toBeNull();expect(outflow).not.toBeNull()
+ expect(Math.abs(conversion!.y-outflow!.y)).toBeLessThan(3)
+ expect(outflow!.x).toBeGreaterThan(conversion!.x)
+ await page.goto('/abertos');await ready(page)
+ const openIds=await page.locator('.overview-metrics [data-metric-id]').evaluateAll(elements=>elements.map(element=>element.getAttribute('data-metric-id')))
+ const backlog=openIds.indexOf('abertos.resumo.backlogGeneral')
+ expect(openIds[backlog+1]).toBe('abertos.resumo.revenuePerTon')
+})
 test('aftersales menu routes open directly without backend requests or generated data',async({page})=>{
  const errors:string[]=[],requests:string[]=[]
  page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(new URL(request.url()).pathname.startsWith('/api/'))requests.push(request.url())})

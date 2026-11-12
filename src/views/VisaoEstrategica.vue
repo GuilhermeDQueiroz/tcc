@@ -20,12 +20,11 @@ const activeFilters=computed(()=>[
 ])
 function removeFilter(key:string){const filters=JSON.parse(JSON.stringify(store.filters));if(key==='billingRange'||key==='emissionRange')delete filters[key];else delete filters.dimensions?.[key];store.applyFilters(filters)}
 const cardOrder=[
- ['portfolioValue','Carteira logística'],['backlogReal','Backlog logístico'],
- ['serviceDays','Nível de serviço'],['otif','OTIF'],
- ['sameMonthConversion','Conversão'],['outflow','Escoamento'],
- ['monthlyTonnage','Peso'],['monthlyVolume','Volume'],
+ ['portfolioValue','Carteira logística'],['monthlyTonnage','Peso'],['monthlyVolume','Volume'],
  ['monthlyQuantity','Qtd itens'],['monthlyOrders','Qtd pedidos'],['monthlyGroups','Grupos atendidos'],
- ['ticket','Ticket médio'],['revenueKg','R$/KG'],
+ ['serviceDays','Nível de serviço'],['backlogReal','Backlog logístico'],
+ ['ticket','Ticket médio'],['revenueTon','R$/TON'],['otif','OTIF'],
+ ['sameMonthConversion','Conversão'],['outflow','Escoamento'],
 ] as const
 const placeholders=cardOrder.map(([,label])=>label)
 const orderedMetrics=computed(()=>{
@@ -35,7 +34,7 @@ const orderedMetrics=computed(()=>{
 // Annual comparisons lead the chart area; the remaining evolutions follow their cards.
 const orderedAnalyses=computed(()=>{
  const series=store.dashboard?.series||[]
- const related:Record<string,string>={monthlyTonnage:'tonnage',monthlyQuantity:'quantity',monthlyOrders:'orders',monthlyGroups:'groups',serviceDays:'service',ticket:'ticket',otif:'otif',sameMonthConversion:'cohort',outflow:'outflow',revenueKg:'revenueKg'}
+ const related:Record<string,string>={monthlyTonnage:'tonnage',monthlyQuantity:'quantity',monthlyOrders:'orders',monthlyGroups:'groups',serviceDays:'service',ticket:'ticket',otif:'otif',sameMonthConversion:'cohort',outflow:'outflow',revenueTon:'revenueTon'}
  const annual=series.filter(item=>item.id.startsWith('strategic.annual'))
  const used=new Set<string>(annual.map(item=>item.id)),result:Series[]=[]
  for(const [card] of cardOrder){
@@ -83,7 +82,7 @@ onBeforeUnmount(()=>store.cancel())
 .strategic-context>span{display:flex;gap:8px;align-items:center}.strategic-context .app-icon{width:14px;height:14px}.strategic-context small{font-size:10px;background:#eaf2e6;border-radius:4px;padding:3px 6px}
 .strategic-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 26px;margin-top:20px}
 .strategic-chart-slot{position:relative;min-width:0;border-top:1px solid #E5E7E6;padding-top:18px}
-.strategic-chart-slot.outflow,.strategic-chart-slot.annualMonthly,.strategic-chart-slot.annualCumulative,.strategic-chart-slot.annualRevenueTon{grid-column:1/-1}
+.strategic-chart-slot.annualMonthly,.strategic-chart-slot.annualCumulative,.strategic-chart-slot.annualRevenueTon{grid-column:1/-1}
 .strategic-chart-slot :deep(.analytic-chart){--analysis-height:270px;background:transparent;box-shadow:none;border:0;border-radius:0;padding:0}
 .strategic-chart-slot :deep(.panel-heading){padding:0 0 0 4px;min-height:40px;gap:8px}.strategic-chart-slot :deep(.panel-heading h2){letter-spacing:.05em;color:#526b5d;text-transform:uppercase}.strategic-chart-slot :deep(.panel-heading .app-icon){width:17px;height:17px}
 .strategic-chart-slot :deep(.analysis-body){padding:0;min-width:0}.strategic-chart-slot :deep(.loading-overlay){background:#f4f6f4}
@@ -99,7 +98,7 @@ onBeforeUnmount(()=>store.cancel())
 @container(max-width:1100px){.strategic-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @container(max-width:700px){.strategic-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.strategic-charts{grid-template-columns:minmax(0,1fr)}.strategic-context{font-size:10px}.strategic-source{display:none!important}}
 @media(max-width:767px){.strategic-dashboard{padding:10px 10px 20px}.strategic-charts{gap:16px}}
-@media(max-width:767px){.strategic-metrics>[data-metric-id="strategic.backlogReal"]{grid-column:span 2}.strategic-metrics>[data-metric-id="strategic.revenueKg"]{grid-column:auto}}
+@media(max-width:767px){.strategic-metrics>[data-metric-id="strategic.backlogReal"]{grid-column:span 2}.strategic-metrics>[data-metric-id="strategic.revenueTon"]{grid-column:auto}}
 .strategic-comparison-context{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:10px;color:#6d8173;margin:0 0 6px}.strategic-change{margin-left:auto;background:#e8f3de;color:#006a3a;border-radius:6px;padding:5px 8px;font-weight:600}.strategic-change.negative{color:#a33c31;background:#fff0ed}
 .strategic-map{margin-top:24px;padding-top:10px;border-top:1px solid #dfe7df;min-width:0}.strategic-map :deep(.analysis-frame){border:0;background:transparent;box-shadow:none;border-radius:0}.strategic-map :deep(.panel-heading){padding:0 0 10px}.strategic-map :deep(h2){letter-spacing:.05em;color:#526b5d}
 .strategic-map :deep(.analytic-chart){--analysis-height:440px}.strategic-chart-slot :deep(.cohort-panel){border:0;margin:0;padding:0}
