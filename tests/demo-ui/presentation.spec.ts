@@ -71,6 +71,16 @@ test('Home opens the available analyses without loading an API',async({page})=>{
  })).toBe(true)
  expect(apiRequests).toEqual([])
 })
+test('formation map displays approximate order markers without exposing delivery CEP',async({page})=>{
+ await page.goto('/cargas');await ready(page)
+ const coverage=page.locator('.logistics-coordinate-coverage')
+ await expect(coverage).toContainText('posições aproximadas')
+ const label=(await coverage.innerText()).replaceAll('.','')
+ const count=Number(label.match(/^(\d+)/)?.[1]||0)
+ expect(count).toBeGreaterThan(0)
+ await expect(page.locator('.logistics-map-panel canvas').first()).toBeVisible()
+ await expect(page.locator('.logistics-map-panel')).not.toContainText('CEP aprox.')
+})
 test('aftersales menu routes open directly without backend requests or generated data',async({page})=>{
  const errors:string[]=[],requests:string[]=[]
  page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>{if(new URL(request.url()).pathname.startsWith('/api/'))requests.push(request.url())})

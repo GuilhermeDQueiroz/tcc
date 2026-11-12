@@ -20,7 +20,7 @@ npm run demo:export
 
 O exporter lê `.env` quando presente e também aceita as variáveis no ambiente. Grava apenas em `.local/demo/`, fora do Git. O manifesto registra versões, posição, data da exportação, origem e hashes SHA-256. Logística e pós-venda precisam estar na mesma posição; a publicação comercial é conferida durante a extração. O programa não inicia nem encerra serviços.
 
-Nomes e identificadores devem vir da cópia anonimizada exigida pelo projeto. A exportação não é um anonimizador geral. Os campos de endereço/CEP e coordenadas individuais da logística são omitidos; destinos por UF e cidade e as quantidades permanecem. Nenhum ponto geográfico substituto é criado. Dados, metas e arquivos exportados serão acessíveis a quem tiver acesso à hospedagem.
+Nomes e identificadores devem vir da cópia anonimizada exigida pelo projeto. A exportação não é um anonimizador geral. O CEP e as coordenadas individuais da logística são omitidos; no mapa de Formação de Cargas, posições válidas são arredondadas a uma malha de 0,25° (aproximadamente 25 km). Assim, os pedidos podem ser explorados por região sem publicar sua posição exata. Pedidos sem localização continuam sem ponto. Destinos por UF/cidade, quantidades e medidas permanecem. Dados, metas e arquivos exportados serão acessíveis a quem tiver acesso à hospedagem.
 
 ## Conferir e gerar o pacote
 

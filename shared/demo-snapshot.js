@@ -20,6 +20,15 @@ export function unpackRows(table){
  });
  return rows;
 }
+// Public demo markers retain the source region, never the delivery address or exact point.
+export function generalizeLogisticsLocation(item){
+ const {cep,latitude,longitude,geo_origin,...publicItem}=item;
+ const lat=Number(latitude),lon=Number(longitude);
+ const valid=latitude!==null&&latitude!==undefined&&longitude!==null&&longitude!==undefined
+  &&Number.isFinite(lat)&&Number.isFinite(lon)&&lat>=-34&&lat<=6&&lat!==0&&lon>=-74&&lon<=-34;
+ return {...publicItem,latitude:valid?Math.round(lat*4)/4:null,
+  longitude:valid?Math.round(lon*4)/4:null,geo_origin:valid?'DEMO':null};
+}
 function stable(value){
  if(Array.isArray(value))return value.map(stable);
  if(value&&typeof value==='object')return Object.fromEntries(Object.keys(value).sort().map(key=>[key,stable(value[key])]));

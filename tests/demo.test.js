@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {packRows,unpackRows,demoRequestKey} from '../shared/demo-snapshot.js';
+import {packRows,unpackRows,demoRequestKey,generalizeLogisticsLocation} from '../shared/demo-snapshot.js';
 import {createDemoApi} from '../src/demo/engine.js';
 import {buildAftersalesDashboard} from '../api-server/domain/posvenda.js';
 
@@ -8,6 +8,19 @@ test('demo transport preserves relationships, order, zero, null and numeric prec
  const rows=[{pedido:7,item:1,label:'Cliente anonimizado',amount:0,weight:null},{pedido:7,item:2,label:'Cliente anonimizado',amount:0.10000000149011612,weight:2},{pedido:8,item:3,label:'Outro cliente',amount:-1,weight:0}];
  assert.deepEqual(unpackRows(packRows(rows)),rows);
  assert.deepEqual(unpackRows(packRows([])),[]);
+});
+test('demo map keeps order markers on a coarse grid without exact coordinates or CEP',()=>{
+ const source={pedido_id:17,cliente:'Cliente anonimizado',uf:'MG',cidade:'Ubá',cep:'36500000',latitude:-21.12234,longitude:-42.94491,geo_origin:'ERP'};
+ const point=generalizeLogisticsLocation(source);
+ assert.equal(point.pedido_id,17);
+ assert.equal(point.latitude,-21);
+ assert.equal(point.longitude,-43);
+ assert.equal(point.geo_origin,'DEMO');
+ assert.equal(Object.hasOwn(point,'cep'),false);
+ assert.notEqual(point.latitude,source.latitude);
+ assert.notEqual(point.longitude,source.longitude);
+ assert.equal(generalizeLogisticsLocation({...source,latitude:null,longitude:null}).latitude,null);
+ assert.equal(generalizeLogisticsLocation({...source,latitude:null,longitude:null}).geo_origin,null);
 });
 test('precomputed requests distinguish filters, measures and periods, and canonicalize frontend defaults',()=>{
  const date='2026-09-30';

@@ -9,7 +9,7 @@ import {PostgresRepository} from '../api-server/repositories/postgres.js';
 import {LogisticsRepository} from '../api-server/repositories/logistics.js';
 import {AftersalesRepository} from '../api-server/repositories/posvenda.js';
 import {SettingsStore} from '../api-server/settings.js';
-import {packRows,unpackRows,demoRequestKey,demoInitialPaths} from '../shared/demo-snapshot.js';
+import {packRows,unpackRows,demoRequestKey,demoInitialPaths,generalizeLogisticsLocation} from '../shared/demo-snapshot.js';
 import {createDemoApi} from '../src/demo/engine.js';
 
 const directory=fileURLToPath(new URL('../.local/demo/',import.meta.url));
@@ -30,10 +30,8 @@ try{
   const snapshot=await logisticsRepository.snapshot();
   manifest.referenceDate=snapshot.execution.data_referencia;
   manifest.publications.logistics=String(snapshot.execution.id);
-  // Exact addresses/CEP and customer-level coordinates are not needed to present
-  // quantities and destinations. UF/city remain; no replacement points are made.
-  const items=snapshot.items.map(({cep,latitude,longitude,geo_origin,...item})=>item);
-  await save('logistica',{execution:{...execution(snapshot.execution),origem:'Cópia local anonimizada · Apache Hop'},items:packRows(items),allocations:packRows(snapshot.allocations),geoVersion:'demo-without-addresses',geoWarning:'Demonstração sem coordenadas individuais. Destinos por UF e cidade preservados.'},'logistics');
+  const items=snapshot.items.map(generalizeLogisticsLocation);
+  await save('logistica',{execution:{...execution(snapshot.execution),origem:'Cópia local anonimizada · Apache Hop'},items:packRows(items),allocations:packRows(snapshot.allocations),geoVersion:'demo-generalized-locations',geoWarning:'Pontos aproximados em malha de 0,25°; CEP e coordenadas exatas não são publicados.'},'logistics');
  }
  logisticsRepository.snapshots.clear();
  for(const area of ['abertos','faturados','emitidos']){
