@@ -201,8 +201,8 @@ export function buildStrategicDashboard({logistics,billingRows,emissionRows=[],p
   {...trend('orders','QTD. PEDIDOS POR MÊS','orders','integer'),type:'bar',color:lightGreen,singleColor:true,icon:'cart'},
   {...trend('groups','GRUPOS ATENDIDOS POR MÊS','groups','integer'),type:'bar',color:lightGreen,singleColor:true,icon:'users'},
   {...trend('service','NÍVEL DE SERVIÇO POR MÊS','service','days'),color:lightGreen,singleColor:true,fillArea:true,icon:'clock'},
-  {...trend('revenueTon','R$/TON POR MÊS','revenueKg','currency'),rows:monthly.map(row=>({period:row.period,label:row.label,value:row.weight>0&&row.value!=null?row.value/(row.weight/1000):null,records:row.records,withForecast:row.withForecast})),color:lightGreen,singleColor:true,fillArea:true,icon:'currency'},
-  {...trend('otif','OTIF POR MÊS','otif','percent'),color:lightGreen,singleColor:true,fillArea:true,icon:'target'},
+  {...trend('revenueTon','R$/TON POR MÊS','revenueKg','currency'),type:'bar',rows:monthly.map(row=>({period:row.period,label:row.label,value:row.weight>0&&row.value!=null?row.value/(row.weight/1000):null,records:row.records,withForecast:row.withForecast})),color:lightGreen,singleColor:true,icon:'currency'},
+  {...trend('otif','OTIF POR MÊS','otif','percent'),type:'bar',color:lightGreen,singleColor:true,icon:'target'},
   {id:'strategic.delivery',title:'TIPO DE ENTREGA',type:'donut',x:'type',dimension:'TIPO_ENTREGA',y:['value'],format:'currency',labels:{value:'Valor (R$)',weightKg:'Peso'},metricOptions:{value:'value',weightKg:'weightKg'},metricLabels:{value:'Valor (R$)',weightKg:'Peso'},metricFormats:{value:'currency',weightKg:'weight'},colorMap:{ENTREGA:'#8BC53F',RETIRA:'#4E9D2D'},compactDonut:true,overviewStyle:true,rows:[...deliveries].sort(([a],[b])=>a.localeCompare(b,'pt-BR')).map(([type,rows])=>{const t=summarize(rows);return {type,value:t.value,weightKg:t.weight};})},
  ];
  const {previousRows,previousCovered,annualComparison,...financial}=buildStrategicFinancial({history:valid.filter(row=>row.DT_FATURA_DATE<=publishedEnd),selected,monthly,totals,start,end,filters,heatmapDimension,heatmapMetric,flow});

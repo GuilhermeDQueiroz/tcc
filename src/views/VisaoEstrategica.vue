@@ -43,8 +43,9 @@ const orderedAnalyses=computed(()=>{
   const chart=series.find(item=>item.id==='strategic.'+id)
   if(chart){result.push(chart);used.add(chart.id)}
  }
- return [...annual,...result,...series.filter(item=>!used.has(item.id))]
+ return [...annual,...result,...series.filter(item=>!used.has(item.id)&&item.id!=='strategic.delivery')]
 })
+const deliverySeries=computed(()=>store.dashboard?.series.find(item=>item.id==='strategic.delivery'))
 const comparison=computed(()=>store.dashboard?.financial.comparison)
 onMounted(()=>void store.load())
 onBeforeUnmount(()=>store.cancel())
@@ -69,8 +70,11 @@ onBeforeUnmount(()=>store.cancel())
     </AnalyticChart>
     </template>
    </div>
+   <div v-if="deliverySeries" class="strategic-delivery-map">
+    <div class="strategic-chart-slot delivery"><AnalyticChart :series="deliverySeries" :loading="store.loading" @drilldown="store.drillDown"/></div>
+    <div class="strategic-chart-slot geography"><AnalyticChart :series="store.dashboard.financial.geography" :loading="store.loading" @drilldown="store.drillDown"/></div>
+   </div>
   </div>
-  <section v-if="store.dashboard" class="strategic-map"><AnalyticChart :series="store.dashboard.financial.geography" :loading="store.loading" @drilldown="store.drillDown"/></section>
   <StrategicDimensions v-if="store.dashboard"/>
   <StrategicFilterDrawer/>
  </div>
@@ -81,9 +85,11 @@ onBeforeUnmount(()=>store.cancel())
 .strategic-context{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#6d8173;font-size:11px;margin:12px 0 7px;flex-wrap:wrap}
 .strategic-context>span{display:flex;gap:8px;align-items:center}.strategic-context .app-icon{width:14px;height:14px}.strategic-context small{font-size:10px;background:#eaf2e6;border-radius:4px;padding:3px 6px}
 .strategic-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 26px;margin-top:20px}
+.strategic-delivery-map{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:26px;min-width:0}
 .strategic-chart-slot{position:relative;min-width:0;border-top:1px solid #E5E7E6;padding-top:18px}
 .strategic-chart-slot.annualMonthly,.strategic-chart-slot.annualCumulative,.strategic-chart-slot.annualRevenueTon{grid-column:1/-1}
 .strategic-chart-slot :deep(.analytic-chart){--analysis-height:270px;background:transparent;box-shadow:none;border:0;border-radius:0;padding:0}
+.strategic-chart-slot.delivery :deep(.analytic-chart),.strategic-chart-slot.geography :deep(.analytic-chart){--analysis-height:440px}
 .strategic-chart-slot :deep(.panel-heading){padding:0 0 0 4px;min-height:40px;gap:8px}.strategic-chart-slot :deep(.panel-heading h2){letter-spacing:.05em;color:#526b5d;text-transform:uppercase}.strategic-chart-slot :deep(.panel-heading .app-icon){width:17px;height:17px}
 .strategic-chart-slot :deep(.analysis-body){padding:0;min-width:0}.strategic-chart-slot :deep(.loading-overlay){background:#f4f6f4}
 .strategic-active-filters{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.strategic-active-filters button{display:flex;align-items:center;gap:6px;border:1px solid #d9e5d3;background:#eaf2e6;font-size:11px;padding:5px 8px;border-radius:6px;max-width:100%;text-align:left}.strategic-active-filters .app-icon{width:12px;height:12px;flex:none}
@@ -96,11 +102,10 @@ onBeforeUnmount(()=>store.cancel())
 }
 @container strategic (min-width:1400px){.strategic-metrics :deep(.metric-card[data-format]>strong){font-size:23px}}
 @container(max-width:1100px){.strategic-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@container(max-width:700px){.strategic-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.strategic-charts{grid-template-columns:minmax(0,1fr)}.strategic-context{font-size:10px}.strategic-source{display:none!important}}
+@container(max-width:700px){.strategic-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.strategic-charts,.strategic-delivery-map{grid-template-columns:minmax(0,1fr)}.strategic-context{font-size:10px}.strategic-source{display:none!important}}
 @media(max-width:767px){.strategic-dashboard{padding:10px 10px 20px}.strategic-charts{gap:16px}}
 @media(max-width:767px){.strategic-metrics>[data-metric-id="strategic.backlogReal"]{grid-column:span 2}.strategic-metrics>[data-metric-id="strategic.revenueTon"]{grid-column:auto}}
 .strategic-comparison-context{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:10px;color:#6d8173;margin:0 0 6px}.strategic-change{margin-left:auto;background:#e8f3de;color:#006a3a;border-radius:6px;padding:5px 8px;font-weight:600}.strategic-change.negative{color:#a33c31;background:#fff0ed}
-.strategic-map{margin-top:24px;padding-top:10px;border-top:1px solid #dfe7df;min-width:0}.strategic-map :deep(.analysis-frame){border:0;background:transparent;box-shadow:none;border-radius:0}.strategic-map :deep(.panel-heading){padding:0 0 10px}.strategic-map :deep(h2){letter-spacing:.05em;color:#526b5d}
-.strategic-map :deep(.analytic-chart){--analysis-height:440px}.strategic-chart-slot :deep(.cohort-panel){border:0;margin:0;padding:0}
+.strategic-chart-slot :deep(.cohort-panel){border:0;margin:0;padding:0}
 
 </style>

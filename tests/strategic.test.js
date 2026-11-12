@@ -140,6 +140,7 @@ test('strategic evolutions use light green and revenue per tonne matches the mon
   assert.equal(series?.singleColor,true,id);
  }
  for(const id of ['annualMonthly','annualCumulative','annualRevenueTon'])assert.deepEqual(data.series.find(item=>item.id==='strategic.'+id)?.colors,['#C69214','#8BC53F']);
+ for(const [id,type] of [['quantity','line'],['orders','bar'],['groups','bar'],['revenueTon','bar'],['otif','bar']])assert.equal(data.series.find(item=>item.id==='strategic.'+id)?.type,type,id);
  const monthly=data.financial.monthlyTable.rows;
  assert.deepEqual(data.series.find(item=>item.id==='strategic.revenueTon').rows.map(row=>row.value),monthly.map(row=>row.revenueTon));
  assert.equal(data.metrics.find(item=>item.id==='strategic.revenueTon').value,data.financial.monthlyTable.total.revenueTon);

@@ -61,13 +61,13 @@ O rodapé com definições de OTIF, Nível de Serviço, R$/kg e cobertura de pre
 ## Gráficos, período e filtros
 
 - **ESCOAMENTO POR MÊS:** faturamento em R$ ÷ entrada válida em R$ de cada competência × 100, incluindo notas de pedidos mais antigos. Sem entrada positiva, o percentual fica indisponível; valores acima de 100% são preservados. Cada ponto usa a mesma interseção de calendário do card; a média do card permanece razão dos totais, não média simples dos percentuais.
-- **QTD. ITENS POR MÊS:** unidades faturadas de cada competência, em linha amarela.
+- **QTD. ITENS POR MÊS:** unidades faturadas de cada competência, com evolução mensal em verde-claro como visualização inicial.
 - **QTD. PEDIDOS POR MÊS:** pedidos distintos em cada competência, em barras verdes.
-- **GRUPOS ATENDIDOS POR MÊS:** grupos de cliente distintos por competência, em barras verde-claras.
+- **GRUPOS ATENDIDOS POR MÊS:** grupos de cliente distintos por competência, em barras verticais verde-claras.
 - **NÍVEL DE SERVIÇO POR MÊS**, em dias.
-- **R$/TON POR MÊS:** valor faturado dividido pelo peso faturado em toneladas. Representa valor dos produtos por massa, não custo do frete.
+- **R$/TON POR MÊS:** valor faturado dividido pelo peso faturado em toneladas, exibido inicialmente em barras verticais verde-claras. Representa valor dos produtos por massa, não custo do frete.
 - **PESO POR MÊS / SEMANA / DIA**, escolhido em Configurações → Tipo de análise do próprio gráfico. A medida continua em toneladas. Semanas começam na segunda-feira; a alteração do agrupamento mantém a população e o total.
-- **OTIF POR MÊS**.
+- **OTIF POR MÊS**, exibido inicialmente em barras verticais verde-claras.
 - Distribuição do valor faturado por entrega e retirada, preservando categorias adicionais ou não informadas.
 
 O período inicial vai de 01/01 do ano anterior até a data atual em America/Sao_Paulo. O filtro vem preenchido e aceita outro intervalo, sem limite implícito de 12 meses e sem reduzir suas datas aos limites observados na publicação. Intervalos sem registros retornam agregados vazios e razões indisponíveis; a seleção não é substituída por outro período. As faixas de datas da carteira, do histórico e dos comparativos foram removidas da área principal. A referência publicada continua em metadados e na ajuda.
@@ -97,6 +97,8 @@ Os acumulados começam juntos no início do intervalo comparável; não pressup�
 **TABELA DE EVOLUÇÃO MENSAL** é a primeira aba da ANÁLISE POR DIMENSÃO. Contém valor, participação, superávit/déficit frente ao mesmo recorte um ano antes, ticket, R$/ton, pedidos, itens, toneladas, volume, grupos, tempo até faturamento, OTIF, conversão e escoamento. A conversão mensal exige competência de emissão completa; meses parciais ou sem pedidos elegíveis ficam indisponíveis. O escoamento usa a interseção de calendário com os filtros de emissão, quando aplicados. Os totais de contagens e razões são recalculados para o período, sem somar grupos ou pedidos que reaparecem em meses diferentes. Diferenças mensais são apresentadas com cobertura da competência anterior. A fonte comercial inicia a extração em 01/01/2025; a ausência de notas de 01 a 05/01/2025 não torna janeiro descoberto. O total da diferença e a variação nas dimensões comparam apenas o intervalo equivalente do ano final do filtro com o ano anterior; as demais medidas continuam cobrindo todo o período selecionado.
 
 **MAPA DE FATURAMENTO** apresenta o Brasil por UF, com a soma do faturamento no período filtrado e escala verde. Usa a mesma seleção dos indicadores de desempenho e independe da aba escolhida na análise por dimensão. Estados sem registros ficam neutros; valores com UF ausente ou inválida permanecem no contrato da API sem atribuição artificial a um estado; o aviso textual foi retirado do painel. O mapa de calor e seus controles foram removidos da tela. O contrato antigo da API permanece para compatibilidade.
+
+O mapa fica ao lado de **TIPO DE ENTREGA**, com altura de 440 px e a mesma proporção de largura usada na distribuição geográfica de Pedidos em Aberto. Em telas estreitas, os dois gráficos são empilhados.
 
 Os cards não exibem mais “por mês”: Peso, Qtd itens, Qtd pedidos e Grupos atendidos mantêm suas médias mensais e fórmulas nas ajudas. R$/TON mantém a razão dos totais. As evoluções existentes seguem os cards: Peso, itens, pedidos, grupos, nível de serviço, ticket, R$/TON, OTIF, conversão por safra e escoamento. Conversão e escoamento ficam lado a lado. A conversão por safra conserva as janelas de 7/15/30 dias, distintas do percentual de conversão mensal do card. Os três comparativos anuais permanecem no início da área de gráficos; entrega/retirada permanece após as evoluções. Carteira e backlog continuam como saldos na posição publicada, sem gerar séries históricas artificiais.
 
