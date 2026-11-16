@@ -6,7 +6,7 @@ O projeto organiza dados do ERP Firebird em uma base analítica PostgreSQL, por 
 
 **Autor:** Guilherme Diniz Queiroz · **Repositório:** [GuilhermeDQueiroz/tcc](https://github.com/GuilhermeDQueiroz/tcc)
 
-![Visão Estratégica de Logística](docs/images/visao-estrategica.png)
+![Visão Estratégica de Logística](docs/images/visão_estratégica.png)
 
 *Captura da publicação local validada, com referência de carteira em 30/09/2026. Os valores da imagem pertencem àquela publicação; não são constantes nem dados fornecidos pela interface.*
 
@@ -40,6 +40,7 @@ flowchart LR
     D --> A[API Node.js / Express]
     A --> V[Vue / Pinia / ECharts]
 ```
+![Fluxo da aplicação](docs/images/Fluxo_da_Inteligência_Logística.png)
 
 Há 32 projeções de fontes no fluxo comercial, quatorze no fluxo logístico e quatorze no fluxo isolado de pós-venda. As publicações são versionadas e identificadas nos resultados. O ETL é executado separadamente; abrir o painel não inicia uma extração. A API utiliza a última publicação válida. As regras e os vínculos dos novos painéis estão em [Painéis de pós-venda](docs/paineis-posvenda.md).
 
