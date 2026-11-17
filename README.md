@@ -3,9 +3,9 @@
 Parte prática do Trabalho de Conclusão de Curso: **desenvolvimento de um painel analítico para apoio à tomada de decisão com dados de um ERP**.
 
 
-**Video apresentação:** [video](https://drive.google.com/file/d/1D_zu1RUoKGa73GREJPLe4J3fZSZkOTMS/view?usp=drivesdk).
+**Vídeo apresentação:** [vídeo](https://drive.google.com/file/d/1D_zu1RUoKGa73GREJPLe4J3fZSZkOTMS/view?usp=drivesdk).
 
-**Demonstraçãot:** [tcc-bi-logistica.vercel.app](https://tcc-bi-logistica.vercel.app).
+**Demonstração:** [tcc-bi-logistica.vercel.app](https://tcc-bi-logistica.vercel.app).
 
 O projeto organiza dados do ERP Firebird em uma base analítica PostgreSQL, por meio do Apache Hop, e apresenta indicadores e consultas em uma aplicação web. O foco é acompanhar a carteira de pedidos, as parcelas em carga e sem carga e o desempenho do faturamento.
 
