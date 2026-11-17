@@ -2,6 +2,8 @@
 
 Parte prática do Trabalho de Conclusão de Curso: **desenvolvimento de um painel analítico para apoio à tomada de decisão com dados de um ERP**.
 
+**Demonstração:** [tcc-bi-logistica.vercel.app](https://tcc-bi-logistica.vercel.app).
+
 O projeto organiza dados do ERP Firebird em uma base analítica PostgreSQL, por meio do Apache Hop, e apresenta indicadores e consultas em uma aplicação web. O foco é acompanhar a carteira de pedidos, as parcelas em carga e sem carga e o desempenho do faturamento.
 
 **Autor:** Guilherme Diniz Queiroz · **Repositório:** [GuilhermeDQueiroz/tcc](https://github.com/GuilhermeDQueiroz/tcc)
@@ -26,8 +28,6 @@ O projeto organiza dados do ERP Firebird em uma base analítica PostgreSQL, por 
 As consultas incluem filtros, totalizadores, hierarquias, pesquisa, exportação CSV e preferências locais. A aplicação adapta a disposição dos painéis para telas menores.
 
 Para apresentar sem API ou banco ativos, há um [modo de demonstração estática](docs/demonstracao.md) com uma fotografia das publicações reais anonimizadas. `npm run demo:export` prepara os dados locais; `npm run demo:package` gera o pacote independente para a Vercel. A fotografia fica fora do Git e a interface identifica sua posição e seus limites.
-
-**Demonstração para apresentação:** [tcc-bi-logistica.vercel.app](https://tcc-bi-logistica.vercel.app). A posição dos dados é informada no próprio painel; essa versão não atualiza o ERP.
 
 ## Arquitetura
 
